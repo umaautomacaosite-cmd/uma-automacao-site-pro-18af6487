@@ -1,0 +1,94 @@
+
+import { Link } from 'react-router-dom';
+import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const Footer = () => {
+  return (
+    <footer className="bg-gray-900 text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div>
+            <div className="text-2xl font-playfair font-bold text-wine-400 mb-4">
+              UMA AUTOMAÇÃO
+            </div>
+            <p className="font-lato text-gray-300 mb-4">
+              Soluções completas em automação industrial com excelência técnica e atendimento nacional.
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-sm">
+                <Phone className="h-4 w-4 text-wine-400" />
+                <span>(11) 99999-9999</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <Mail className="h-4 w-4 text-wine-400" />
+                <span>contato@umaautomacao.com.br</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <MapPin className="h-4 w-4 text-wine-400" />
+                <span>São Paulo, SP - Brasil</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-lato font-semibold text-lg mb-4">Links Rápidos</h3>
+            <ul className="space-y-2">
+              <li><Link to="/servicos" className="text-gray-300 hover:text-wine-400 transition-colors">Serviços</Link></li>
+              <li><Link to="/cases" className="text-gray-300 hover:text-wine-400 transition-colors">Cases de Sucesso</Link></li>
+              <li><Link to="/sobre" className="text-gray-300 hover:text-wine-400 transition-colors">Sobre Nós</Link></li>
+              <li><Link to="/contato" className="text-gray-300 hover:text-wine-400 transition-colors">Contato</Link></li>
+              <li><Link to="/admin" className="text-gray-300 hover:text-wine-400 transition-colors">Admin</Link></li>
+            </ul>
+          </div>
+
+          {/* Certifications */}
+          <div>
+            <h3 className="font-lato font-semibold text-lg mb-4">Certificações</h3>
+            <div className="space-y-3">
+              <div className="bg-gray-800 p-3 rounded border border-wine-400">
+                <div className="font-semibold text-wine-400">CREA/SP</div>
+                <div className="text-sm text-gray-300">Registro: 123456</div>
+              </div>
+              <div className="bg-gray-800 p-3 rounded border border-gold-500">
+                <div className="font-semibold text-gold-500">ISO 9001</div>
+                <div className="text-sm text-gray-300">Certificado</div>
+              </div>
+              <div className="text-sm text-gray-300">
+                Conformidade NR-10, NR-12, ABNT NBR 5410
+              </div>
+            </div>
+          </div>
+
+          {/* Social Media & WhatsApp */}
+          <div>
+            <h3 className="font-lato font-semibold text-lg mb-4">Redes Sociais</h3>
+            <div className="flex space-x-4 mb-6">
+              <a href="#" className="text-gray-300 hover:text-wine-400 transition-colors">
+                <Facebook className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-wine-400 transition-colors">
+                <Instagram className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-gray-300 hover:text-wine-400 transition-colors">
+                <Linkedin className="h-6 w-6" />
+              </a>
+            </div>
+            <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
+              <MessageCircle className="mr-2 h-4 w-4" />
+              WhatsApp
+            </Button>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; 2024 UMA AUTOMAÇÃO. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
