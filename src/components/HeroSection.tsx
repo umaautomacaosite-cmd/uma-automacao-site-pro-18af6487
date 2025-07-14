@@ -1,6 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Award, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
@@ -50,13 +51,15 @@ const HeroSection = () => {
               Solicitar Orçamento
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-wine-900 font-lato font-semibold px-8 py-4 text-lg"
-            >
-              Ver Nossos Serviços
-            </Button>
+            <Link to="/servicos">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 border-white text-white hover:bg-white hover:text-wine-900 font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto"
+              >
+                Ver Nossos Serviços
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
