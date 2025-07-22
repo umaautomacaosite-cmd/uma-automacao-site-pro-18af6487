@@ -1,78 +1,52 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Award, 
-  Users, 
-  MapPin, 
-  Target,
-  Eye,
-  Heart,
-  CheckCircle,
-  Calendar
-} from 'lucide-react';
-
+import { Award, Users, MapPin, Target, Eye, Heart, CheckCircle, Calendar } from 'lucide-react';
 const About = () => {
-  const values = [
-    {
-      icon: Target,
-      title: "Excelência Técnica",
-      description: "Comprometimento com a qualidade e inovação em cada projeto entregue."
-    },
-    {
-      icon: Users,
-      title: "Equipe Especializada",
-      description: "Engenheiros certificados CREA com vasta experiência em automação industrial."
-    },
-    {
-      icon: CheckCircle,
-      title: "Conformidade Total",
-      description: "Aderência rigorosa às normas NRs, ISO e padrões internacionais."
-    },
-    {
-      icon: Heart,
-      title: "Relacionamento Duradouro",
-      description: "Parceria de longo prazo com nossos clientes e suporte contínuo."
-    }
-  ];
-
-  const timeline = [
-    {
-      year: "2008",
-      title: "Fundação da Empresa",
-      description: "Início das atividades com foco em automação industrial."
-    },
-    {
-      year: "2012",
-      title: "Certificação ISO 9001",
-      description: "Primeira certificação de qualidade conquistada."
-    },
-    {
-      year: "2015",
-      title: "Expansão Nacional",
-      description: "Início do atendimento em todo território nacional."
-    },
-    {
-      year: "2018",
-      title: "500+ Projetos",
-      description: "Marco de 500 projetos entregues com sucesso."
-    },
-    {
-      year: "2020",
-      title: "Tecnologia Digital",
-      description: "Incorporação de tecnologias Industry 4.0."
-    },
-    {
-      year: "2024",
-      title: "Líder de Mercado",
-      description: "Reconhecimento como referência em automação industrial."
-    }
-  ];
-
-  return (
-    <div className="min-h-screen">
+  const values = [{
+    icon: Target,
+    title: "Excelência Técnica",
+    description: "Comprometimento com a qualidade e inovação em cada projeto entregue."
+  }, {
+    icon: Users,
+    title: "Equipe Especializada",
+    description: "Engenheiros certificados CREA com vasta experiência em automação industrial."
+  }, {
+    icon: CheckCircle,
+    title: "Conformidade Total",
+    description: "Aderência rigorosa às normas NRs, ISO e padrões internacionais."
+  }, {
+    icon: Heart,
+    title: "Relacionamento Duradouro",
+    description: "Parceria de longo prazo com nossos clientes e suporte contínuo."
+  }];
+  const timeline = [{
+    year: "2008",
+    title: "Fundação da Empresa",
+    description: "Início das atividades com foco em automação industrial."
+  }, {
+    year: "2012",
+    title: "Certificação ISO 9001",
+    description: "Primeira certificação de qualidade conquistada."
+  }, {
+    year: "2015",
+    title: "Expansão Nacional",
+    description: "Início do atendimento em todo território nacional."
+  }, {
+    year: "2018",
+    title: "500+ Projetos",
+    description: "Marco de 500 projetos entregues com sucesso."
+  }, {
+    year: "2020",
+    title: "Tecnologia Digital",
+    description: "Incorporação de tecnologias Industry 4.0."
+  }, {
+    year: "2024",
+    title: "Líder de Mercado",
+    description: "Reconhecimento como referência em automação industrial."
+  }];
+  return <div className="min-h-screen">
       <Header />
       
       {/* Page Header */}
@@ -103,21 +77,17 @@ const About = () => {
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-wine-50 rounded-lg">
-                  <div className="font-playfair text-3xl font-bold text-wine-900">500+</div>
+                  <div className="font-playfair text-3xl font-bold text-wine-900">1500+</div>
                   <div className="font-lato text-sm text-gray-600">Projetos Entregues</div>
                 </div>
                 <div className="text-center p-4 bg-wine-50 rounded-lg">
-                  <div className="font-playfair text-3xl font-bold text-wine-900">15+</div>
+                  <div className="font-playfair text-3xl font-bold text-wine-900">25+</div>
                   <div className="font-lato text-sm text-gray-600">Anos de Experiência</div>
                 </div>
               </div>
             </div>
             <div>
-              <img 
-                src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Escritório UMA AUTOMAÇÃO"
-                className="rounded-lg shadow-lg"
-              />
+              <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Escritório UMA AUTOMAÇÃO" className="rounded-lg shadow-lg" />
             </div>
           </div>
         </div>
@@ -160,15 +130,13 @@ const About = () => {
 
           {/* Values Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
-              <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+            {values.map((value, index) => <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
                 <CardContent>
                   <value.icon className="h-10 w-10 text-wine-900 mx-auto mb-4" />
                   <h4 className="font-lato font-semibold text-lg mb-2">{value.title}</h4>
                   <p className="font-lato text-sm text-gray-600">{value.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -184,8 +152,7 @@ const About = () => {
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-wine-200"></div>
             
             <div className="space-y-12">
-              {timeline.map((event, index) => (
-                <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+              {timeline.map((event, index) => <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <Card className="p-6 hover:shadow-lg transition-shadow">
                       <CardContent>
@@ -202,8 +169,7 @@ const About = () => {
                   </div>
                   <div className="w-4 h-4 bg-wine-900 rounded-full border-4 border-white shadow-lg relative z-10"></div>
                   <div className="w-1/2"></div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -236,8 +202,6 @@ const About = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default About;
