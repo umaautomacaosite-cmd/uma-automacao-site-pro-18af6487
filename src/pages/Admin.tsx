@@ -17,14 +17,26 @@ import {
   Edit,
   Trash2,
   Save,
-  Eye
+  Eye,
+  Phone
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [whatsappNumber, setWhatsappNumber] = useState(
+    localStorage.getItem('whatsappNumber') || '5511999999999'
+  );
   const { toast } = useToast();
+
+  const saveWhatsAppNumber = () => {
+    localStorage.setItem('whatsappNumber', whatsappNumber);
+    toast({
+      title: "Número salvo!",
+      description: "O número do WhatsApp foi atualizado com sucesso.",
+    });
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +133,7 @@ const Admin = () => {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center space-x-2">
                 <BarChart className="h-4 w-4" />
                 <span>Dashboard</span>
@@ -137,6 +149,10 @@ const Admin = () => {
               <TabsTrigger value="usuarios" className="flex items-center space-x-2">
                 <Users className="h-4 w-4" />
                 <span>Usuários</span>
+              </TabsTrigger>
+              <TabsTrigger value="configuracoes" className="flex items-center space-x-2">
+                <Settings className="h-4 w-4" />
+                <span>Config</span>
               </TabsTrigger>
             </TabsList>
 
@@ -357,6 +373,50 @@ const Admin = () => {
                         Criar Usuário
                       </Button>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="configuracoes">
+              <div className="mb-6">
+                <h2 className="font-playfair text-2xl font-bold">Configurações Gerais</h2>
+                <p className="font-lato text-gray-600">Gerencie as configurações do sistema</p>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-playfair text-xl flex items-center space-x-2">
+                    <Phone className="h-5 w-5" />
+                    <span>WhatsApp</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Configure o número do WhatsApp para redirecionamento dos usuários
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="font-lato font-medium text-sm mb-2 block">
+                        Número do WhatsApp (com código do país)
+                      </label>
+                      <Input 
+                        placeholder="Ex: 5511999999999"
+                        value={whatsappNumber}
+                        onChange={(e) => setWhatsappNumber(e.target.value)}
+                      />
+                      <p className="font-lato text-xs text-gray-500 mt-1">
+                        Formato: Código do país + DDD + número (apenas números)
+                      </p>
+                    </div>
+
+                    <Button 
+                      className="bg-wine-900 hover:bg-wine-800 text-white"
+                      onClick={saveWhatsAppNumber}
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      Salvar Número
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

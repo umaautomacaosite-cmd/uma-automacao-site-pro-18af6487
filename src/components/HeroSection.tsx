@@ -1,6 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Award, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+// WhatsApp utility function
+const openWhatsApp = () => {
+  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
+  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+};
 const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Wine Overlay */}
@@ -38,10 +45,12 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg group">
-              Solicitar Orçamento
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link to="/contato">
+              <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg group">
+                Solicitar Orçamento
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
             <Link to="/servicos">
               <Button size="lg" variant="outline" className="border-2 border-white font-lato px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto bg-rose-50 font-semibold text-pink-950">
                 Ver Nossos Serviços

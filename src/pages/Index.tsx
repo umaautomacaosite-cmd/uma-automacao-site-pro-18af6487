@@ -6,6 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+
+// WhatsApp utility function
+const openWhatsApp = () => {
+  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
+  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+};
 const Index = () => {
   const services = [{
     icon: Network,
@@ -113,10 +120,17 @@ const Index = () => {
             Entre em contato conosco e receba uma proposta personalizada para seu projeto de automação industrial.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
-              Solicitar Orçamento Gratuito
-            </Button>
-            <Button size="lg" variant="outline" className="border-white hover:bg-white font-lato font-semibold px-8 py-4 text-lg text-slate-950">
+            <Link to="/contato">
+              <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
+                Solicitar Orçamento Gratuito
+              </Button>
+            </Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white hover:bg-white font-lato font-semibold px-8 py-4 text-lg text-slate-950"
+              onClick={openWhatsApp}
+            >
               Falar com Especialista
             </Button>
           </div>
