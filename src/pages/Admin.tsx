@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,56 +7,43 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Settings, 
-  FileText, 
-  Users, 
-  BarChart,
-  Plus,
-  Edit,
-  Trash2,
-  Save,
-  Eye,
-  Phone
-} from 'lucide-react';
+import { Settings, FileText, Users, BarChart, Plus, Edit, Trash2, Save, Eye, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [whatsappNumber, setWhatsappNumber] = useState(
-    localStorage.getItem('whatsappNumber') || '5511999999999'
-  );
-  const { toast } = useToast();
-
+  const [loginData, setLoginData] = useState({
+    username: '',
+    password: ''
+  });
+  const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
+  const {
+    toast
+  } = useToast();
   const saveWhatsAppNumber = () => {
     localStorage.setItem('whatsappNumber', whatsappNumber);
     toast({
       title: "Número salvo!",
-      description: "O número do WhatsApp foi atualizado com sucesso.",
+      description: "O número do WhatsApp foi atualizado com sucesso."
     });
   };
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginData.username === 'admin' && loginData.password === 'admin123') {
       setIsLoggedIn(true);
       toast({
         title: "Login realizado com sucesso!",
-        description: "Bem-vindo ao painel administrativo.",
+        description: "Bem-vindo ao painel administrativo."
       });
     } else {
       toast({
         title: "Erro no login",
         description: "Usuário ou senha incorretos.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen">
+    return <div className="min-h-screen">
         <Header />
         <section className="py-20">
           <div className="container mx-auto px-4 max-w-md">
@@ -74,21 +60,17 @@ const Admin = () => {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
                     <label className="font-lato font-medium text-sm mb-2 block">Usuário</label>
-                    <Input 
-                      type="text"
-                      placeholder="Digite seu usuário"
-                      value={loginData.username}
-                      onChange={(e) => setLoginData({...loginData, username: e.target.value})}
-                    />
+                    <Input type="text" placeholder="Digite seu usuário" value={loginData.username} onChange={e => setLoginData({
+                    ...loginData,
+                    username: e.target.value
+                  })} />
                   </div>
                   <div>
                     <label className="font-lato font-medium text-sm mb-2 block">Senha</label>
-                    <Input 
-                      type="password"
-                      placeholder="Digite sua senha"
-                      value={loginData.password}
-                      onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                    />
+                    <Input type="password" placeholder="Digite sua senha" value={loginData.password} onChange={e => setLoginData({
+                    ...loginData,
+                    password: e.target.value
+                  })} />
                   </div>
                   <Button type="submit" className="bg-wine-900 hover:bg-wine-800 text-white w-full">
                     Fazer Login
@@ -104,12 +86,9 @@ const Admin = () => {
           </div>
         </section>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       
       {/* Admin Header */}
@@ -119,11 +98,7 @@ const Admin = () => {
             <h1 className="font-playfair text-3xl font-bold">Painel Administrativo</h1>
             <p className="font-lato">Sistema de Gestão de Conteúdo - UMA AUTOMAÇÃO</p>
           </div>
-          <Button 
-            variant="outline" 
-            className="border-white text-white hover:bg-white hover:text-wine-900"
-            onClick={() => setIsLoggedIn(false)}
-          >
+          <Button variant="outline" onClick={() => setIsLoggedIn(false)} className="border-white hover:bg-white text-base text-wine-900">
             Sair
           </Button>
         </div>
@@ -242,10 +217,7 @@ const Admin = () => {
 
                     <div>
                       <label className="font-lato font-medium text-sm mb-2 block">Descrição</label>
-                      <Textarea 
-                        placeholder="Descrição detalhada do serviço..."
-                        rows={4}
-                      />
+                      <Textarea placeholder="Descrição detalhada do serviço..." rows={4} />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -308,10 +280,7 @@ const Admin = () => {
 
                     <div>
                       <label className="font-lato font-medium text-sm mb-2 block">Descrição Detalhada</label>
-                      <Textarea 
-                        placeholder="Descrição completa do projeto e soluções implementadas..."
-                        rows={4}
-                      />
+                      <Textarea placeholder="Descrição completa do projeto e soluções implementadas..." rows={4} />
                     </div>
 
                     <div className="flex space-x-4">
@@ -400,20 +369,13 @@ const Admin = () => {
                       <label className="font-lato font-medium text-sm mb-2 block">
                         Número do WhatsApp (com código do país)
                       </label>
-                      <Input 
-                        placeholder="Ex: 5511999999999"
-                        value={whatsappNumber}
-                        onChange={(e) => setWhatsappNumber(e.target.value)}
-                      />
+                      <Input placeholder="Ex: 5511999999999" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} />
                       <p className="font-lato text-xs text-gray-500 mt-1">
                         Formato: Código do país + DDD + número (apenas números)
                       </p>
                     </div>
 
-                    <Button 
-                      className="bg-wine-900 hover:bg-wine-800 text-white"
-                      onClick={saveWhatsAppNumber}
-                    >
+                    <Button className="bg-wine-900 hover:bg-wine-800 text-white" onClick={saveWhatsAppNumber}>
                       <Save className="mr-2 h-4 w-4" />
                       Salvar Número
                     </Button>
@@ -426,8 +388,6 @@ const Admin = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Admin;
