@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import Footer from '@/components/Footer';
@@ -6,55 +5,47 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
-import { 
-  Network, 
-  Zap, 
-  Settings, 
-  Shield, 
-  Award, 
-  Users, 
-  MapPin,
-  ArrowRight,
-  CheckCircle
-} from 'lucide-react';
-
+import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 const Index = () => {
-  const services = [
-    {
-      icon: Network,
-      title: "Redes e Infraestrutura",
-      description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 7/6a/6",
-      features: ["Certificação OTDR", "Normas ANSI/TIA-568", "ISO/IEC 11801"]
-    },
-    {
-      icon: Zap,
-      title: "Energia e Elétrica",
-      description: "Busway trifásico, fechamento de quadros elétricos",
-      features: ["NR-12 Compliance", "ABNT NBR 5410", "Projeto CREA"]
-    },
-    {
-      icon: Settings,
-      title: "Automação Industrial",
-      description: "Sistemas de controle e monitoramento industrial",
-      features: ["PLCs", "IHMs", "SCADA"]
-    },
-    {
-      icon: Shield,
-      title: "Segurança Industrial",
-      description: "Sistemas de segurança conforme normas regulamentadoras",
-      features: ["NR-10", "NR-12", "NR-33"]
-    }
-  ];
-
-  const stats = [
-    { number: "500+", label: "Projetos Entregues", icon: Award },
-    { number: "15+", label: "Anos de Experiência", icon: Users },
-    { number: "100%", label: "Atendimento Nacional", icon: MapPin },
-    { number: "24/7", label: "Suporte Técnico", icon: Shield }
-  ];
-
-  return (
-    <div className="min-h-screen">
+  const services = [{
+    icon: Network,
+    title: "Redes e Infraestrutura",
+    description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 7/6a/6",
+    features: ["Certificação OTDR", "Normas ANSI/TIA-568", "ISO/IEC 11801"]
+  }, {
+    icon: Zap,
+    title: "Energia e Elétrica",
+    description: "Busway trifásico, fechamento de quadros elétricos",
+    features: ["NR-12 Compliance", "ABNT NBR 5410", "Projeto CREA"]
+  }, {
+    icon: Settings,
+    title: "Automação Industrial",
+    description: "Sistemas de controle e monitoramento industrial",
+    features: ["PLCs", "IHMs", "SCADA"]
+  }, {
+    icon: Shield,
+    title: "Segurança Industrial",
+    description: "Sistemas de segurança conforme normas regulamentadoras",
+    features: ["NR-10", "NR-12", "NR-33"]
+  }];
+  const stats = [{
+    number: "500+",
+    label: "Projetos Entregues",
+    icon: Award
+  }, {
+    number: "15+",
+    label: "Anos de Experiência",
+    icon: Users
+  }, {
+    number: "100%",
+    label: "Atendimento Nacional",
+    icon: MapPin
+  }, {
+    number: "24/7",
+    label: "Suporte Técnico",
+    icon: Shield
+  }];
+  return <div className="min-h-screen">
       <Header />
       <HeroSection />
       
@@ -71,8 +62,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow group">
+            {services.map((service, index) => <Card key={index} className="hover:shadow-lg transition-shadow group">
                 <CardHeader>
                   <service.icon className="h-12 w-12 text-wine-900 mb-4 group-hover:text-wine-700 transition-colors" />
                   <CardTitle className="font-lato text-lg">{service.title}</CardTitle>
@@ -80,16 +70,13 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center space-x-2">
+                    {service.features.map((feature, idx) => <div key={idx} className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
                         <span className="text-sm font-lato">{feature}</span>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
 
           <div className="text-center mt-12">
@@ -107,13 +94,11 @@ const Index = () => {
       <section className="py-20 bg-wine-900 text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+            {stats.map((stat, index) => <div key={index} className="text-center">
                 <stat.icon className="h-12 w-12 text-gold-500 mx-auto mb-4" />
                 <div className="font-playfair text-4xl font-bold mb-2">{stat.number}</div>
                 <div className="font-lato text-lg text-gray-200">{stat.label}</div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -131,7 +116,7 @@ const Index = () => {
             <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
               Solicitar Orçamento Gratuito
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 font-lato font-semibold px-8 py-4 text-lg">
+            <Button size="lg" variant="outline" className="border-white hover:bg-white font-lato font-semibold px-8 py-4 text-lg text-slate-950">
               Falar com Especialista
             </Button>
           </div>
@@ -139,8 +124,6 @@ const Index = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
