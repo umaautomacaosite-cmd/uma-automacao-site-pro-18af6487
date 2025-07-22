@@ -1,11 +1,8 @@
-
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const Footer = () => {
-  return (
-    <footer className="bg-gray-900 text-white">
+  return <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -84,11 +81,9 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 UMA AUTOMAÇÃO. Todos os direitos reservados.</p>
+          <p>© 2025 UMA AUTOMAÇÃO. Todos os direitos reservados.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
