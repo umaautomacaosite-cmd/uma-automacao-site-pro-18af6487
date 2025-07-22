@@ -216,7 +216,10 @@ const Services = () => {
                         </Badge>
                       </div>
 
-                      <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full md:w-auto">
+                      <Button 
+                        className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full md:w-auto"
+                        onClick={() => window.location.href = '/contato'}
+                      >
                         Solicitar Orçamento para este Serviço
                       </Button>
                     </CardContent>
