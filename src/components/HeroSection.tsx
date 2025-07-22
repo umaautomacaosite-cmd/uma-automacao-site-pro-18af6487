@@ -1,18 +1,12 @@
-
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Award, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Wine Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `linear-gradient(rgba(128, 0, 32, 0.8), rgba(128, 0, 32, 0.6)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
-        }}
-      />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+      backgroundImage: `linear-gradient(rgba(128, 0, 32, 0.8), rgba(128, 0, 32, 0.6)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+    }} />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
@@ -44,19 +38,12 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg group"
-            >
+            <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg group">
               Solicitar Orçamento
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Link to="/servicos">
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-2 border-white text-white hover:bg-white hover:text-wine-900 font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto"
-              >
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:text-wine-900 font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto bg-rose-50">
                 Ver Nossos Serviços
               </Button>
             </Link>
@@ -70,8 +57,6 @@ const HeroSection = () => {
           <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
