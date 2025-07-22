@@ -43,7 +43,7 @@ const HeroSection = () => {
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Link to="/servicos">
-              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:text-wine-900 font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto bg-rose-50">
+              <Button size="lg" variant="outline" className="border-2 border-white font-lato px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto bg-rose-50 font-semibold text-pink-950">
                 Ver Nossos Serviços
               </Button>
             </Link>
