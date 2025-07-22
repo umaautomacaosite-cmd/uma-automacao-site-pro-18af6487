@@ -1,22 +1,12 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock,
-  MessageCircle,
-  Send
-} from 'lucide-react';
-
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 const Contact = () => {
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       
       {/* Page Header */}
@@ -54,7 +44,7 @@ const Contact = () => {
                       <Phone className="h-8 w-8 text-wine-900" />
                       <div>
                         <h3 className="font-lato font-semibold text-lg">Telefone</h3>
-                        <p className="font-lato text-gray-600">(11) 99999-9999</p>
+                        <p className="font-lato text-gray-600">(61) 99999-9999</p>
                         <p className="font-lato text-sm text-gray-500">Atendimento comercial</p>
                       </div>
                     </div>
@@ -81,7 +71,7 @@ const Contact = () => {
                       <div>
                         <h3 className="font-lato font-semibold text-lg">Endereço</h3>
                         <p className="font-lato text-gray-600">Av. Paulista, 1000 - Sala 1501</p>
-                        <p className="font-lato text-gray-600">São Paulo, SP - CEP: 01310-100</p>
+                        <p className="font-lato text-gray-600">Brasília, DF - CEP: 01310-100</p>
                       </div>
                     </div>
                   </CardContent>
@@ -93,7 +83,7 @@ const Contact = () => {
                       <Clock className="h-8 w-8 text-wine-900" />
                       <div>
                         <h3 className="font-lato font-semibold text-lg">Horário de Atendimento</h3>
-                        <p className="font-lato text-gray-600">Segunda a Sexta: 8h às 18h</p>
+                        <p className="font-lato text-gray-600">Segunda a Sexta: 7h às 17h</p>
                         <p className="font-lato text-gray-600">Sábado: 8h às 12h</p>
                       </div>
                     </div>
@@ -163,10 +153,7 @@ const Contact = () => {
 
                   <div>
                     <label className="font-lato font-medium text-sm mb-2 block">Descrição do Projeto</label>
-                    <Textarea 
-                      placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..."
-                      rows={6}
-                    />
+                    <Textarea placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..." rows={6} />
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg">
@@ -204,15 +191,13 @@ const Contact = () => {
             <div className="text-center">
               <MapPin className="h-16 w-16 text-wine-900 mx-auto mb-4" />
               <p className="font-lato text-lg text-gray-700">Mapa Interativo</p>
-              <p className="font-lato text-sm text-gray-600">Av. Paulista, 1000 - São Paulo, SP</p>
+              <p className="font-lato text-sm text-gray-600">Av. Paulista, 1000 - Brasília, DF</p>
             </div>
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Contact;
