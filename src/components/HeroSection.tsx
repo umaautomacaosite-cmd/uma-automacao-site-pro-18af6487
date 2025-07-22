@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Award, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import datacenterHero from '@/assets/datacenter-hero.jpg';
 
 // WhatsApp utility function
 const openWhatsApp = () => {
@@ -12,7 +13,7 @@ const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Wine Overlay */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
-      backgroundImage: `linear-gradient(rgba(128, 0, 32, 0.8), rgba(128, 0, 32, 0.6)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+      backgroundImage: `linear-gradient(rgba(128, 0, 32, 0.8), rgba(128, 0, 32, 0.6)), url('${datacenterHero}')`
     }} />
       
       {/* Content */}
