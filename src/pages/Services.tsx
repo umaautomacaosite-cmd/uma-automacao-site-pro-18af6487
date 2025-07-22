@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -104,15 +105,15 @@ const Services = () => {
       <Header />
       
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-wine-900 to-wine-700 text-white py-20">
+      <section className="bg-gradient-to-r from-wine-900 to-wine-700 text-white py-12 md:py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="font-playfair text-5xl font-bold mb-4">
+          <h1 className="font-playfair text-3xl md:text-5xl font-bold mb-4">
             Nossos Serviços
           </h1>
-          <p className="font-lato text-xl max-w-3xl mx-auto">
+          <p className="font-lato text-lg md:text-xl max-w-3xl mx-auto">
             Soluções técnicas especializadas em automação industrial com compliance total às normas regulamentadoras e certificações internacionais.
           </p>
-          <div className="mt-8 flex justify-center space-x-4">
+          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4 sm:space-x-4">
             <Badge variant="secondary" className="bg-gold-500 text-black font-semibold">
               <Award className="mr-2 h-4 w-4" />
               ISO 9001 Certificado
@@ -126,26 +127,26 @@ const Services = () => {
       </section>
 
       {/* Services Content */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Navigation */}
             <div className="lg:w-1/4">
-              <div className="sticky top-8">
-                <h3 className="font-playfair text-2xl font-bold mb-6">Categorias</h3>
-                <nav className="space-y-2">
+              <div className="lg:sticky lg:top-8">
+                <h3 className="font-playfair text-xl md:text-2xl font-bold mb-6">Categorias</h3>
+                <nav className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
                   {categories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => setActiveCategory(category.id)}
-                      className={`w-full text-left p-4 rounded-lg font-lato font-medium transition-colors flex items-center space-x-3 ${
+                      className={`w-full text-left p-3 md:p-4 rounded-lg font-lato font-medium transition-colors flex items-center space-x-3 ${
                         activeCategory === category.id
                           ? 'bg-wine-900 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      <category.icon className="h-5 w-5" />
-                      <span>{category.name}</span>
+                      <category.icon className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+                      <span className="text-sm md:text-base">{category.name}</span>
                     </button>
                   ))}
                 </nav>
@@ -168,11 +169,11 @@ const Services = () => {
                     <CardContent className="space-y-6">
                       {/* Applications */}
                       <div>
-                        <h4 className="font-lato font-semibold text-lg mb-3">Aplicações</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Aplicações</h4>
+                        <div className="grid grid-cols-1 gap-2">
                           {service.applications.map((app, idx) => (
-                            <div key={idx} className="flex items-center space-x-2">
-                              <CheckCircle className="h-4 w-4 text-green-600" />
+                            <div key={idx} className="flex items-start space-x-2">
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                               <span className="font-lato text-sm">{app}</span>
                             </div>
                           ))}
@@ -193,11 +194,11 @@ const Services = () => {
 
                       {/* Features */}
                       <div>
-                        <h4 className="font-lato font-semibold text-lg mb-3">Características Técnicas</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Características Técnicas</h4>
+                        <div className="grid grid-cols-1 gap-2">
                           {service.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-center space-x-2">
-                              <CheckCircle className="h-4 w-4 text-wine-900" />
+                            <div key={idx} className="flex items-start space-x-2">
+                              <CheckCircle className="h-4 w-4 text-wine-900 mt-0.5 flex-shrink-0" />
                               <span className="font-lato text-sm">{feature}</span>
                             </div>
                           ))}
@@ -216,12 +217,11 @@ const Services = () => {
                         </Badge>
                       </div>
 
-                      <Button 
-                        className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full md:w-auto"
-                        onClick={() => window.location.href = '/contato'}
-                      >
-                        Solicitar Orçamento para este Serviço
-                      </Button>
+                      <Link to="/contato">
+                        <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full text-sm md:text-base">
+                          Solicitar Orçamento para este Serviço
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 ))}

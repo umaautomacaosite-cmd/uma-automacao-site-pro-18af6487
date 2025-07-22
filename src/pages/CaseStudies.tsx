@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -181,9 +182,11 @@ const CaseStudies = () => {
                     </div>
                   </div>
 
-                  <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full">
-                    Solicitar Projeto Similar
-                  </Button>
+                   <Link to="/contato">
+                     <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full">
+                       Solicitar Projeto Similar
+                     </Button>
+                   </Link>
                 </CardContent>
               </Card>
             ))}
@@ -200,9 +203,11 @@ const CaseStudies = () => {
           <p className="font-lato text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Entre em contato conosco e transforme sua infraestrutura com soluções técnicas de excelência.
           </p>
-          <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
-            Solicitar Consultoria Gratuita
-          </Button>
+           <Link to="/contato">
+             <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
+               Solicitar Consultoria Gratuita
+             </Button>
+           </Link>
         </div>
       </section>
 

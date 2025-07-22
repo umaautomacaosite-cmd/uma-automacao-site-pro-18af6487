@@ -24,7 +24,7 @@ const Header = () => {
   }];
   return <header className="bg-white shadow-lg relative z-50">
       {/* Top contact bar */}
-      <div className="bg-gray-900 text-white py-2">
+      <div className="bg-gray-900 text-white py-2 hidden md:block">
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
@@ -36,7 +36,7 @@ const Header = () => {
               <span>contato@umaautomacao.com.br</span>
             </div>
           </div>
-          <div className="text-xs">
+          <div className="text-xs hidden lg:block">
             Atendimento Nacional | Engenheiros CREA Certificados
           </div>
         </div>
@@ -46,7 +46,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-playfair font-bold text-wine-900">
+            <div className="text-xl md:text-2xl font-playfair font-bold text-wine-900">
               UMA AUTOMAÇÃO
             </div>
           </Link>
@@ -56,9 +56,11 @@ const Header = () => {
             {navItems.map(item => <Link key={item.path} to={item.path} className={`font-lato font-medium transition-colors ${isActive(item.path) ? 'text-wine-900 border-b-2 border-wine-900' : 'text-gray-700 hover:text-wine-900'}`}>
                 {item.name}
               </Link>)}
-            <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-medium px-6">
-              Solicitar Orçamento
-            </Button>
+            <Link to="/contato">
+              <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-medium px-6">
+                Solicitar Orçamento
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -72,9 +74,11 @@ const Header = () => {
             {navItems.map(item => <Link key={item.path} to={item.path} className={`block py-2 font-lato ${isActive(item.path) ? 'text-wine-900 font-semibold' : 'text-gray-700'}`} onClick={() => setIsMenuOpen(false)}>
                 {item.name}
               </Link>)}
-            <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-medium px-6 mt-4 w-full">
-              Solicitar Orçamento
-            </Button>
+            <Link to="/contato" onClick={() => setIsMenuOpen(false)}>
+              <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-medium px-6 mt-4 w-full">
+                Solicitar Orçamento
+              </Button>
+            </Link>
           </div>}
       </nav>
     </header>;
