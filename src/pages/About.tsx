@@ -35,8 +35,8 @@ const About = () => {
     description: "Início do atendimento em todo território nacional."
   }, {
     year: "2018",
-    title: "500+ Projetos",
-    description: "Marco de 500 projetos entregues com sucesso."
+    title: "1500+ Projetos",
+    description: "Marco de 1500 projetos entregues com sucesso."
   }, {
     year: "2020",
     title: "Tecnologia Digital",
@@ -189,7 +189,7 @@ const About = () => {
             </div>
             <div className="bg-white text-gray-900 p-6 rounded-lg">
               <Users className="h-12 w-12 text-wine-900 mx-auto mb-4" />
-              <h3 className="font-lato font-bold text-lg mb-2">CREA/SP</h3>
+              <h3 className="font-lato font-bold text-lg mb-2">CREA/DF</h3>
               <p className="font-lato text-sm">Engenheiros Registrados e Certificados</p>
             </div>
             <div className="bg-white text-gray-900 p-6 rounded-lg">
