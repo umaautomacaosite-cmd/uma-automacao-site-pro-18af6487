@@ -36,11 +36,11 @@ const Index = () => {
     features: ["NR-10", "NR-12", "NR-33"]
   }];
   const stats = [{
-    number: "500+",
+    number: "1500+",
     label: "Projetos Entregues",
     icon: Award
   }, {
-    number: "15+",
+    number: "25+",
     label: "Anos de Experiência",
     icon: Users
   }, {
