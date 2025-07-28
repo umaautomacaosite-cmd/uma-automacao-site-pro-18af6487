@@ -11,9 +11,9 @@ const openWhatsApp = () => {
 };
 const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Wine Overlay */}
+      {/* Background Image with Blue Overlay */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
-      backgroundImage: `linear-gradient(rgba(128, 0, 32, 0.8), rgba(128, 0, 32, 0.6)), url('${datacenterHero}')`
+      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${datacenterHero}')`
     }} />
       
       {/* Content */}
@@ -62,7 +62,7 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce hidden md:block">
         <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
         </div>
