@@ -27,7 +27,6 @@ const Services = () => {
     { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
     { id: 'energia', name: 'Energia e Elétrica', icon: Zap },
     { id: 'automacao', name: 'Automação Industrial', icon: Settings },
-    { id: 'seguranca', name: 'Segurança Industrial', icon: Shield },
     { id: 'datacenter', name: 'Data Center', icon: Database },
   ];
 
@@ -76,16 +75,6 @@ const Services = () => {
         standards: ["IEC 61131-3", "IEC 61508", "ISA-95", "NR-12"],
         features: ["Siemens S7", "Rockwell ControlLogix", "Schneider Modicon", "Redundância"],
         engineer: "Eng. Pedro Oliveira - CREA/SP 567890"
-      }
-    ],
-    seguranca: [
-      {
-        title: "Sistemas de Segurança NR-12",
-        description: "Implementação de sistemas de segurança para máquinas e equipamentos industriais.",
-        applications: ["Prensas Industriais", "Robôs Industriais", "Linhas Automatizadas"],
-        standards: ["NR-12", "ISO 13849", "IEC 62061", "ABNT NBR ISO 14119"],
-        features: ["Cortinas de Luz", "Chaves de Segurança", "Relés de Segurança", "Botões de Emergência"],
-        engineer: "Eng. Lucas Ferreira - CREA/SP 234567"
       }
     ],
     datacenter: [

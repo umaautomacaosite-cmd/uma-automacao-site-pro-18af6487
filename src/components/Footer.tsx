@@ -73,17 +73,17 @@ const Footer = () => {
                 <Linkedin className="h-6 w-6" />
               </a>
             </div>
-            <Button 
-              className="bg-green-600 hover:bg-green-700 text-white w-full"
-              onClick={() => {
-                const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
-                const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-                window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-              }}
+            <a 
+              href="https://wa.me/5561999999999?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full"
             >
-              <MessageCircle className="mr-2 h-4 w-4" />
-              WhatsApp
-            </Button>
+              <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
+                <MessageCircle className="mr-2 h-4 w-4" />
+                WhatsApp
+              </Button>
+            </a>
           </div>
         </div>
 
