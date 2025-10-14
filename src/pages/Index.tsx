@@ -7,12 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 
-// WhatsApp utility function
-const openWhatsApp = () => {
-  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
-  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-};
 const Index = () => {
   const services = [{
     icon: Network,
@@ -125,14 +119,19 @@ const Index = () => {
                 Solicitar Orçamento Gratuito
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white hover:bg-white font-lato font-semibold px-8 py-4 text-lg text-slate-950"
-              onClick={openWhatsApp}
+            <a 
+              href="https://wa.me/5561999999999?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial."
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Falar com Especialista
-            </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white hover:bg-white font-lato font-semibold px-8 py-4 text-lg text-slate-950"
+              >
+                Falar com Especialista
+              </Button>
+            </a>
           </div>
         </div>
       </section>

@@ -3,12 +3,6 @@ import { ArrowRight, Shield, Award, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import datacenterHero from '@/assets/datacenter-hero.jpg';
 
-// WhatsApp utility function
-const openWhatsApp = () => {
-  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
-  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-};
 const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Blue Overlay */}
