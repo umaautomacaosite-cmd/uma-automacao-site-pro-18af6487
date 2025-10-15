@@ -31,9 +31,20 @@ const HeroSection = () => {
             <span className="text-gold-500"> Alta Performance</span>
           </h1>
           
-          <p className="font-lato text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <p className="font-lato text-xl md:text-2xl mb-6 text-gray-100 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
             Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.
           </p>
+
+          <div className="mb-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">
+              <strong className="text-gold-500">Mais de 15 anos</strong> de experiência em projetos de automação industrial, 
+              infraestrutura de TI e telecomunicações para empresas de médio e grande porte.
+            </p>
+            <p className="font-lato text-base md:text-lg text-gray-300">
+              Especialistas em soluções completas: desde o projeto até a implementação e manutenção, 
+              garantindo eficiência operacional, segurança e conformidade técnica.
+            </p>
+          </div>
 
           {/* Key Features */}
           <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm md:text-base animate-fade-in" style={{ animationDelay: '0.4s' }}>
@@ -53,14 +64,14 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <Link to="/contato">
-              <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg group">
+            <Link to="/contato" className="w-full sm:w-auto">
+              <Button size="lg" className="bg-gold-500 hover:bg-gold-600 text-primary font-lato font-semibold px-8 py-4 text-lg group w-full sm:w-auto">
                 Solicitar Orçamento
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/servicos">
-              <Button size="lg" variant="outline" className="border-2 border-white hover:bg-white hover:text-wine-900 text-white font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto">
+            <Link to="/servicos" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline-light" className="font-lato font-semibold px-8 py-4 text-lg transition-all duration-300 w-full sm:w-auto">
                 Ver Nossos Serviços
               </Button>
             </Link>
