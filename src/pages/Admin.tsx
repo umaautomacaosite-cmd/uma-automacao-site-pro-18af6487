@@ -7,14 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, FileText, Users, BarChart, Plus, Edit, Trash2, Save, Eye, Phone, X, Network, Zap, Shield, Database, Wifi, HardDrive, MonitorSpeaker } from 'lucide-react';
+import { Settings, FileText, Users, BarChart, Plus, Edit, Trash2, Eye, X, Network, Zap, Shield, Database } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
 const Admin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginData, setLoginData] = useState({
-    username: '',
-    password: ''
-  });
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
   
   // Service Management State
@@ -175,69 +171,9 @@ const Admin = () => {
       description: "O número do WhatsApp foi atualizado com sucesso."
     });
   };
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (loginData.username === 'admin' && loginData.password === 'admin123') {
-      setIsLoggedIn(true);
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Bem-vindo ao painel administrativo."
-      });
-    } else {
-      toast({
-        title: "Erro no login",
-        description: "Usuário ou senha incorretos.",
-        variant: "destructive"
-      });
-    }
-  };
-  if (!isLoggedIn) {
-    return <div className="min-h-screen">
-        <Header />
-        <section className="py-20">
-          <div className="container mx-auto px-4 max-w-md">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="font-playfair text-2xl text-wine-900">
-                  Painel Administrativo
-                </CardTitle>
-                <CardDescription>
-                  Faça login para acessar o sistema de gestão de conteúdo
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div>
-                    <label className="font-lato font-medium text-sm mb-2 block">Usuário</label>
-                    <Input type="text" placeholder="Digite seu usuário" value={loginData.username} onChange={e => setLoginData({
-                    ...loginData,
-                    username: e.target.value
-                  })} />
-                  </div>
-                  <div>
-                    <label className="font-lato font-medium text-sm mb-2 block">Senha</label>
-                    <Input type="password" placeholder="Digite sua senha" value={loginData.password} onChange={e => setLoginData({
-                    ...loginData,
-                    password: e.target.value
-                  })} />
-                  </div>
-                  <Button type="submit" className="bg-wine-900 hover:bg-wine-800 text-white w-full">
-                    Fazer Login
-                  </Button>
-                </form>
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-lato font-semibold text-sm mb-2">Credenciais de Teste:</h4>
-                  <p className="font-lato text-xs text-gray-600">Usuário: admin</p>
-                  <p className="font-lato text-xs text-gray-600">Senha: admin123</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-        <Footer />
-      </div>;
-  }
-  return <div className="min-h-screen">
+
+  return (
+    <div className="min-h-screen">
       <Header />
       
       {/* Admin Header */}
@@ -247,9 +183,6 @@ const Admin = () => {
             <h1 className="font-playfair text-3xl font-bold">Painel Administrativo</h1>
             <p className="font-lato">Sistema de Gestão de Conteúdo - UMA AUTOMAÇÃO</p>
           </div>
-          <Button variant="outline" onClick={() => setIsLoggedIn(false)} className="border-white hover:bg-white text-base text-wine-900">
-            Sair
-          </Button>
         </div>
       </section>
 
@@ -432,11 +365,11 @@ const Admin = () => {
                     <div>
                       <label className="font-lato font-medium text-sm mb-2 block">Normas e Padrões</label>
                       <div className="space-y-2">
-                        {serviceForm.standards.map((standard, index) => (
+                        {serviceForm.standards.map((std, index) => (
                           <div key={index} className="flex gap-2">
                             <Input
                               placeholder="Ex: ANSI/TIA-568"
-                              value={standard}
+                              value={std}
                               onChange={(e) => updateArrayField('standards', index, e.target.value)}
                             />
                             <Button
@@ -464,13 +397,13 @@ const Admin = () => {
 
                     {/* Features */}
                     <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Características Técnicas</label>
+                      <label className="font-lato font-medium text-sm mb-2 block">Características</label>
                       <div className="space-y-2">
-                        {serviceForm.features.map((feature, index) => (
+                        {serviceForm.features.map((feat, index) => (
                           <div key={index} className="flex gap-2">
                             <Input
                               placeholder="Ex: Certificação OTDR"
-                              value={feature}
+                              value={feat}
                               onChange={(e) => updateArrayField('features', index, e.target.value)}
                             />
                             <Button
@@ -506,10 +439,9 @@ const Admin = () => {
                       />
                     </div>
 
-                    <div className="flex space-x-4">
+                    <div className="flex gap-4">
                       <Button type="submit" className="bg-wine-900 hover:bg-wine-800 text-white">
-                        <Save className="mr-2 h-4 w-4" />
-                        {editingService ? 'Atualizar' : 'Salvar'} Serviço
+                        {editingService ? 'Atualizar Serviço' : 'Criar Serviço'}
                       </Button>
                       {editingService && (
                         <Button type="button" variant="outline" onClick={resetServiceForm}>
@@ -522,195 +454,109 @@ const Admin = () => {
               </Card>
 
               {/* Services List */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-playfair text-xl">Serviços Cadastrados</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {services.map((service) => {
-                      const categoryName = categories.find(cat => cat.id === service.category)?.name || 'Categoria';
-                      const CategoryIcon = categories.find(cat => cat.id === service.category)?.icon || Settings;
-                      
-                      return (
-                        <div key={service.id} className="border rounded-lg p-4 bg-gray-50">
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <CategoryIcon className="h-5 w-5 text-wine-900" />
-                                <h3 className="font-lato font-semibold text-lg">{service.title}</h3>
-                              </div>
-                              <Badge variant="outline" className="text-xs">{categoryName}</Badge>
-                              <p className="font-lato text-sm text-gray-600 mt-2">{service.description}</p>
-                              <p className="font-lato text-xs text-gray-500 mt-1">
-                                <strong>Engenheiro:</strong> {service.engineer}
-                              </p>
-                            </div>
-                            <div className="flex space-x-2 ml-4">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => startEditService(service)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteService(service.id)}
-                                className="text-red-600 hover:text-red-800"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {services.map((service) => {
+                  const CategoryIcon = categories.find(c => c.id === service.category)?.icon || Network;
+                  return (
+                    <Card key={service.id}>
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <CategoryIcon className="h-6 w-6 text-wine-900" />
+                            <div>
+                              <CardTitle className="font-playfair text-lg">{service.title}</CardTitle>
+                              <CardDescription>
+                                {categories.find(c => c.id === service.category)?.name}
+                              </CardDescription>
                             </div>
                           </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => startEditService(service)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteService(service.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-600" />
+                            </Button>
+                          </div>
                         </div>
-                      );
-                    })}
-                    {services.length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        <Settings className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p className="font-lato">Nenhum serviço cadastrado ainda.</p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="font-lato text-sm text-gray-700 mb-4">{service.description}</p>
+                        <div className="space-y-2">
+                          <div>
+                            <span className="font-lato font-semibold text-xs">Aplicações:</span>
+                            <p className="font-lato text-xs text-gray-600">{service.applications.join(', ')}</p>
+                          </div>
+                          <div>
+                            <span className="font-lato font-semibold text-xs">Normas:</span>
+                            <p className="font-lato text-xs text-gray-600">{service.standards.join(', ')}</p>
+                          </div>
+                          <div>
+                            <span className="font-lato font-semibold text-xs">Características:</span>
+                            <p className="font-lato text-xs text-gray-600">{service.features.join(', ')}</p>
+                          </div>
+                          <div>
+                            <span className="font-lato font-semibold text-xs">Responsável:</span>
+                            <p className="font-lato text-xs text-gray-600">{service.engineer}</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             </TabsContent>
 
             <TabsContent value="cases">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-playfair text-2xl font-bold">Gestão de Cases</h2>
-                <Button className="bg-wine-900 hover:bg-wine-800 text-white">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Case
-                </Button>
-              </div>
-
               <Card>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Nome do Cliente</label>
-                        <Input placeholder="Ex: Hospital Regional São Paulo" />
-                      </div>
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Setor</label>
-                        <Input placeholder="Ex: Saúde" />
-                      </div>
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Ano</label>
-                        <Input placeholder="Ex: 2023" />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Solução Aplicada</label>
-                      <Input placeholder="Ex: Infraestrutura completa de Data Center" />
-                    </div>
-
-                    <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Descrição Detalhada</label>
-                      <Textarea placeholder="Descrição completa do projeto e soluções implementadas..." rows={4} />
-                    </div>
-
-                    <div className="flex space-x-4">
-                      <Button className="bg-wine-900 hover:bg-wine-800 text-white">
-                        <Save className="mr-2 h-4 w-4" />
-                        Salvar Case
-                      </Button>
-                      <Button variant="outline">
-                        <Eye className="mr-2 h-4 w-4" />
-                        Visualizar
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
+                <CardHeader>
+                  <CardTitle className="font-playfair text-xl">Gestão de Cases</CardTitle>
+                  <CardDescription>Em desenvolvimento</CardDescription>
+                </CardHeader>
               </Card>
             </TabsContent>
 
             <TabsContent value="usuarios">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-playfair text-2xl font-bold">Gestão de Usuários</h2>
-                <Button className="bg-wine-900 hover:bg-wine-800 text-white">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Usuário
-                </Button>
-              </div>
-
               <Card>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Nome Completo</label>
-                        <Input placeholder="Nome do usuário" />
-                      </div>
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">E-mail</label>
-                        <Input type="email" placeholder="usuario@umaautomacao.com.br" />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Usuário</label>
-                        <Input placeholder="Nome de usuário" />
-                      </div>
-                      <div>
-                        <label className="font-lato font-medium text-sm mb-2 block">Nível de Acesso</label>
-                        <select className="w-full p-3 border border-gray-300 rounded-md font-lato">
-                          <option>Administrador</option>
-                          <option>Editor</option>
-                          <option>Visualizador</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-4">
-                      <Button className="bg-wine-900 hover:bg-wine-800 text-white">
-                        <Save className="mr-2 h-4 w-4" />
-                        Criar Usuário
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
+                <CardHeader>
+                  <CardTitle className="font-playfair text-xl">Gestão de Usuários</CardTitle>
+                  <CardDescription>Em desenvolvimento</CardDescription>
+                </CardHeader>
               </Card>
             </TabsContent>
 
             <TabsContent value="configuracoes">
-              <div className="mb-6">
-                <h2 className="font-playfair text-2xl font-bold">Configurações Gerais</h2>
-                <p className="font-lato text-gray-600">Gerencie as configurações do sistema</p>
-              </div>
-
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-playfair text-xl flex items-center space-x-2">
-                    <Phone className="h-5 w-5" />
-                    <span>WhatsApp</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Configure o número do WhatsApp para redirecionamento dos usuários
-                  </CardDescription>
+                  <CardTitle className="font-playfair text-xl">Configurações do Sistema</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">
-                        Número do WhatsApp (com código do país)
-                      </label>
-                      <Input placeholder="Ex: 5511999999999" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} />
-                      <p className="font-lato text-xs text-gray-500 mt-1">
-                        Formato: Código do país + DDD + número (apenas números)
-                      </p>
+                <CardContent className="space-y-6">
+                  <div>
+                    <label className="font-lato font-medium text-sm mb-2 block">Número do WhatsApp</label>
+                    <div className="flex gap-2">
+                      <Input 
+                        placeholder="5511999999999" 
+                        value={whatsappNumber}
+                        onChange={(e) => setWhatsappNumber(e.target.value)}
+                      />
+                      <Button 
+                        onClick={saveWhatsAppNumber}
+                        className="bg-wine-900 hover:bg-wine-800 text-white"
+                      >
+                        Salvar
+                      </Button>
                     </div>
-
-                    <Button className="bg-wine-900 hover:bg-wine-800 text-white" onClick={saveWhatsAppNumber}>
-                      <Save className="mr-2 h-4 w-4" />
-                      Salvar Número
-                    </Button>
+                    <p className="font-lato text-xs text-gray-500 mt-2">
+                      Formato: código do país + DDD + número (sem espaços ou caracteres especiais)
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -718,8 +564,10 @@ const Admin = () => {
           </Tabs>
         </div>
       </section>
-
+      
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default Admin;

@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Shield, LogOut } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Admin from "./Admin";
 
 const Dashboard = () => {
@@ -135,7 +136,7 @@ const Dashboard = () => {
 
         toast({
           title: "Código Gerado",
-          description: `Seu código de acesso é: ${generatedCode}. Válido por 10 minutos.`,
+          description: "Acesse o Supabase (tabela access_codes) para visualizar seu código de acesso. Válido por 10 minutos.",
           duration: 15000,
         });
 
@@ -209,130 +210,124 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-900"></div>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   if (user && isAdmin) {
     return (
-      <div>
-        <div className="fixed top-4 right-4 z-50">
-          <Button onClick={handleLogout} variant="outline" size="sm">
-            <LogOut className="w-4 h-4 mr-2" />
+      <div className="min-h-screen">
+        <Admin />
+        <div className="fixed bottom-4 right-4">
+          <Button onClick={handleLogout} variant="destructive">
             Sair
           </Button>
         </div>
-        <Admin />
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/20">
-      <Card className="w-full max-w-md mx-4">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <Shield className="w-12 h-12 text-primary" />
-          </div>
-          <CardTitle className="text-2xl">
-            {step === "login" ? "Painel Administrativo" : "Autenticação 2FA"}
-          </CardTitle>
-          <CardDescription>
-            {step === "login"
-              ? "Faça login para acessar o painel"
-              : "Insira o código de 6 dígitos que foi gerado"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {step === "login" ? (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="admin@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={requestingCode}
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Senha
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={requestingCode}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={requestingCode}>
-                {requestingCode ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Gerando código...
-                  </>
-                ) : (
-                  "Solicitar Acesso"
-                )}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyCode} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="code" className="text-sm font-medium">
-                  Código de Acesso
-                </label>
-                <Input
-                  id="code"
-                  type="text"
-                  placeholder="ABC123"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  maxLength={6}
-                  required
-                  disabled={verifyingCode}
-                  className="text-center text-lg font-mono tracking-widest"
-                />
-              </div>
-              <div className="space-y-2">
-                <Button type="submit" className="w-full" disabled={verifyingCode}>
-                  {verifyingCode ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Verificando...
-                    </>
-                  ) : (
-                    "Verificar Código"
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="w-full"
-                  onClick={() => {
-                    setStep("login");
-                    setCode("");
-                    supabase.auth.signOut();
-                  }}
-                >
-                  Voltar ao Login
-                </Button>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+    <div className="min-h-screen">
+      <Header />
+      <section className="py-20">
+        <div className="container mx-auto px-4 max-w-md">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="font-playfair text-2xl text-wine-900">
+                Painel Administrativo
+              </CardTitle>
+              <CardDescription>
+                {step === "login"
+                  ? "Faça login para acessar o sistema de gestão de conteúdo"
+                  : "Digite o código de verificação do banco de dados"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {step === "login" ? (
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div>
+                    <label className="font-lato font-medium text-sm mb-2 block">Email</label>
+                    <Input
+                      type="email"
+                      placeholder="Digite seu email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={requestingCode}
+                    />
+                  </div>
+                  <div>
+                    <label className="font-lato font-medium text-sm mb-2 block">Senha</label>
+                    <Input
+                      type="password"
+                      placeholder="Digite sua senha"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={requestingCode}
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="bg-wine-900 hover:bg-wine-800 text-white w-full"
+                    disabled={requestingCode}
+                  >
+                    {requestingCode ? "Gerando código..." : "Fazer Login"}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyCode} className="space-y-4">
+                  <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="font-lato text-sm text-blue-800">
+                      Um código de verificação foi gerado. Acesse o banco de dados Supabase na tabela <strong>access_codes</strong> para visualizar o código.
+                    </p>
+                  </div>
+                  <div>
+                    <label className="font-lato font-medium text-sm mb-2 block">Código de Verificação</label>
+                    <Input
+                      type="text"
+                      placeholder="Digite o código de 6 caracteres"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value.toUpperCase())}
+                      maxLength={6}
+                      required
+                      disabled={verifyingCode}
+                      className="text-center text-lg font-mono tracking-widest"
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="bg-wine-900 hover:bg-wine-800 text-white w-full"
+                    disabled={verifyingCode}
+                  >
+                    {verifyingCode ? "Verificando..." : "Verificar Código"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setStep("login");
+                      setCode("");
+                      supabase.auth.signOut();
+                    }}
+                  >
+                    Voltar
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+      <Footer />
     </div>
   );
 };
