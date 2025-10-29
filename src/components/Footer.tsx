@@ -31,13 +31,12 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-lato font-semibold text-lg mb-4">Links Rápidos</h3>
+          <h3 className="font-lato font-semibold text-lg mb-4">Links Rápidos</h3>
             <ul className="space-y-2">
               <li><Link to="/servicos" className="text-gray-300 hover:text-wine-400 transition-colors">Serviços</Link></li>
               <li><Link to="/cases" className="text-gray-300 hover:text-wine-400 transition-colors">Cases de Sucesso</Link></li>
               <li><Link to="/sobre" className="text-gray-300 hover:text-wine-400 transition-colors">Sobre Nós</Link></li>
               <li><Link to="/contato" className="text-gray-300 hover:text-wine-400 transition-colors">Contato</Link></li>
-              <li><Link to="/admin" className="text-gray-300 hover:text-wine-400 transition-colors">Admin</Link></li>
             </ul>
           </div>
 
