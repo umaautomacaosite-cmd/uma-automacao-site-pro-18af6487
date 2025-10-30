@@ -46,6 +46,7 @@ export type Database = {
           created_at: string | null
           id: string
           last_verified_at: string | null
+          next_verification_at: string | null
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
@@ -53,6 +54,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           last_verified_at?: string | null
+          next_verification_at?: string | null
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
@@ -60,6 +62,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           last_verified_at?: string | null
+          next_verification_at?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }

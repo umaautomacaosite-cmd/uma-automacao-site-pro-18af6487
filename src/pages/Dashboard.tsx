@@ -46,18 +46,17 @@ const Dashboard = () => {
         // Check if user is admin and if 2FA was completed recently
         const { data: roleData } = await supabase
           .from("user_roles")
-          .select("role, last_verified_at")
+          .select("role, last_verified_at, next_verification_at")
           .eq("user_id", session.user.id)
           .eq("role", "admin")
           .maybeSingle();
 
         if (roleData) {
-          const lastVerified = roleData.last_verified_at ? new Date(roleData.last_verified_at) : null;
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+          const nextVerification = roleData.next_verification_at ? new Date(roleData.next_verification_at) : null;
+          const now = new Date();
 
-          // Only grant access if verified within last 7 days
-          if (lastVerified && lastVerified > sevenDaysAgo) {
+          // Only grant access if next verification date is in the future
+          if (nextVerification && nextVerification > now) {
             setIsAdmin(true);
           }
         }
@@ -120,7 +119,7 @@ const Dashboard = () => {
         // Check if user is admin
         const { data: roleData } = await supabase
           .from("user_roles")
-          .select("role, last_verified_at")
+          .select("role, last_verified_at, next_verification_at")
           .eq("user_id", data.user.id)
           .eq("role", "admin")
           .maybeSingle();
@@ -136,12 +135,11 @@ const Dashboard = () => {
         }
 
         // Check if user verified in the last 7 days
-        const lastVerified = roleData.last_verified_at ? new Date(roleData.last_verified_at) : null;
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const nextVerification = roleData.next_verification_at ? new Date(roleData.next_verification_at) : null;
+        const now = new Date();
 
-        if (lastVerified && lastVerified > sevenDaysAgo) {
-          // User verified recently, grant access directly
+        if (nextVerification && nextVerification > now) {
+          // User verified recently and still within valid period, grant access directly
           setIsAdmin(true);
           toast({
             title: "Acesso Autorizado",
@@ -217,10 +215,17 @@ const Dashboard = () => {
         .update({ used: true })
         .eq("id", data.id);
 
-      // Update last_verified_at to current timestamp
+      // Update last_verified_at and next_verification_at (7 days from now)
+      const now = new Date();
+      const nextVerification = new Date();
+      nextVerification.setDate(nextVerification.getDate() + 7);
+
       await supabase
         .from("user_roles")
-        .update({ last_verified_at: new Date().toISOString() })
+        .update({ 
+          last_verified_at: now.toISOString(),
+          next_verification_at: nextVerification.toISOString()
+        })
         .eq("user_id", user.id)
         .eq("role", "admin");
 
