@@ -41,6 +41,54 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          applications: Json | null
+          category: string
+          created_at: string | null
+          description: string
+          display_order: number | null
+          engineer: string
+          features: Json | null
+          icon_type: string | null
+          id: string
+          is_active: boolean | null
+          standards: Json | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          applications?: Json | null
+          category: string
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          engineer: string
+          features?: Json | null
+          icon_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          standards?: Json | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          applications?: Json | null
+          category?: string
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          engineer?: string
+          features?: Json | null
+          icon_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          standards?: Json | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null

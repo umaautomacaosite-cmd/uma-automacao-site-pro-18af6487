@@ -1,6 +1,6 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,8 +20,22 @@ import {
   Award
 } from 'lucide-react';
 
+interface Service {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  applications: string[];
+  standards: string[];
+  features: string[];
+  engineer: string;
+  icon_type: 'green' | 'red';
+}
+
 const Services = () => {
   const [activeCategory, setActiveCategory] = useState('redes');
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
     { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
@@ -30,64 +44,48 @@ const Services = () => {
     { id: 'datacenter', name: 'Data Center', icon: Database },
   ];
 
-  const services = {
-    redes: [
-      {
-        title: "Fibra Óptica FTTH/FTTX",
-        description: "Implantação completa de redes de fibra óptica para telecomunicações e dados corporativos.",
-        applications: ["Provedores de Internet", "Condomínios Residenciais", "Complexos Empresariais", "Campus Universitários"],
-        standards: ["ANSI/TIA-568", "ISO/IEC 11801", "ABNT NBR 14565", "ITU-T G.652"],
-        features: ["Certificação OTDR", "Fusão de Fibras", "Teste de Atenuação", "Documentação Técnica Completa"],
-        engineer: "Eng. Carlos Silva - CREA/SP 123456"
-      },
-      {
-        title: "Cabeamento Estruturado",
-        description: "Sistemas de cabeamento estruturado categoria 6A/7 para redes corporativas de alta performance.",
-        applications: ["Escritórios Corporativos", "Indústrias", "Hospitais", "Escolas"],
-        standards: ["ANSI/TIA-568.2-D", "ISO/IEC 11801", "ABNT NBR 14565", "NR-10"],
-        features: ["Cat 7/6A/6", "Certificação Fluke", "Patch Panels", "Organização de Racks"],
-        engineer: "Eng. Maria Santos - CREA/SP 789012"
-      }
-    ],
-    energia: [
-      {
-        title: "Sistema Busway Trifásico",
-        description: "Instalação de barramentos blindados para distribuição elétrica industrial de alta corrente.",
-        applications: ["Indústrias Pesadas", "Data Centers", "Hospitais", "Shopping Centers"],
-        standards: ["ABNT NBR 5410", "ABNT NBR 6808", "NR-10", "NR-12"],
-        features: ["800A a 6300A", "IP65", "Baixa Impedância", "Expansão Modular"],
-        engineer: "Eng. Roberto Lima - CREA/SP 345678"
-      },
-      {
-        title: "Fechamento de Quadros Elétricos",
-        description: "Montagem e fechamento de quadros elétricos conforme normas de segurança industrial.",
-        applications: ["Máquinas Industriais", "Sistemas de Automação", "Painéis de Controle"],
-        standards: ["ABNT NBR 5410", "ABNT NBR IEC 60439", "NR-10", "NR-12"],
-        features: ["IP54/IP65", "Disjuntores ABB/Schneider", "Bornes Phoenix", "Identificação Técnica"],
-        engineer: "Eng. Ana Costa - CREA/SP 901234"
-      }
-    ],
-    automacao: [
-      {
-        title: "Sistemas PLC e SCADA",
-        description: "Desenvolvimento de sistemas de automação industrial com PLCs e supervisórios SCADA.",
-        applications: ["Linhas de Produção", "Sistemas de Tratamento", "Controle de Processos"],
-        standards: ["IEC 61131-3", "IEC 61508", "ISA-95", "NR-12"],
-        features: ["Siemens S7", "Rockwell ControlLogix", "Schneider Modicon", "Redundância"],
-        engineer: "Eng. Pedro Oliveira - CREA/SP 567890"
-      }
-    ],
-    datacenter: [
-      {
-        title: "Infraestrutura de Data Center",
-        description: "Projeto e implementação de infraestrutura completa para data centers de missão crítica.",
-        applications: ["Data Centers Corporativos", "Cloud Providers", "Colocation"],
-        standards: ["TIA-942", "ISO 27001", "ABNT NBR 5410", "NR-10"],
-        features: ["Tier III/IV", "UPS Redundante", "CRAC", "Monitoramento 24/7"],
-        engineer: "Eng. Rafael Almeida - CREA/SP 678901"
-      }
-    ]
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+      
+      // Convert JSONB fields to arrays
+      const formattedServices = (data || []).map(service => ({
+        id: service.id,
+        title: service.title,
+        category: service.category,
+        description: service.description,
+        applications: (service.applications as unknown as string[]) || [],
+        standards: (service.standards as unknown as string[]) || [],
+        features: (service.features as unknown as string[]) || [],
+        engineer: service.engineer,
+        icon_type: service.icon_type as 'green' | 'red',
+      }));
+      
+      setServices(formattedServices);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const servicesByCategory = services.reduce((acc, service) => {
+    if (!acc[service.category]) {
+      acc[service.category] = [];
+    }
+    acc[service.category].push(service);
+    return acc;
+  }, {} as Record<string, Service[]>);
 
   return (
     <div className="min-h-screen">
@@ -144,77 +142,95 @@ const Services = () => {
 
             {/* Services Content */}
             <div className="lg:w-3/4">
-              <div className="space-y-8">
-                {services[activeCategory as keyof typeof services]?.map((service, index) => (
-                  <Card key={index} className="border-2 hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="font-playfair text-2xl text-wine-900">
-                        {service.title}
-                      </CardTitle>
-                      <CardDescription className="font-lato text-lg">
-                        {service.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {/* Applications */}
-                      <div>
-                        <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Aplicações</h4>
-                        <div className="grid grid-cols-1 gap-2">
-                          {service.applications.map((app, idx) => (
-                            <div key={idx} className="flex items-start space-x-2">
-                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                              <span className="font-lato text-sm">{app}</span>
-                            </div>
-                          ))}
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-900"></div>
+                </div>
+              ) : servicesByCategory[activeCategory]?.length > 0 ? (
+                <div className="space-y-8">
+                  {servicesByCategory[activeCategory].map((service) => (
+                    <Card key={service.id} className="border-2 hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <CardTitle className="font-playfair text-2xl text-wine-900">
+                          {service.title}
+                        </CardTitle>
+                        <CardDescription className="font-lato text-lg">
+                          {service.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        {/* Applications */}
+                        <div>
+                          <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Aplicações</h4>
+                          <div className="grid grid-cols-1 gap-2">
+                            {service.applications.map((app, idx) => (
+                              <div key={idx} className="flex items-start space-x-2">
+                                <CheckCircle 
+                                  className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
+                                    service.icon_type === 'green' ? 'text-green-600' : 'text-red-600'
+                                  }`} 
+                                />
+                                <span className="font-lato text-sm">{app}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Standards */}
-                      <div>
-                        <h4 className="font-lato font-semibold text-lg mb-3">Normas e Padrões</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {service.standards.map((standard, idx) => (
-                            <Badge key={idx} variant="outline" className="font-lato">
-                              {standard}
-                            </Badge>
-                          ))}
+                        {/* Standards */}
+                        <div>
+                          <h4 className="font-lato font-semibold text-lg mb-3">Normas e Padrões</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {service.standards.map((standard, idx) => (
+                              <Badge key={idx} variant="outline" className="font-lato">
+                                {standard}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Features */}
-                      <div>
-                        <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Características Técnicas</h4>
-                        <div className="grid grid-cols-1 gap-2">
-                          {service.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-start space-x-2">
-                              <CheckCircle className="h-4 w-4 text-wine-900 mt-0.5 flex-shrink-0" />
-                              <span className="font-lato text-sm">{feature}</span>
-                            </div>
-                          ))}
+                        {/* Features */}
+                        <div>
+                          <h4 className="font-lato font-semibold text-base md:text-lg mb-3">Características Técnicas</h4>
+                          <div className="grid grid-cols-1 gap-2">
+                            {service.features.map((feature, idx) => (
+                              <div key={idx} className="flex items-start space-x-2">
+                                <CheckCircle 
+                                  className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
+                                    service.icon_type === 'green' ? 'text-green-600' : 'text-red-600'
+                                  }`}
+                                />
+                                <span className="font-lato text-sm">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Engineer */}
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                          <Users className="h-5 w-5 text-wine-900" />
-                          <span className="font-lato font-semibold">Engenheiro Responsável:</span>
-                          <span className="font-lato">{service.engineer}</span>
+                        {/* Engineer */}
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-center space-x-2">
+                            <Users className="h-5 w-5 text-wine-900" />
+                            <span className="font-lato font-semibold">Engenheiro Responsável:</span>
+                            <span className="font-lato">{service.engineer}</span>
+                          </div>
+                          <Badge className="mt-2 bg-green-600 text-white">
+                            Atendimento Nacional
+                          </Badge>
                         </div>
-                        <Badge className="mt-2 bg-green-600 text-white">
-                          Atendimento Nacional
-                        </Badge>
-                      </div>
 
-                      <Link to="/contato">
-                        <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full text-sm md:text-base">
-                          Solicitar Orçamento para este Serviço
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                        <Link to="/contato">
+                          <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full text-sm md:text-base">
+                            Solicitar Orçamento para este Serviço
+                          </Button>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20">
+                  <p className="font-lato text-gray-600">Nenhum serviço disponível nesta categoria.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
