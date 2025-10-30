@@ -104,7 +104,7 @@ const Dashboard = () => {
         // Check if user is admin
         const { data: roleData } = await supabase
           .from("user_roles")
-          .select("role")
+          .select("role, last_verified_at")
           .eq("user_id", data.user.id)
           .eq("role", "admin")
           .maybeSingle();
@@ -115,6 +115,21 @@ const Dashboard = () => {
             title: "Acesso Negado",
             description: "Você não tem permissão de administrador.",
             variant: "destructive",
+          });
+          return;
+        }
+
+        // Check if user verified in the last 7 days
+        const lastVerified = roleData.last_verified_at ? new Date(roleData.last_verified_at) : null;
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        if (lastVerified && lastVerified > sevenDaysAgo) {
+          // User verified recently, grant access directly
+          setIsAdmin(true);
+          toast({
+            title: "Acesso Autorizado",
+            description: "Bem-vindo ao painel administrativo!",
           });
           return;
         }
@@ -135,9 +150,9 @@ const Dashboard = () => {
         if (codeError) throw codeError;
 
         toast({
-          title: "Código Gerado",
-          description: "Acesse o Supabase (tabela access_codes) para visualizar seu código de acesso. Válido por 10 minutos.",
-          duration: 15000,
+          title: "Código de Verificação Gerado",
+          description: "Um código de verificação foi gerado e está disponível para consulta. O código é válido por 10 minutos.",
+          duration: 10000,
         });
 
         setStep("verify");
@@ -185,6 +200,13 @@ const Dashboard = () => {
         .from("access_codes")
         .update({ used: true })
         .eq("id", data.id);
+
+      // Update last_verified_at to current timestamp
+      await supabase
+        .from("user_roles")
+        .update({ last_verified_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .eq("role", "admin");
 
       toast({
         title: "Acesso Autorizado",
@@ -286,7 +308,9 @@ const Dashboard = () => {
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <p className="font-lato text-sm text-blue-800">
-                      Um código de verificação foi gerado. Acesse o banco de dados Supabase na tabela <strong>access_codes</strong> para visualizar o código.
+                      Para sua segurança, um código de verificação de 6 caracteres foi gerado. 
+                      Consulte o administrador do sistema para obter o código. 
+                      <strong> O código expira em 10 minutos.</strong>
                     </p>
                   </div>
                   <div>
