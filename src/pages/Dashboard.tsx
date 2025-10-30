@@ -28,9 +28,8 @@ const Dashboard = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdminRole(session.user.id);
-      } else {
+      // Don't auto-set admin status here - let the login flow handle it
+      if (!session?.user) {
         setIsAdmin(false);
         setLoading(false);
       }
@@ -44,7 +43,24 @@ const Dashboard = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       if (session?.user) {
-        await checkAdminRole(session.user.id);
+        // Check if user is admin and if 2FA was completed recently
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role, last_verified_at")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+
+        if (roleData) {
+          const lastVerified = roleData.last_verified_at ? new Date(roleData.last_verified_at) : null;
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+          // Only grant access if verified within last 7 days
+          if (lastVerified && lastVerified > sevenDaysAgo) {
+            setIsAdmin(true);
+          }
+        }
       }
     } catch (error) {
       console.error("Error checking auth:", error);
