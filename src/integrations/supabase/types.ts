@@ -44,13 +44,14 @@ export type Database = {
       services: {
         Row: {
           applications: Json | null
+          applications_icon_color: string | null
           category: string
           created_at: string | null
           description: string
           display_order: number | null
           engineer: string
           features: Json | null
-          icon_type: string | null
+          features_icon_color: string | null
           id: string
           is_active: boolean | null
           standards: Json | null
@@ -59,13 +60,14 @@ export type Database = {
         }
         Insert: {
           applications?: Json | null
+          applications_icon_color?: string | null
           category: string
           created_at?: string | null
           description: string
           display_order?: number | null
           engineer: string
           features?: Json | null
-          icon_type?: string | null
+          features_icon_color?: string | null
           id?: string
           is_active?: boolean | null
           standards?: Json | null
@@ -74,13 +76,14 @@ export type Database = {
         }
         Update: {
           applications?: Json | null
+          applications_icon_color?: string | null
           category?: string
           created_at?: string | null
           description?: string
           display_order?: number | null
           engineer?: string
           features?: Json | null
-          icon_type?: string | null
+          features_icon_color?: string | null
           id?: string
           is_active?: boolean | null
           standards?: Json | null

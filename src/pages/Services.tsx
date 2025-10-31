@@ -29,7 +29,8 @@ interface Service {
   standards: string[];
   features: string[];
   engineer: string;
-  icon_type: 'green' | 'red';
+  applications_icon_color: 'green' | 'red';
+  features_icon_color: 'green' | 'red';
 }
 
 const Services = () => {
@@ -68,7 +69,8 @@ const Services = () => {
         standards: (service.standards as unknown as string[]) || [],
         features: (service.features as unknown as string[]) || [],
         engineer: service.engineer,
-        icon_type: service.icon_type as 'green' | 'red',
+        applications_icon_color: (service.applications_icon_color || 'green') as 'green' | 'red',
+        features_icon_color: (service.features_icon_color || 'red') as 'green' | 'red',
       }));
       
       setServices(formattedServices);
@@ -167,7 +169,7 @@ const Services = () => {
                               <div key={idx} className="flex items-start space-x-2">
                                 <CheckCircle 
                                   className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
-                                    service.icon_type === 'green' ? 'text-green-600' : 'text-red-600'
+                                    service.applications_icon_color === 'green' ? 'text-green-600' : 'text-red-600'
                                   }`} 
                                 />
                                 <span className="font-lato text-sm">{app}</span>
@@ -196,7 +198,7 @@ const Services = () => {
                               <div key={idx} className="flex items-start space-x-2">
                                 <CheckCircle 
                                   className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
-                                    service.icon_type === 'green' ? 'text-green-600' : 'text-red-600'
+                                    service.features_icon_color === 'green' ? 'text-green-600' : 'text-red-600'
                                   }`}
                                 />
                                 <span className="font-lato text-sm">{feature}</span>

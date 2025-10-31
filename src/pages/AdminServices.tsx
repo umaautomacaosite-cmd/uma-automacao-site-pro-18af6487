@@ -17,7 +17,8 @@ interface Service {
   standards: string[];
   features: string[];
   engineer: string;
-  icon_type: 'green' | 'red';
+  applications_icon_color: 'green' | 'red';
+  features_icon_color: 'green' | 'red';
   display_order: number;
   is_active: boolean;
 }
@@ -42,7 +43,8 @@ const AdminServices = () => {
     standards: [''],
     features: [''],
     engineer: '',
-    icon_type: 'green',
+    applications_icon_color: 'green',
+    features_icon_color: 'red',
     display_order: 0,
     is_active: true,
   });
@@ -71,7 +73,8 @@ const AdminServices = () => {
         standards: (service.standards as unknown as string[]) || [],
         features: (service.features as unknown as string[]) || [],
         engineer: service.engineer,
-        icon_type: service.icon_type as 'green' | 'red',
+        applications_icon_color: (service.applications_icon_color || 'green') as 'green' | 'red',
+        features_icon_color: (service.features_icon_color || 'red') as 'green' | 'red',
         display_order: service.display_order,
         is_active: service.is_active,
       }));
@@ -98,7 +101,8 @@ const AdminServices = () => {
       standards: [''],
       features: [''],
       engineer: '',
-      icon_type: 'green',
+      applications_icon_color: 'green',
+      features_icon_color: 'red',
       display_order: services.length,
       is_active: true,
     });
@@ -135,7 +139,8 @@ const AdminServices = () => {
         standards: serviceForm.standards.filter((std) => std.trim() !== ''),
         features: serviceForm.features.filter((feat) => feat.trim() !== ''),
         engineer: serviceForm.engineer,
-        icon_type: serviceForm.icon_type,
+        applications_icon_color: serviceForm.applications_icon_color,
+        features_icon_color: serviceForm.features_icon_color,
         display_order: serviceForm.display_order,
         is_active: serviceForm.is_active,
       };
@@ -301,17 +306,29 @@ const AdminServices = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="font-lato font-medium text-sm mb-2 block">Tipo de Ícone *</label>
+                <label className="font-lato font-medium text-sm mb-2 block">Cor dos Ícones das Aplicações *</label>
                 <select
                   className="w-full p-3 border border-gray-300 rounded-md font-lato"
-                  value={serviceForm.icon_type}
-                  onChange={(e) => setServiceForm({ ...serviceForm, icon_type: e.target.value as 'green' | 'red' })}
+                  value={serviceForm.applications_icon_color}
+                  onChange={(e) => setServiceForm({ ...serviceForm, applications_icon_color: e.target.value as 'green' | 'red' })}
                   required
                 >
-                  <option value="green">Verde (Aplicações)</option>
-                  <option value="red">Vermelho (Características Técnicas)</option>
+                  <option value="green">Verde</option>
+                  <option value="red">Vermelho</option>
+                </select>
+              </div>
+              <div>
+                <label className="font-lato font-medium text-sm mb-2 block">Cor dos Ícones das Características *</label>
+                <select
+                  className="w-full p-3 border border-gray-300 rounded-md font-lato"
+                  value={serviceForm.features_icon_color}
+                  onChange={(e) => setServiceForm({ ...serviceForm, features_icon_color: e.target.value as 'green' | 'red' })}
+                  required
+                >
+                  <option value="green">Verde</option>
+                  <option value="red">Vermelho</option>
                 </select>
               </div>
               <div>
@@ -475,7 +492,12 @@ const AdminServices = () => {
                     <Badge variant={service.is_active ? 'default' : 'secondary'}>
                       {service.is_active ? 'Ativo' : 'Inativo'}
                     </Badge>
-                    <Badge variant="outline">{service.icon_type === 'green' ? 'Verde' : 'Vermelho'}</Badge>
+                    <Badge variant="outline" className="bg-green-50">
+                      Aplicações: {service.applications_icon_color === 'green' ? '🟢' : '🔴'}
+                    </Badge>
+                    <Badge variant="outline" className="bg-red-50">
+                      Características: {service.features_icon_color === 'green' ? '🟢' : '🔴'}
+                    </Badge>
                   </div>
                   <p className="font-lato text-sm text-gray-600 mb-2">{service.description}</p>
                   <div className="flex gap-2 text-xs text-gray-500">
