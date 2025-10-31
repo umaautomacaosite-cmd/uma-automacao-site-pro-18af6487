@@ -41,6 +41,72 @@ export type Database = {
         }
         Relationships: []
       }
+      case_studies: {
+        Row: {
+          category: string
+          client: string
+          created_at: string | null
+          description: string
+          display_order: number | null
+          icon: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          location: string
+          results: Json | null
+          sector: string
+          solution: string
+          standards: Json | null
+          technologies: Json | null
+          title: string
+          updated_at: string | null
+          year: string
+        }
+        Insert: {
+          category?: string
+          client: string
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          icon?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location: string
+          results?: Json | null
+          sector: string
+          solution: string
+          standards?: Json | null
+          technologies?: Json | null
+          title: string
+          updated_at?: string | null
+          year: string
+        }
+        Update: {
+          category?: string
+          client?: string
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          icon?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location?: string
+          results?: Json | null
+          sector?: string
+          solution?: string
+          standards?: Json | null
+          technologies?: Json | null
+          title?: string
+          updated_at?: string | null
+          year?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           applications: Json | null

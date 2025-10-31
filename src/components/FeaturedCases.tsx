@@ -1,33 +1,45 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import type { Tables } from '@/integrations/supabase/types';
+
+type CaseStudyDb = Tables<'case_studies'>;
+
+interface CaseStudy extends Omit<CaseStudyDb, 'technologies' | 'standards' | 'results'> {
+  technologies: string[];
+  standards: string[];
+  results: string[];
+}
 
 const FeaturedCases = () => {
   const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.2 });
+  const [cases, setCases] = useState<CaseStudy[]>([]);
 
-  const cases = [
-    {
-      title: "Automação Completa - Indústria Automotiva",
-      description: "Implementação de linha automatizada com aumento de 45% na produtividade.",
-      results: ["45% ↑ Produtividade", "30% ↓ Custos", "Zero acidentes"],
-      category: "Automação"
-    },
-    {
-      title: "Data Center Tier III - Multinacional",
-      description: "Construção de infraestrutura de data center com 99.99% de uptime.",
-      results: ["99.99% Uptime", "500 Racks", "Certificação Tier III"],
-      category: "Infraestrutura"
-    },
-    {
-      title: "Retrofit Elétrico - Planta Industrial",
-      description: "Modernização completa do sistema elétrico com compliance NR-10.",
-      results: ["100% Compliance", "40% ↓ Energia", "Certificação CREA"],
-      category: "Elétrica"
+  useEffect(() => {
+    loadFeaturedCases();
+  }, []);
+
+  const loadFeaturedCases = async () => {
+    const { data, error } = await supabase
+      .from('case_studies')
+      .select('*')
+      .eq('is_active', true)
+      .eq('is_featured', true)
+      .order('display_order', { ascending: true })
+      .limit(3);
+
+    if (error) {
+      console.error('Error loading featured cases:', error);
+      return;
     }
-  ];
+
+    setCases((data || []) as CaseStudy[]);
+  };
 
   return (
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
@@ -44,7 +56,7 @@ const FeaturedCases = () => {
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {cases.map((caseItem, index) => (
             <Card 
-              key={index} 
+              key={caseItem.id} 
               className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 ${
                 isIntersecting 
                   ? 'opacity-100 translate-y-0' 

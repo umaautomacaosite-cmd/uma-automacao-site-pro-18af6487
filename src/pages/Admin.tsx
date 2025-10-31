@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings, FileText, Users, BarChart, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import AdminServices from './AdminServices';
+import AdminCaseStudies from './AdminCaseStudies';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
@@ -125,12 +126,7 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="cases">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-playfair text-xl">Gestão de Cases</CardTitle>
-                  <CardDescription>Em desenvolvimento</CardDescription>
-                </CardHeader>
-              </Card>
+              <AdminCaseStudies />
             </TabsContent>
 
             <TabsContent value="usuarios">
