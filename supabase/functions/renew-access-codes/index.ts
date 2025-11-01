@@ -43,7 +43,7 @@ serve(async (req) => {
       // Gerar novo código
       const newCode = Math.random().toString(36).substring(2, 10).toUpperCase()
       const expiryDate = new Date()
-      expiryDate.setDate(expiryDate.getDate() + 30) // 30 dias
+      expiryDate.setMinutes(expiryDate.getMinutes() + 15) // 15 minutos
 
       // Inserir novo código
       const { error: insertError } = await supabaseClient

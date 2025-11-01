@@ -44,6 +44,7 @@ export type Database = {
       case_studies: {
         Row: {
           client: string
+          cover_image_url: string | null
           created_at: string | null
           description: string
           display_order: number | null
@@ -63,6 +64,7 @@ export type Database = {
         }
         Insert: {
           client: string
+          cover_image_url?: string | null
           created_at?: string | null
           description: string
           display_order?: number | null
@@ -82,6 +84,7 @@ export type Database = {
         }
         Update: {
           client?: string
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string
           display_order?: number | null

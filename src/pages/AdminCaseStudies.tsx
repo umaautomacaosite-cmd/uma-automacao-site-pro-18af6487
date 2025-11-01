@@ -48,6 +48,7 @@ const AdminCaseStudies = () => {
     standards: [],
     results: [],
     image_url: '',
+    cover_image_url: '',
     is_featured: false,
     display_order: 0,
     is_active: true
@@ -201,6 +202,7 @@ const AdminCaseStudies = () => {
       standards: [],
       results: [],
       image_url: '',
+      cover_image_url: '',
       is_featured: false,
       display_order: 0,
       is_active: true
@@ -412,22 +414,37 @@ const AdminCaseStudies = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Descrição</label>
+              <label className="text-sm font-medium">Solução Aplicada</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Descrição completa da solução e case"
+                placeholder="Descrição completa da solução aplicada no projeto"
                 rows={5}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">URL da Imagem</label>
+              <label className="text-sm font-medium">URL da Imagem de Capa</label>
+              <Input
+                value={formData.cover_image_url}
+                onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
+                placeholder="https://exemplo.com/imagem-capa.jpg"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Esta imagem será usada como capa do card da case
+              </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">URL da Imagem (Legado)</label>
               <Input
                 value={formData.image_url}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                 placeholder="https://exemplo.com/imagem.jpg"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Usado como fallback caso não haja imagem de capa
+              </p>
             </div>
 
             {/* Tecnologias */}

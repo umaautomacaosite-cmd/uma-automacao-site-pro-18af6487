@@ -126,7 +126,7 @@ const CaseStudies = () => {
               <Card key={caseStudy.id} className="border-2 hover:shadow-xl transition-shadow overflow-hidden">
                 <div 
                   className="h-48 bg-cover bg-center relative"
-                  style={{ backgroundImage: `url(${caseStudy.image_url || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})` }}
+                  style={{ backgroundImage: `url(${caseStudy.cover_image_url || caseStudy.image_url || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})` }}
                 >
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <IconComponent className="h-16 w-16 text-white" />
@@ -158,6 +158,9 @@ const CaseStudies = () => {
 
                  <CardContent className="space-y-4">
                    <div>
+                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                       Solução Aplicada
+                     </h4>
                      <p className="font-lato text-sm text-gray-700 line-clamp-3">
                        {caseStudy.description}
                      </p>
@@ -177,6 +180,43 @@ const CaseStudies = () => {
                          <Badge variant="secondary" className="text-xs">
                            +{caseStudy.technologies.length - 3} mais
                          </Badge>
+                       )}
+                     </div>
+                   </div>
+
+                   <div>
+                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                       Normas Aplicadas
+                     </h4>
+                     <div className="flex flex-wrap gap-2">
+                       {caseStudy.standards.slice(0, 3).map((standard, idx) => (
+                         <Badge key={idx} variant="outline" className="text-xs">
+                           {standard}
+                         </Badge>
+                       ))}
+                       {caseStudy.standards.length > 3 && (
+                         <Badge variant="outline" className="text-xs">
+                           +{caseStudy.standards.length - 3} mais
+                         </Badge>
+                       )}
+                     </div>
+                   </div>
+
+                   <div>
+                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                       Resultados Obtidos
+                     </h4>
+                     <div className="space-y-1">
+                       {caseStudy.results.slice(0, 2).map((result, idx) => (
+                         <div key={idx} className="flex items-start space-x-2">
+                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                           <span className="font-lato text-xs line-clamp-1">{result}</span>
+                         </div>
+                       ))}
+                       {caseStudy.results.length > 2 && (
+                         <p className="text-xs text-gray-500 font-lato">
+                           +{caseStudy.results.length - 2} resultados adicionais
+                         </p>
                        )}
                      </div>
                    </div>
@@ -218,16 +258,16 @@ const CaseStudies = () => {
                     <h3 className="font-lato font-semibold text-wine-900 text-lg">
                       Imagens do Projeto
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-6">
                       {caseImages.map((image) => (
-                        <div key={image.id} className="space-y-2">
+                        <div key={image.id} className="space-y-3">
                           <img 
                             src={image.image_url} 
                             alt={image.description || 'Imagem do projeto'}
-                            className="w-full h-64 object-cover rounded-lg"
+                            className="w-full h-auto max-h-96 object-contain rounded-lg border"
                           />
                           {image.description && (
-                            <p className="text-sm text-gray-600 italic">
+                            <p className="text-sm text-gray-600 text-center italic px-4">
                               {image.description}
                             </p>
                           )}
@@ -240,7 +280,7 @@ const CaseStudies = () => {
                 {/* Descrição */}
                 <div>
                   <h3 className="font-lato font-semibold text-wine-900 text-lg mb-2">
-                    Descrição da Solução
+                    Solução Aplicada
                   </h3>
                   <p className="font-lato text-gray-700 whitespace-pre-line">
                     {selectedCase.description}
