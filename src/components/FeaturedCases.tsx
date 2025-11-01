@@ -66,7 +66,7 @@ const FeaturedCases = () => {
             >
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
-                  <Badge className="bg-wine-900">{caseItem.category}</Badge>
+                  <Badge className="bg-wine-900">{caseItem.sector}</Badge>
                   <TrendingUp className="h-5 w-5 text-green-600" />
                 </div>
                 <CardTitle className="font-lato text-xl">{caseItem.title}</CardTitle>

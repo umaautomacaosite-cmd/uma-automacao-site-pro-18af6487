@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Building, 
   Factory, 
@@ -18,7 +19,8 @@ import {
   Cpu,
   MapPin,
   CheckCircle,
-  Award
+  Award,
+  Eye
 } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -28,6 +30,13 @@ interface CaseStudy extends Omit<CaseStudyDb, 'technologies' | 'standards' | 're
   technologies: string[];
   standards: string[];
   results: string[];
+}
+
+interface CaseStudyImage {
+  id: string;
+  image_url: string;
+  description: string | null;
+  display_order: number;
 }
 
 const iconMap: Record<string, any> = {
@@ -43,6 +52,8 @@ const iconMap: Record<string, any> = {
 
 const CaseStudies = () => {
   const [cases, setCases] = useState<CaseStudy[]>([]);
+  const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+  const [caseImages, setCaseImages] = useState<CaseStudyImage[]>([]);
 
   useEffect(() => {
     loadCases();
@@ -61,6 +72,26 @@ const CaseStudies = () => {
     }
 
     setCases((data || []) as CaseStudy[]);
+  };
+
+  const loadCaseImages = async (caseId: string) => {
+    const { data, error } = await supabase
+      .from('case_study_images')
+      .select('*')
+      .eq('case_study_id', caseId)
+      .order('display_order', { ascending: true });
+
+    if (error) {
+      console.error('Error loading case images:', error);
+      return;
+    }
+
+    setCaseImages((data || []) as CaseStudyImage[]);
+  };
+
+  const handleViewDetails = async (caseStudy: CaseStudy) => {
+    setSelectedCase(caseStudy);
+    await loadCaseImages(caseStudy.id);
   };
 
   return (
@@ -125,68 +156,153 @@ const CaseStudies = () => {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-lato font-semibold text-wine-900 mb-2">
-                      Solução Aplicada
-                    </h4>
-                    <p className="font-lato text-sm text-gray-700">
-                      {caseStudy.description}
-                    </p>
-                  </div>
+                 <CardContent className="space-y-4">
+                   <div>
+                     <p className="font-lato text-sm text-gray-700 line-clamp-3">
+                       {caseStudy.description}
+                     </p>
+                   </div>
 
-                  <div>
-                    <h4 className="font-lato font-semibold text-wine-900 mb-2">
-                      Tecnologias Utilizadas
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {caseStudy.technologies.map((tech, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
+                   <div>
+                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                       Tecnologias
+                     </h4>
+                     <div className="flex flex-wrap gap-2">
+                       {caseStudy.technologies.slice(0, 3).map((tech, idx) => (
+                         <Badge key={idx} variant="secondary" className="text-xs">
+                           {tech}
+                         </Badge>
+                       ))}
+                       {caseStudy.technologies.length > 3 && (
+                         <Badge variant="secondary" className="text-xs">
+                           +{caseStudy.technologies.length - 3} mais
+                         </Badge>
+                       )}
+                     </div>
+                   </div>
 
-                  <div>
-                    <h4 className="font-lato font-semibold text-wine-900 mb-2">
-                      Normas Aplicadas
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {caseStudy.standards.map((standard, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {standard}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-lato font-semibold text-wine-900 mb-2">
-                      Resultados Obtidos
-                    </h4>
-                    <div className="space-y-1">
-                      {caseStudy.results.map((result, idx) => (
-                        <div key={idx} className="flex items-center space-x-2">
-                          <CheckCircle className="h-4 w-4 text-green-600" />
-                          <span className="font-lato text-sm">{result}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                   <Link to="/contato">
-                     <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full">
-                       Solicitar Projeto Similar
-                     </Button>
-                   </Link>
-                </CardContent>
+                   <Button 
+                     onClick={() => handleViewDetails(caseStudy)}
+                     className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full"
+                   >
+                     <Eye className="mr-2 h-4 w-4" />
+                     Ver Detalhes Completos
+                   </Button>
+                 </CardContent>
               </Card>
               );
             })}
           </div>
         </div>
       </section>
+
+      {/* Modal de Detalhes */}
+      <Dialog open={!!selectedCase} onOpenChange={(open) => !open && setSelectedCase(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {selectedCase && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-playfair text-2xl text-wine-900">
+                  {selectedCase.client}
+                </DialogTitle>
+                <DialogDescription className="flex items-center gap-2 text-base">
+                  <MapPin className="h-4 w-4" />
+                  {selectedCase.location} • {selectedCase.year}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                {/* Imagens do Case */}
+                {caseImages.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="font-lato font-semibold text-wine-900 text-lg">
+                      Imagens do Projeto
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {caseImages.map((image) => (
+                        <div key={image.id} className="space-y-2">
+                          <img 
+                            src={image.image_url} 
+                            alt={image.description || 'Imagem do projeto'}
+                            className="w-full h-64 object-cover rounded-lg"
+                          />
+                          {image.description && (
+                            <p className="text-sm text-gray-600 italic">
+                              {image.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Descrição */}
+                <div>
+                  <h3 className="font-lato font-semibold text-wine-900 text-lg mb-2">
+                    Descrição da Solução
+                  </h3>
+                  <p className="font-lato text-gray-700 whitespace-pre-line">
+                    {selectedCase.description}
+                  </p>
+                </div>
+
+                {/* Tecnologias */}
+                <div>
+                  <h3 className="font-lato font-semibold text-wine-900 text-lg mb-2">
+                    Tecnologias Utilizadas
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCase.technologies.map((tech, idx) => (
+                      <Badge key={idx} variant="secondary">
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Normas */}
+                <div>
+                  <h3 className="font-lato font-semibold text-wine-900 text-lg mb-2">
+                    Normas Aplicadas
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCase.standards.map((standard, idx) => (
+                      <Badge key={idx} variant="outline">
+                        {standard}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resultados */}
+                <div>
+                  <h3 className="font-lato font-semibold text-wine-900 text-lg mb-2">
+                    Resultados Obtidos
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedCase.results.map((result, idx) => (
+                      <div key={idx} className="flex items-start space-x-2">
+                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="font-lato">{result}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div className="pt-4 border-t">
+                  <Link to="/contato">
+                    <Button className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full">
+                      Solicitar Projeto Similar
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-900 text-white">

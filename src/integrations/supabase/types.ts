@@ -43,7 +43,6 @@ export type Database = {
       }
       case_studies: {
         Row: {
-          category: string
           client: string
           created_at: string | null
           description: string
@@ -56,7 +55,6 @@ export type Database = {
           location: string
           results: Json | null
           sector: string
-          solution: string
           standards: Json | null
           technologies: Json | null
           title: string
@@ -64,7 +62,6 @@ export type Database = {
           year: string
         }
         Insert: {
-          category?: string
           client: string
           created_at?: string | null
           description: string
@@ -77,7 +74,6 @@ export type Database = {
           location: string
           results?: Json | null
           sector: string
-          solution: string
           standards?: Json | null
           technologies?: Json | null
           title: string
@@ -85,7 +81,6 @@ export type Database = {
           year: string
         }
         Update: {
-          category?: string
           client?: string
           created_at?: string | null
           description?: string
@@ -98,7 +93,6 @@ export type Database = {
           location?: string
           results?: Json | null
           sector?: string
-          solution?: string
           standards?: Json | null
           technologies?: Json | null
           title?: string
@@ -106,6 +100,44 @@ export type Database = {
           year?: string
         }
         Relationships: []
+      }
+      case_study_images: {
+        Row: {
+          case_study_id: string
+          created_at: string | null
+          description: string | null
+          display_order: number
+          id: string
+          image_url: string
+          updated_at: string | null
+        }
+        Insert: {
+          case_study_id: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url: string
+          updated_at?: string | null
+        }
+        Update: {
+          case_study_id?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_study_images_case_study_id_fkey"
+            columns: ["case_study_id"]
+            isOneToOne: false
+            referencedRelation: "case_studies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -190,6 +222,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_and_renew_access_codes: { Args: never; Returns: undefined }
+      generate_new_access_code: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

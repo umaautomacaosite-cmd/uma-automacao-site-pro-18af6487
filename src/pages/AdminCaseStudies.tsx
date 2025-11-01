@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit, Save, X, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, Edit, Save, X, Power, PowerOff, Upload, Image as ImageIcon } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -24,6 +24,14 @@ interface CaseStudy extends Omit<CaseStudyDb, 'technologies' | 'standards' | 're
   results: string[];
 }
 
+interface CaseStudyImage {
+  id?: string;
+  image_url: string;
+  description: string;
+  display_order: number;
+  file?: File;
+}
+
 const AdminCaseStudies = () => {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,17 +43,20 @@ const AdminCaseStudies = () => {
     year: new Date().getFullYear().toString(),
     location: '',
     icon: 'Building',
-    solution: '',
     description: '',
     technologies: [],
     standards: [],
     results: [],
     image_url: '',
-    category: 'Geral',
     is_featured: false,
     display_order: 0,
     is_active: true
   });
+  
+  const [images, setImages] = useState<CaseStudyImage[]>([]);
+  const [newTech, setNewTech] = useState('');
+  const [newStandard, setNewStandard] = useState('');
+  const [newResult, setNewResult] = useState('');
 
   const iconOptions = [
     'Building',
@@ -77,14 +88,19 @@ const AdminCaseStudies = () => {
   };
 
   const handleCreate = async () => {
-    const { error } = await supabase
+    const { data: caseStudy, error } = await supabase
       .from('case_studies')
-      .insert([formData as any]);
+      .insert([formData as any])
+      .select()
+      .single();
 
     if (error) {
       toast.error('Erro ao criar case');
       return;
     }
+
+    // Upload images
+    await uploadImages(caseStudy.id);
 
     toast.success('Case criado com sucesso!');
     setIsCreating(false);
@@ -102,6 +118,9 @@ const AdminCaseStudies = () => {
       toast.error('Erro ao atualizar case');
       return;
     }
+
+    // Upload new images
+    await uploadImages(id);
 
     toast.success('Case atualizado com sucesso!');
     setEditingId(null);
@@ -141,15 +160,32 @@ const AdminCaseStudies = () => {
     loadCaseStudies();
   };
 
-  const startEdit = (caseStudy: CaseStudy) => {
+  const startEdit = async (caseStudy: CaseStudy) => {
     setEditingId(caseStudy.id);
     setFormData(caseStudy);
+    
+    // Load images for this case study
+    const { data: imageData } = await supabase
+      .from('case_study_images')
+      .select('*')
+      .eq('case_study_id', caseStudy.id)
+      .order('display_order', { ascending: true });
+    
+    if (imageData) {
+      setImages(imageData.map(img => ({
+        id: img.id,
+        image_url: img.image_url,
+        description: img.description || '',
+        display_order: img.display_order
+      })));
+    }
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setIsCreating(false);
     resetForm();
+    setImages([]);
   };
 
   const resetForm = () => {
@@ -160,22 +196,125 @@ const AdminCaseStudies = () => {
       year: new Date().getFullYear().toString(),
       location: '',
       icon: 'Building',
-      solution: '',
       description: '',
       technologies: [],
       standards: [],
       results: [],
       image_url: '',
-      category: 'Geral',
       is_featured: false,
       display_order: 0,
       is_active: true
     });
+    setImages([]);
   };
 
-  const handleArrayFieldChange = (field: 'technologies' | 'standards' | 'results', value: string) => {
-    const items = value.split('\n').filter(item => item.trim() !== '');
-    setFormData({ ...formData, [field]: items });
+  const uploadImages = async (caseStudyId: string) => {
+    for (const image of images) {
+      if (image.file) {
+        // Upload to storage
+        const fileExt = image.file.name.split('.').pop();
+        const fileName = `${caseStudyId}/${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('case-study-images')
+          .upload(fileName, image.file);
+
+        if (uploadError) {
+          toast.error(`Erro ao fazer upload da imagem: ${uploadError.message}`);
+          continue;
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('case-study-images')
+          .getPublicUrl(fileName);
+
+        // Save to database
+        await supabase
+          .from('case_study_images')
+          .insert({
+            case_study_id: caseStudyId,
+            image_url: publicUrl,
+            description: image.description,
+            display_order: image.display_order
+          });
+      } else if (image.id) {
+        // Update existing image description
+        await supabase
+          .from('case_study_images')
+          .update({ 
+            description: image.description,
+            display_order: image.display_order 
+          })
+          .eq('id', image.id);
+      }
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newImages: CaseStudyImage[] = Array.from(files).map((file, index) => ({
+      image_url: URL.createObjectURL(file),
+      description: '',
+      display_order: images.length + index,
+      file
+    }));
+
+    setImages([...images, ...newImages]);
+  };
+
+  const removeImage = async (index: number) => {
+    const image = images[index];
+    
+    // If image has ID, delete from database
+    if (image.id) {
+      await supabase
+        .from('case_study_images')
+        .delete()
+        .eq('id', image.id);
+    }
+    
+    setImages(images.filter((_, i) => i !== index));
+  };
+
+  const updateImageDescription = (index: number, description: string) => {
+    const newImages = [...images];
+    newImages[index].description = description;
+    setImages(newImages);
+  };
+
+  const moveImage = (index: number, direction: 'up' | 'down') => {
+    const newImages = [...images];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (newIndex < 0 || newIndex >= newImages.length) return;
+    
+    [newImages[index], newImages[newIndex]] = [newImages[newIndex], newImages[index]];
+    
+    // Update display_order
+    newImages.forEach((img, i) => {
+      img.display_order = i;
+    });
+    
+    setImages(newImages);
+  };
+
+  const addItem = (field: 'technologies' | 'standards' | 'results', value: string) => {
+    if (!value.trim()) return;
+    
+    const current = formData[field] || [];
+    setFormData({ ...formData, [field]: [...current, value.trim()] });
+    
+    if (field === 'technologies') setNewTech('');
+    if (field === 'standards') setNewStandard('');
+    if (field === 'results') setNewResult('');
+  };
+
+  const removeItem = (field: 'technologies' | 'standards' | 'results', index: number) => {
+    const current = formData[field] || [];
+    setFormData({ ...formData, [field]: current.filter((_, i) => i !== index) });
   };
 
   return (
@@ -261,14 +400,6 @@ const AdminCaseStudies = () => {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium">Categoria</label>
-                <Input
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="Categoria"
-                />
-              </div>
 
               <div>
                 <label className="text-sm font-medium">Ordem de Exibição</label>
@@ -281,21 +412,12 @@ const AdminCaseStudies = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Solução</label>
-              <Input
-                value={formData.solution}
-                onChange={(e) => setFormData({ ...formData, solution: e.target.value })}
-                placeholder="Solução aplicada"
-              />
-            </div>
-
-            <div>
               <label className="text-sm font-medium">Descrição</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Descrição detalhada"
-                rows={3}
+                placeholder="Descrição completa da solução e case"
+                rows={5}
               />
             </div>
 
@@ -308,34 +430,162 @@ const AdminCaseStudies = () => {
               />
             </div>
 
+            {/* Tecnologias */}
             <div>
-              <label className="text-sm font-medium">Tecnologias (uma por linha)</label>
-              <Textarea
-                value={formData.technologies?.join('\n') || ''}
-                onChange={(e) => handleArrayFieldChange('technologies', e.target.value)}
-                placeholder="Tecnologia 1&#10;Tecnologia 2"
-                rows={3}
-              />
+              <label className="text-sm font-medium">Tecnologias</label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  value={newTech}
+                  onChange={(e) => setNewTech(e.target.value)}
+                  placeholder="Digite uma tecnologia"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addItem('technologies', newTech))}
+                />
+                <Button type="button" onClick={() => addItem('technologies', newTech)} size="sm">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(formData.technologies || []).map((tech, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {tech}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => removeItem('technologies', index)}
+                    />
+                  </Badge>
+                ))}
+              </div>
             </div>
 
+            {/* Normas */}
             <div>
-              <label className="text-sm font-medium">Normas (uma por linha)</label>
-              <Textarea
-                value={formData.standards?.join('\n') || ''}
-                onChange={(e) => handleArrayFieldChange('standards', e.target.value)}
-                placeholder="NR-10&#10;ABNT NBR 5410"
-                rows={3}
-              />
+              <label className="text-sm font-medium">Normas</label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  value={newStandard}
+                  onChange={(e) => setNewStandard(e.target.value)}
+                  placeholder="Digite uma norma"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addItem('standards', newStandard))}
+                />
+                <Button type="button" onClick={() => addItem('standards', newStandard)} size="sm">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(formData.standards || []).map((standard, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {standard}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => removeItem('standards', index)}
+                    />
+                  </Badge>
+                ))}
+              </div>
             </div>
 
+            {/* Resultados */}
             <div>
-              <label className="text-sm font-medium">Resultados (um por linha)</label>
-              <Textarea
-                value={formData.results?.join('\n') || ''}
-                onChange={(e) => handleArrayFieldChange('results', e.target.value)}
-                placeholder="Resultado 1&#10;Resultado 2"
-                rows={3}
-              />
+              <label className="text-sm font-medium">Resultados</label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  value={newResult}
+                  onChange={(e) => setNewResult(e.target.value)}
+                  placeholder="Digite um resultado"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addItem('results', newResult))}
+                />
+                <Button type="button" onClick={() => addItem('results', newResult)} size="sm">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(formData.results || []).map((result, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {result}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => removeItem('results', index)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {/* Upload de Imagens */}
+            <div>
+              <label className="text-sm font-medium">Imagens do Case</label>
+              <div className="border-2 border-dashed rounded-lg p-4 mt-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label 
+                  htmlFor="image-upload" 
+                  className="flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <Upload className="h-8 w-8 mb-2 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Clique ou arraste imagens aqui
+                  </span>
+                </label>
+              </div>
+
+              {images.length > 0 && (
+                <div className="mt-4 space-y-4">
+                  {images.map((image, index) => (
+                    <Card key={index}>
+                      <CardContent className="p-4">
+                        <div className="flex gap-4">
+                          <img 
+                            src={image.image_url} 
+                            alt={`Preview ${index + 1}`}
+                            className="w-24 h-24 object-cover rounded"
+                          />
+                          <div className="flex-1 space-y-2">
+                            <Input
+                              placeholder="Descrição da imagem"
+                              value={image.description}
+                              onChange={(e) => updateImageDescription(index, e.target.value)}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => moveImage(index, 'up')}
+                                disabled={index === 0}
+                              >
+                                ↑
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => moveImage(index, 'down')}
+                                disabled={index === images.length - 1}
+                              >
+                                ↓
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => removeImage(index)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center space-x-4">
@@ -395,7 +645,6 @@ const AdminCaseStudies = () => {
                   <div className="flex flex-wrap gap-2 mb-2">
                     <Badge variant="secondary">📍 {caseStudy.location}</Badge>
                     <Badge variant="secondary">📅 {caseStudy.year}</Badge>
-                    <Badge variant="secondary">📂 {caseStudy.category}</Badge>
                   </div>
                 </div>
                 <div className="flex space-x-2">
