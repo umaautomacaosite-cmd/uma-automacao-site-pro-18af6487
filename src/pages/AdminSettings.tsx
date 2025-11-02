@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Plus, Trash2, Save, Upload, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, Save, Upload, Power, PowerOff, Building2, Store, Factory, Briefcase, Users, Globe } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 
 interface Setting {
@@ -18,6 +19,7 @@ interface ClientLogo {
   logo_url: string;
   display_order: number;
   is_active: boolean;
+  icon_fallback?: string;
 }
 
 const AdminSettings = () => {
@@ -27,8 +29,13 @@ const AdminSettings = () => {
   const [newLogo, setNewLogo] = useState({
     company_name: '',
     logo_url: '',
-    display_order: 0
+    display_order: 0,
+    icon_fallback: 'Building2'
   });
+  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -67,35 +74,112 @@ const AdminSettings = () => {
     setClientLogos(data || []);
   };
 
-  const updateSetting = async (key: string, value: string) => {
-    const { error } = await supabase
-      .from('settings')
-      .update({ value })
-      .eq('key', key);
-
-    if (error) {
-      toast.error(`Erro ao atualizar ${key}`);
+  const handleHeroImageUpload = async () => {
+    if (!heroImageFile) {
+      toast.error('Selecione uma imagem');
       return;
     }
 
-    toast.success('Configuração atualizada!');
+    setUploadingHero(true);
+    const fileExt = heroImageFile.name.split('.').pop();
+    const fileName = `hero-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('case-study-images')
+      .upload(fileName, heroImageFile);
+
+    if (uploadError) {
+      toast.error('Erro ao fazer upload da imagem');
+      setUploadingHero(false);
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('case-study-images')
+      .getPublicUrl(fileName);
+
+    const { error: updateError } = await supabase
+      .from('settings')
+      .update({ value: publicUrl })
+      .eq('key', 'hero_image_url');
+
+    if (updateError) {
+      toast.error('Erro ao salvar URL da imagem');
+      setUploadingHero(false);
+      return;
+    }
+
+    setSettings({ ...settings, hero_image_url: publicUrl });
+    setHeroImageFile(null);
+    setUploadingHero(false);
+    toast.success('Imagem hero atualizada!');
+  };
+
+  const handleLogoUpload = async () => {
+    if (!logoFile) {
+      toast.error('Selecione uma imagem');
+      return;
+    }
+
+    setUploadingLogo(true);
+    const fileExt = logoFile.name.split('.').pop();
+    const fileName = `logo-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('case-study-images')
+      .upload(fileName, logoFile);
+
+    if (uploadError) {
+      toast.error('Erro ao fazer upload da imagem');
+      setUploadingLogo(false);
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('case-study-images')
+      .getPublicUrl(fileName);
+
+    setNewLogo({ ...newLogo, logo_url: publicUrl });
+    setLogoFile(null);
+    setUploadingLogo(false);
+    toast.success('Imagem carregada!');
   };
 
   const handleSaveSettings = async () => {
+    let hasError = false;
     for (const [key, value] of Object.entries(settings)) {
-      await updateSetting(key, value);
+      const { error } = await supabase
+        .from('settings')
+        .update({ value })
+        .eq('key', key);
+      
+      if (error) {
+        hasError = true;
+        break;
+      }
+    }
+    
+    if (hasError) {
+      toast.error('Erro ao atualizar configurações');
+    } else {
+      toast.success('Configurações atualizadas com sucesso!');
     }
   };
 
   const handleAddLogo = async () => {
-    if (!newLogo.company_name || !newLogo.logo_url) {
-      toast.error('Preencha o nome da empresa e a URL do logo');
+    if (!newLogo.company_name) {
+      toast.error('Preencha o nome da empresa');
       return;
     }
 
     const { error } = await supabase
       .from('client_logos')
-      .insert([newLogo]);
+      .insert([{
+        company_name: newLogo.company_name,
+        logo_url: newLogo.logo_url || '',
+        display_order: newLogo.display_order,
+        icon_fallback: newLogo.icon_fallback
+      }]);
 
     if (error) {
       toast.error('Erro ao adicionar logo');
@@ -103,7 +187,8 @@ const AdminSettings = () => {
     }
 
     toast.success('Logo adicionado!');
-    setNewLogo({ company_name: '', logo_url: '', display_order: 0 });
+    setNewLogo({ company_name: '', logo_url: '', display_order: 0, icon_fallback: 'Building2' });
+    setLogoFile(null);
     loadClientLogos();
   };
 
@@ -244,20 +329,32 @@ const AdminSettings = () => {
       <Card>
         <CardHeader>
           <CardTitle>Imagem Hero</CardTitle>
-          <CardDescription>Configure a imagem de fundo da seção principal (recomendado: 1920x1080px)</CardDescription>
+          <CardDescription>Upload da imagem de fundo da seção principal (recomendado: 1920x1080px)</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium block mb-2">URL da Imagem Hero</label>
+            <label className="text-sm font-medium block mb-2">Upload da Imagem Hero</label>
             <Input
-              placeholder="https://exemplo.com/hero-image.jpg"
-              value={settings.hero_image_url || ''}
-              onChange={(e) => setSettings({ ...settings, hero_image_url: e.target.value })}
+              type="file"
+              accept="image/*"
+              onChange={(e) => setHeroImageFile(e.target.files?.[0] || null)}
             />
             <p className="text-xs text-muted-foreground mt-1">
               Tamanho recomendado: 1920x1080px (Full HD, proporção 16:9)
             </p>
           </div>
+          {heroImageFile && (
+            <Button onClick={handleHeroImageUpload} disabled={uploadingHero}>
+              <Upload className="mr-2 h-4 w-4" />
+              {uploadingHero ? 'Enviando...' : 'Fazer Upload'}
+            </Button>
+          )}
+          {settings.hero_image_url && (
+            <div className="mt-4">
+              <p className="text-sm font-medium mb-2">Imagem Atual:</p>
+              <img src={settings.hero_image_url} alt="Hero atual" className="w-full max-w-md rounded-lg" />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -279,7 +376,7 @@ const AdminSettings = () => {
           {/* Formulário para adicionar novo logo */}
           <div className="border rounded-lg p-4 space-y-4">
             <h3 className="font-semibold">Adicionar Novo Logo</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium block mb-2">Nome da Empresa</label>
                 <Input
@@ -287,17 +384,6 @@ const AdminSettings = () => {
                   value={newLogo.company_name}
                   onChange={(e) => setNewLogo({ ...newLogo, company_name: e.target.value })}
                 />
-              </div>
-              <div>
-                <label className="text-sm font-medium block mb-2">URL do Logo</label>
-                <Input
-                  placeholder="https://exemplo.com/logo.png"
-                  value={newLogo.logo_url}
-                  onChange={(e) => setNewLogo({ ...newLogo, logo_url: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Tamanho recomendado: 200x200px (quadrado)
-                </p>
               </div>
               <div>
                 <label className="text-sm font-medium block mb-2">Ordem de Exibição</label>
@@ -308,9 +394,83 @@ const AdminSettings = () => {
                 />
               </div>
             </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium block mb-2">Upload do Logo (opcional)</label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Tamanho recomendado: 200x200px (quadrado). Se não enviar, será usado um ícone.
+                </p>
+              </div>
+              
+              {logoFile && (
+                <Button onClick={handleLogoUpload} disabled={uploadingLogo} size="sm">
+                  <Upload className="mr-2 h-4 w-4" />
+                  {uploadingLogo ? 'Enviando...' : 'Fazer Upload'}
+                </Button>
+              )}
+              
+              {!newLogo.logo_url && (
+                <div>
+                  <label className="text-sm font-medium block mb-2">Ícone Alternativo (se não houver logo)</label>
+                  <Select
+                    value={newLogo.icon_fallback}
+                    onValueChange={(value) => setNewLogo({ ...newLogo, icon_fallback: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Building2">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          <span>Prédio</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Store">
+                        <div className="flex items-center gap-2">
+                          <Store className="h-4 w-4" />
+                          <span>Loja</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Factory">
+                        <div className="flex items-center gap-2">
+                          <Factory className="h-4 w-4" />
+                          <span>Fábrica</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Briefcase">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="h-4 w-4" />
+                          <span>Negócios</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Users">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          <span>Equipe</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Globe">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          <span>Global</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+            
             <Button onClick={handleAddLogo}>
               <Plus className="mr-2 h-4 w-4" />
-              Adicionar Logo
+              Adicionar Parceiro
             </Button>
           </div>
 

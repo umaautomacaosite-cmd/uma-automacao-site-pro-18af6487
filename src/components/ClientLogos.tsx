@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import { Building2, Store, Factory, Briefcase, Users, Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,6 +7,7 @@ interface ClientLogo {
   company_name: string;
   logo_url: string;
   display_order: number;
+  icon_fallback?: string;
 }
 
 const ClientLogos = () => {
@@ -28,6 +29,17 @@ const ClientLogos = () => {
     }
   };
 
+  const getIconComponent = (iconName?: string) => {
+    switch (iconName) {
+      case 'Store': return Store;
+      case 'Factory': return Factory;
+      case 'Briefcase': return Briefcase;
+      case 'Users': return Users;
+      case 'Globe': return Globe;
+      default: return Building2;
+    }
+  };
+
   return (
     <div className="py-12 bg-white/10 backdrop-blur-sm">
       <div className="container mx-auto px-4">
@@ -35,29 +47,43 @@ const ClientLogos = () => {
           Empresas que confiam em nossos serviços
         </p>
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8 items-center">
-          {clients.map((client) => (
-            <div 
-              key={client.id} 
-              className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300"
-            >
-              <img 
-                src={client.logo_url} 
-                alt={client.company_name}
-                className="h-12 w-12 object-contain mb-2"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    const fallback = document.createElement('div');
-                    fallback.innerHTML = '<svg class="h-8 w-8 text-gold-500 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>';
-                    parent.insertBefore(fallback, target);
-                  }
-                }}
-              />
-              <span className="font-lato text-white text-sm font-semibold text-center">{client.company_name}</span>
-            </div>
-          ))}
+          {clients.map((client) => {
+            const IconComponent = getIconComponent(client.icon_fallback);
+            return (
+              <div 
+                key={client.id} 
+                className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300"
+              >
+                {client.logo_url ? (
+                  <img 
+                    src={client.logo_url} 
+                    alt={client.company_name}
+                    className="h-12 w-12 object-contain mb-2"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent && !parent.querySelector('svg')) {
+                        const IconFallback = getIconComponent(client.icon_fallback);
+                        const iconWrapper = document.createElement('div');
+                        iconWrapper.className = 'h-12 w-12 flex items-center justify-center mb-2';
+                        parent.insertBefore(iconWrapper, target);
+                        
+                        // Render the icon using React
+                        import('react-dom/client').then(({ createRoot }) => {
+                          const root = createRoot(iconWrapper);
+                          root.render(<IconFallback className="h-8 w-8 text-gold-500" />);
+                        });
+                      }
+                    }}
+                  />
+                ) : (
+                  <IconComponent className="h-12 w-12 text-gold-500 mb-2" />
+                )}
+                <span className="font-lato text-white text-sm font-semibold text-center">{client.company_name}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -123,10 +123,10 @@ const AdminCaseStudies = () => {
     // Upload new images
     await uploadImages(id);
 
-    toast.success('Case atualizado com sucesso!');
     setEditingId(null);
     resetForm();
     loadCaseStudies();
+    toast.success('Case atualizado com sucesso!');
   };
 
   const handleDelete = async (id: string) => {

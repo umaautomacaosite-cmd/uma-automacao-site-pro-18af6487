@@ -147,6 +147,7 @@ export type Database = {
           company_name: string
           created_at: string | null
           display_order: number | null
+          icon_fallback: string | null
           id: string
           is_active: boolean | null
           logo_url: string
@@ -156,6 +157,7 @@ export type Database = {
           company_name: string
           created_at?: string | null
           display_order?: number | null
+          icon_fallback?: string | null
           id?: string
           is_active?: boolean | null
           logo_url: string
@@ -165,6 +167,7 @@ export type Database = {
           company_name?: string
           created_at?: string | null
           display_order?: number | null
+          icon_fallback?: string | null
           id?: string
           is_active?: boolean | null
           logo_url?: string
