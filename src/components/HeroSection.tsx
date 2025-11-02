@@ -4,42 +4,31 @@ import { Link } from 'react-router-dom';
 import datacenterHero from '@/assets/datacenter-hero.jpg';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
 const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
   const [heroImage, setHeroImage] = useState(datacenterHero);
-
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
   useEffect(() => {
     loadHeroImage();
   }, []);
-
   const loadHeroImage = async () => {
-    const { data } = await supabase
-      .from('settings')
-      .select('value')
-      .eq('key', 'hero_image_url')
-      .single();
-
+    const {
+      data
+    } = await supabase.from('settings').select('value').eq('key', 'hero_image_url').single();
     if (data?.value && data.value.trim() !== '') {
       setHeroImage(data.value);
     }
   };
-
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Blue Overlay and Parallax */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100" 
-        style={{
-          backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${heroImage}')`,
-          transform: `translateY(${scrollY * 0.5}px)`
-        }} 
-      />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100" style={{
+      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${heroImage}')`,
+      transform: `translateY(${scrollY * 0.5}px)`
+    }} />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
@@ -49,11 +38,15 @@ const HeroSection = () => {
             <span className="text-gold-500"> Alta Performance</span>
           </h1>
           
-          <p className="font-lato text-xl md:text-2xl mb-6 text-gray-100 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <p className="font-lato text-xl md:text-2xl mb-6 text-gray-100 max-w-3xl mx-auto animate-fade-in" style={{
+          animationDelay: '0.2s'
+        }}>
             Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.
           </p>
 
-          <div className="mb-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="mb-8 max-w-4xl mx-auto animate-fade-in" style={{
+          animationDelay: '0.3s'
+        }}>
             <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">
               <strong className="text-gold-500">Mais de 15 anos</strong> de experiência em projetos de automação industrial, 
               infraestrutura de TI e telecomunicações para empresas de médio e grande porte.
@@ -65,14 +58,16 @@ const HeroSection = () => {
           </div>
 
           {/* Key Features */}
-          <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm md:text-base animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm md:text-base animate-fade-in" style={{
+          animationDelay: '0.4s'
+        }}>
             <div className="flex items-center space-x-2">
               <Shield className="h-5 w-5 text-gold-500" />
               <span>NR-10 | NR-12 Certificado</span>
             </div>
             <div className="flex items-center space-x-2">
               <Award className="h-5 w-5 text-gold-500" />
-              <span>ISO 9001 | CREA/SP</span>
+              <span>ISO 9001 | CREA/DF</span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="h-5 w-5 text-gold-500" />
@@ -81,7 +76,9 @@ const HeroSection = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{
+          animationDelay: '0.6s'
+        }}>
             <Link to="/contato" className="w-full sm:w-auto">
               <Button size="lg" className="bg-gold-500 hover:bg-gold-600 text-primary font-lato font-semibold px-8 py-4 text-lg group w-full sm:w-auto">
                 Solicitar Orçamento
