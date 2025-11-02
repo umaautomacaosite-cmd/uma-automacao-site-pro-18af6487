@@ -10,6 +10,7 @@ import { Settings, FileText, Users, BarChart, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import AdminServices from './AdminServices';
 import AdminCaseStudies from './AdminCaseStudies';
+import AdminSettings from './AdminSettings';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
@@ -139,32 +140,7 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="configuracoes">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-playfair text-xl">Configurações do Sistema</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <label className="font-lato font-medium text-sm mb-2 block">Número do WhatsApp</label>
-                    <div className="flex gap-2">
-                      <Input 
-                        placeholder="5511999999999" 
-                        value={whatsappNumber}
-                        onChange={(e) => setWhatsappNumber(e.target.value)}
-                      />
-                      <Button 
-                        onClick={saveWhatsAppNumber}
-                        className="bg-wine-900 hover:bg-wine-800 text-white"
-                      >
-                        Salvar
-                      </Button>
-                    </div>
-                    <p className="font-lato text-xs text-gray-500 mt-2">
-                      Formato: código do país + DDD + número (sem espaços ou caracteres especiais)
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <AdminSettings />
             </TabsContent>
           </Tabs>
         </div>

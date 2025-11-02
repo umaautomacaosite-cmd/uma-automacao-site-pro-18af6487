@@ -1,11 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [headerPhone, setHeaderPhone] = useState('(61) 99999-9999');
+  const [headerEmail, setHeaderEmail] = useState('contato@umaautomacao.com.br');
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    const { data } = await supabase
+      .from('settings')
+      .select('key, value')
+      .in('key', ['header_phone', 'header_email']);
+
+    if (data) {
+      const phone = data.find(s => s.key === 'header_phone');
+      const email = data.find(s => s.key === 'header_email');
+      if (phone?.value) setHeaderPhone(phone.value);
+      if (email?.value) setHeaderEmail(email.value);
+    }
+  };
   const navItems = [{
     name: 'Home',
     path: '/'
@@ -29,11 +50,11 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Phone className="h-4 w-4" />
-              <span>(61) 99999-9999</span>
+              <span>{headerPhone}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Mail className="h-4 w-4" />
-              <span>contato@umaautomacao.com.br</span>
+              <span>{headerEmail}</span>
             </div>
           </div>
           <div className="text-xs hidden lg:block">

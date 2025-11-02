@@ -423,29 +423,6 @@ const AdminCaseStudies = () => {
               />
             </div>
 
-            <div>
-              <label className="text-sm font-medium">URL da Imagem de Capa</label>
-              <Input
-                value={formData.cover_image_url}
-                onChange={(e) => setFormData({ ...formData, cover_image_url: e.target.value })}
-                placeholder="https://exemplo.com/imagem-capa.jpg"
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Esta imagem será usada como capa do card da case
-              </p>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">URL da Imagem (Legado)</label>
-              <Input
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                placeholder="https://exemplo.com/imagem.jpg"
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Usado como fallback caso não haja imagem de capa
-              </p>
-            </div>
 
             {/* Tecnologias */}
             <div>
@@ -594,6 +571,15 @@ const AdminCaseStudies = () => {
                                 onClick={() => removeImage(index)}
                               >
                                 <Trash2 className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={image.image_url === formData.cover_image_url ? 'default' : 'outline'}
+                                onClick={() => setFormData({ ...formData, cover_image_url: image.image_url })}
+                                title="Definir como capa"
+                              >
+                                <ImageIcon className="h-4 w-4" />
                               </Button>
                             </div>
                           </div>
