@@ -15,9 +15,7 @@ const Contact = () => {
           <h1 className="font-playfair text-5xl font-bold mb-4">
             Entre em Contato
           </h1>
-          <p className="font-lato text-xl max-w-3xl mx-auto">
-            Solicite uma consultoria gratuita e receba uma proposta personalizada para seu projeto de automação industrial.
-          </p>
+          <p className="font-lato text-xl max-w-3xl mx-auto">Solicite uma consultoria gratuita e receba uma proposta personalizada para seu projeto .</p>
         </div>
       </section>
 
@@ -99,14 +97,11 @@ const Contact = () => {
                   <p className="font-lato text-gray-600 mb-4">
                     Fale diretamente com nossos engenheiros para uma consultoria rápida
                   </p>
-                  <Button 
-                    className="bg-green-600 hover:bg-green-700 text-white w-full"
-                    onClick={() => {
-                      const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
-                      const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-                      window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-                    }}
-                  >
+                  <Button className="bg-green-600 hover:bg-green-700 text-white w-full" onClick={() => {
+                  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
+                  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+                  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                }}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Iniciar Conversa no WhatsApp
                   </Button>
