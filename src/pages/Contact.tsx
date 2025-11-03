@@ -29,9 +29,7 @@ const Contact = () => {
                 <h2 className="font-playfair text-3xl font-bold text-wine-900 mb-6">
                   Fale com Nossos Especialistas
                 </h2>
-                <p className="font-lato text-lg text-gray-700 mb-8">
-                  Nossa equipe de engenheiros certificados CREA está pronta para atender suas necessidades em automação industrial com soluções técnicas personalizadas.
-                </p>
+                <p className="font-lato text-lg text-gray-700 mb-8">Nossa equipe de engenheiros certificados CREA está pronta para atender suas necessidades com soluções técnicas personalizadas.</p>
               </div>
 
               {/* Contact Cards */}
