@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, FileText, Users, BarChart, Eye } from 'lucide-react';
+import { Settings, FileText, Users, BarChart, Eye, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import AdminServices from './AdminServices';
 import AdminCaseStudies from './AdminCaseStudies';
 import AdminSettings from './AdminSettings';
+import AdminAbout from './AdminAbout';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
@@ -42,7 +43,7 @@ const Admin = () => {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsList className="grid w-full grid-cols-6 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center space-x-2">
                 <BarChart className="h-4 w-4" />
                 <span>Dashboard</span>
@@ -54,6 +55,10 @@ const Admin = () => {
               <TabsTrigger value="cases" className="flex items-center space-x-2">
                 <FileText className="h-4 w-4" />
                 <span>Cases</span>
+              </TabsTrigger>
+              <TabsTrigger value="sobre" className="flex items-center space-x-2">
+                <Info className="h-4 w-4" />
+                <span>Sobre</span>
               </TabsTrigger>
               <TabsTrigger value="usuarios" className="flex items-center space-x-2">
                 <Users className="h-4 w-4" />
@@ -128,6 +133,10 @@ const Admin = () => {
 
             <TabsContent value="cases">
               <AdminCaseStudies />
+            </TabsContent>
+
+            <TabsContent value="sobre">
+              <AdminAbout />
             </TabsContent>
 
             <TabsContent value="usuarios">

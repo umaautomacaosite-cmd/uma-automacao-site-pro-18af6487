@@ -14,6 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_content: {
+        Row: {
+          content: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          section_key: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          section_key: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          section_key?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      about_stats: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          label: string
+          updated_at: string | null
+          value: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label: string
+          updated_at?: string | null
+          value: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          updated_at?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
+      about_timeline: {
+        Row: {
+          created_at: string | null
+          description: string
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          title: string
+          updated_at: string | null
+          year: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string | null
+          year: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string | null
+          year?: string
+        }
+        Relationships: []
+      }
+      about_values: {
+        Row: {
+          created_at: string | null
+          description: string
+          display_order: number | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       access_codes: {
         Row: {
           code: string

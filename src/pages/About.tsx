@@ -1,62 +1,102 @@
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Award, Users, MapPin, Target, Eye, Heart, CheckCircle, Calendar } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import * as LucideIcons from 'lucide-react';
+
+interface AboutContent {
+  section_key: string;
+  title: string;
+  content: string;
+}
+
+interface AboutValue {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface AboutTimeline {
+  year: string;
+  title: string;
+  description: string;
+}
+
+interface AboutStat {
+  value: string;
+  label: string;
+}
+
 const About = () => {
-  const values = [{
-    icon: Target,
-    title: "Excelência Técnica",
-    description: "Comprometimento com a qualidade e inovação em cada projeto entregue."
-  }, {
-    icon: Users,
-    title: "Equipe Especializada",
-    description: "Engenheiros certificados CREA com vasta experiência em automação industrial."
-  }, {
-    icon: CheckCircle,
-    title: "Conformidade Total",
-    description: "Aderência rigorosa às normas NRs, ISO e padrões internacionais."
-  }, {
-    icon: Heart,
-    title: "Relacionamento Duradouro",
-    description: "Parceria de longo prazo com nossos clientes e suporte contínuo."
-  }];
-  const timeline = [{
-    year: "2008",
-    title: "Fundação da Empresa",
-    description: "Início das atividades com foco em automação industrial."
-  }, {
-    year: "2012",
-    title: "Certificação ISO 9001",
-    description: "Primeira certificação de qualidade conquistada."
-  }, {
-    year: "2015",
-    title: "Expansão Nacional",
-    description: "Início do atendimento em todo território nacional."
-  }, {
-    year: "2018",
-    title: "1500+ Projetos",
-    description: "Marco de 1500 projetos entregues com sucesso."
-  }, {
-    year: "2020",
-    title: "Tecnologia Digital",
-    description: "Incorporação de tecnologias Industry 4.0."
-  }, {
-    year: "2024",
-    title: "Líder de Mercado",
-    description: "Reconhecimento como referência em automação industrial."
-  }];
-  return <div className="min-h-screen">
+  const [contents, setContents] = useState<Record<string, string>>({});
+  const [values, setValues] = useState<AboutValue[]>([]);
+  const [timeline, setTimeline] = useState<AboutTimeline[]>([]);
+  const [stats, setStats] = useState<AboutStat[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [contentsRes, valuesRes, timelineRes, statsRes] = await Promise.all([
+        supabase.from('about_content').select('*').eq('is_active', true),
+        supabase.from('about_values').select('*').eq('is_active', true).order('display_order'),
+        supabase.from('about_timeline').select('*').eq('is_active', true).order('display_order'),
+        supabase.from('about_stats').select('*').eq('is_active', true).order('display_order')
+      ]);
+
+      if (contentsRes.data) {
+        const contentMap: Record<string, string> = {};
+        contentsRes.data.forEach((item: AboutContent) => {
+          contentMap[item.section_key] = item.content;
+        });
+        setContents(contentMap);
+      }
+
+      if (valuesRes.data) setValues(valuesRes.data);
+      if (timelineRes.data) setTimeline(timelineRes.data);
+      if (statsRes.data) setStats(statsRes.data);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getIcon = (iconName: string) => {
+    const Icon = (LucideIcons as any)[iconName] || Target;
+    return Icon;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p>Carregando...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
       <Header />
       
       {/* Page Header */}
       <section className="bg-gradient-to-r from-wine-900 to-wine-700 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-playfair text-5xl font-bold mb-4">
-            Sobre a UMA AUTOMAÇÃO
+            {contents.hero_title || 'Sobre a UMA AUTOMAÇÃO'}
           </h1>
           <p className="font-lato text-xl max-w-3xl mx-auto">
-            Mais de 15 anos de experiência em soluções de automação industrial, com engenheiros certificados CREA e comprometimento total com a excelência técnica.
+            {contents.hero_subtitle || 'Mais de 15 anos de experiência em soluções de automação industrial.'}
           </p>
         </div>
       </section>
@@ -67,27 +107,29 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-playfair text-4xl font-bold text-wine-900 mb-6">
-                Nossa História
+                {contents.history_title || 'Nossa História'}
               </h2>
               <p className="font-lato text-lg text-gray-700 mb-6">
-                Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial para empresas de todos os portes. Nossa trajetória é marcada pela constante busca por inovação e qualidade.
+                {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
               </p>
               <p className="font-lato text-lg text-gray-700 mb-6">
-                Com uma equipe de engenheiros certificados CREA e técnicos especializados, desenvolvemos projetos que atendem rigorosamente às normas regulamentadoras NR-10, NR-12 e padrões internacionais ISO.
+                {contents.history_p2 || 'Com uma equipe de engenheiros certificados CREA e técnicos especializados, desenvolvemos projetos que atendem rigorosamente às normas regulamentadoras.'}
               </p>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-wine-50 rounded-lg">
-                  <div className="font-playfair text-3xl font-bold text-wine-900">1500+</div>
-                  <div className="font-lato text-sm text-gray-600">Projetos Entregues</div>
-                </div>
-                <div className="text-center p-4 bg-wine-50 rounded-lg">
-                  <div className="font-playfair text-3xl font-bold text-wine-900">25+</div>
-                  <div className="font-lato text-sm text-gray-600">Anos de Experiência</div>
-                </div>
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center p-4 bg-wine-50 rounded-lg">
+                    <div className="font-playfair text-3xl font-bold text-wine-900">{stat.value}</div>
+                    <div className="font-lato text-sm text-gray-600">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
             <div>
-              <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Escritório UMA AUTOMAÇÃO" className="rounded-lg shadow-lg" />
+              <img 
+                src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                alt="Escritório UMA AUTOMAÇÃO" 
+                className="rounded-lg shadow-lg" 
+              />
             </div>
           </div>
         </div>
@@ -102,7 +144,7 @@ const About = () => {
                 <Target className="h-12 w-12 text-wine-900 mx-auto mb-4" />
                 <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Missão</h3>
                 <p className="font-lato text-gray-700">
-                  Fornecer soluções em automação industrial com excelência técnica, garantindo segurança, eficiência e conformidade às normas regulamentadoras.
+                  {contents.mission || 'Fornecer soluções em automação industrial com excelência técnica.'}
                 </p>
               </CardContent>
             </Card>
@@ -112,7 +154,7 @@ const About = () => {
                 <Eye className="h-12 w-12 text-wine-900 mx-auto mb-4" />
                 <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Visão</h3>
                 <p className="font-lato text-gray-700">
-                  Ser a empresa de referência em automação industrial no Brasil, reconhecida pela qualidade técnica e inovação.
+                  {contents.vision || 'Ser a empresa de referência em automação industrial no Brasil.'}
                 </p>
               </CardContent>
             </Card>
@@ -122,7 +164,7 @@ const About = () => {
                 <Heart className="h-12 w-12 text-wine-900 mx-auto mb-4" />
                 <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Valores</h3>
                 <p className="font-lato text-gray-700">
-                  Ética, transparência, qualidade técnica, segurança no trabalho e comprometimento com resultados.
+                  {contents.values_summary || 'Ética, transparência, qualidade técnica, segurança no trabalho.'}
                 </p>
               </CardContent>
             </Card>
@@ -130,13 +172,18 @@ const About = () => {
 
           {/* Values Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                <CardContent>
-                  <value.icon className="h-10 w-10 text-wine-900 mx-auto mb-4" />
-                  <h4 className="font-lato font-semibold text-lg mb-2">{value.title}</h4>
-                  <p className="font-lato text-sm text-gray-600">{value.description}</p>
-                </CardContent>
-              </Card>)}
+            {values.map((value, index) => {
+              const IconComponent = getIcon(value.icon);
+              return (
+                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+                  <CardContent>
+                    <IconComponent className="h-10 w-10 text-wine-900 mx-auto mb-4" />
+                    <h4 className="font-lato font-semibold text-lg mb-2">{value.title}</h4>
+                    <p className="font-lato text-sm text-gray-600">{value.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -152,7 +199,8 @@ const About = () => {
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-wine-200"></div>
             
             <div className="space-y-12">
-              {timeline.map((event, index) => <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+              {timeline.map((event, index) => (
+                <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <Card className="p-6 hover:shadow-lg transition-shadow">
                       <CardContent>
@@ -169,7 +217,8 @@ const About = () => {
                   </div>
                   <div className="w-4 h-4 bg-wine-900 rounded-full border-4 border-white shadow-lg relative z-10"></div>
                   <div className="w-1/2"></div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -202,6 +251,8 @@ const About = () => {
       </section>
 
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default About;
