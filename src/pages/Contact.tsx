@@ -21,12 +21,14 @@ const contactSchema = z.object({
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState<any>(null);
+  const [whatsappNumber, setWhatsappNumber] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchContactInfo();
+    fetchWhatsappNumber();
   }, []);
 
   const fetchContactInfo = async () => {
@@ -37,6 +39,19 @@ const Contact = () => {
       console.error('Error fetching contact info:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWhatsappNumber = async () => {
+    try {
+      const { data } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'whatsapp_number')
+        .single();
+      if (data?.value) setWhatsappNumber(data.value);
+    } catch (error) {
+      console.error('Error fetching WhatsApp number:', error);
     }
   };
 
@@ -59,9 +74,19 @@ const Contact = () => {
       contactSchema.parse(data);
 
       // Insert into database
-      const { error } = await supabase.from('contact_messages').insert([data]);
+      const { error } = await supabase.from('contact_messages').insert([{
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        company: data.company || null,
+        service_type: data.service_type,
+        message: data.message,
+      }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       toast({
         title: 'Mensagem enviada!',
@@ -71,6 +96,7 @@ const Contact = () => {
       // Reset form
       e.currentTarget.reset();
     } catch (error) {
+      console.error('Form submission error:', error);
       if (error instanceof z.ZodError) {
         toast({
           title: 'Erro de validação',
@@ -174,7 +200,7 @@ const Contact = () => {
               )}
 
               {/* WhatsApp Button */}
-              {!loading && contactInfo && (
+              {!loading && whatsappNumber && (
                 <Card className="bg-green-50 border-green-200">
                   <CardContent className="p-6 text-center">
                     <MessageCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
@@ -186,7 +212,7 @@ const Contact = () => {
                       className="bg-green-600 hover:bg-green-700 text-white w-full" 
                       onClick={() => {
                         const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-                        window.open(`https://wa.me/${contactInfo.whatsapp_number}?text=${message}`, '_blank');
+                        window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />

@@ -29,7 +29,6 @@ interface ContactInfo {
   email: string;
   address: string;
   business_hours: any;
-  whatsapp_number: string;
   map_embed_url: string;
 }
 
@@ -96,7 +95,6 @@ const AdminContato = () => {
       phone: formData.get('phone') as string,
       email: formData.get('email') as string,
       address: formData.get('address') as string,
-      whatsapp_number: formData.get('whatsapp_number') as string,
       map_embed_url: formData.get('map_embed_url') as string,
       business_hours: businessHours,
     };
@@ -227,17 +225,6 @@ const AdminContato = () => {
                 name="address"
                 defaultValue={contactInfo?.address}
                 placeholder="Rua, número, bairro, cidade - Estado"
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="whatsapp_number">Número WhatsApp (com código do país)</Label>
-              <Input
-                id="whatsapp_number"
-                name="whatsapp_number"
-                defaultValue={contactInfo?.whatsapp_number}
-                placeholder="5561999999999"
                 required
               />
             </div>
