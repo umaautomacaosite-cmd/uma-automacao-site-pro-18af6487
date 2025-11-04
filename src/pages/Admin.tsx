@@ -12,6 +12,7 @@ import AdminServices from './AdminServices';
 import AdminCaseStudies from './AdminCaseStudies';
 import AdminSettings from './AdminSettings';
 import AdminAbout from './AdminAbout';
+import AdminContato from './AdminContato';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
@@ -43,7 +44,7 @@ const Admin = () => {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsList className="grid w-full grid-cols-7 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center space-x-2">
                 <BarChart className="h-4 w-4" />
                 <span>Dashboard</span>
@@ -59,6 +60,10 @@ const Admin = () => {
               <TabsTrigger value="sobre" className="flex items-center space-x-2">
                 <Info className="h-4 w-4" />
                 <span>Sobre</span>
+              </TabsTrigger>
+              <TabsTrigger value="contato" className="flex items-center space-x-2">
+                <Info className="h-4 w-4" />
+                <span>Contato</span>
               </TabsTrigger>
               <TabsTrigger value="usuarios" className="flex items-center space-x-2">
                 <Users className="h-4 w-4" />
@@ -137,6 +142,10 @@ const Admin = () => {
 
             <TabsContent value="sobre">
               <AdminAbout />
+            </TabsContent>
+
+            <TabsContent value="contato">
+              <AdminContato />
             </TabsContent>
 
             <TabsContent value="usuarios">

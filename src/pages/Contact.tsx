@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,7 +6,88 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, 'Nome é obrigatório').max(100),
+  email: z.string().trim().email('Email inválido').max(255),
+  phone: z.string().trim().min(1, 'Telefone é obrigatório').max(20),
+  company: z.string().trim().max(100).optional(),
+  service_type: z.string().min(1, 'Selecione um tipo de serviço'),
+  message: z.string().trim().min(1, 'Mensagem é obrigatória').max(2000),
+});
+
 const Contact = () => {
+  const [contactInfo, setContactInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      const { data } = await supabase.from('contact_info').select('*').single();
+      if (data) setContactInfo(data);
+    } catch (error) {
+      console.error('Error fetching contact info:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      company: formData.get('company') as string,
+      service_type: formData.get('service_type') as string,
+      message: formData.get('message') as string,
+    };
+
+    try {
+      // Validate data
+      contactSchema.parse(data);
+
+      // Insert into database
+      const { error } = await supabase.from('contact_messages').insert([data]);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Mensagem enviada!',
+        description: 'Responderemos em breve. Obrigado pelo contato!',
+      });
+
+      // Reset form
+      e.currentTarget.reset();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: 'Erro de validação',
+          description: error.errors[0].message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Erro ao enviar',
+          description: 'Não foi possível enviar a mensagem. Tente novamente.',
+          variant: 'destructive',
+        });
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return <div className="min-h-screen">
       <Header />
       
@@ -33,78 +115,86 @@ const Contact = () => {
               </div>
 
               {/* Contact Cards */}
-              <div className="space-y-4">
-                <Card className="border-l-4 border-l-wine-900">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <Phone className="h-8 w-8 text-wine-900" />
-                      <div>
-                        <h3 className="font-lato font-semibold text-lg">Telefone</h3>
-                        <p className="font-lato text-gray-600">(61) 99999-9999</p>
-                        <p className="font-lato text-sm text-gray-500">Atendimento comercial</p>
+              {!loading && contactInfo && (
+                <div className="space-y-4">
+                  <Card className="border-l-4 border-l-wine-900">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <Phone className="h-8 w-8 text-wine-900" />
+                        <div>
+                          <h3 className="font-lato font-semibold text-lg">Telefone</h3>
+                          <p className="font-lato text-gray-600">{contactInfo.phone}</p>
+                          <p className="font-lato text-sm text-gray-500">Atendimento comercial</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card className="border-l-4 border-l-wine-900">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <Mail className="h-8 w-8 text-wine-900" />
-                      <div>
-                        <h3 className="font-lato font-semibold text-lg">E-mail</h3>
-                        <p className="font-lato text-gray-600">contato@umaautomacao.com.br</p>
-                        <p className="font-lato text-sm text-gray-500">Resposta em até 2 horas</p>
+                  <Card className="border-l-4 border-l-wine-900">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <Mail className="h-8 w-8 text-wine-900" />
+                        <div>
+                          <h3 className="font-lato font-semibold text-lg">E-mail</h3>
+                          <p className="font-lato text-gray-600">{contactInfo.email}</p>
+                          <p className="font-lato text-sm text-gray-500">Resposta em até 2 horas</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card className="border-l-4 border-l-wine-900">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <MapPin className="h-8 w-8 text-wine-900" />
-                      <div>
-                        <h3 className="font-lato font-semibold text-lg">Endereço</h3>
-                        <p className="font-lato text-gray-600">Av. Paulista, 1000 - Sala 1501</p>
-                        <p className="font-lato text-gray-600">Brasília, DF - CEP: 01310-100</p>
+                  <Card className="border-l-4 border-l-wine-900">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <MapPin className="h-8 w-8 text-wine-900" />
+                        <div>
+                          <h3 className="font-lato font-semibold text-lg">Endereço</h3>
+                          <p className="font-lato text-gray-600">{contactInfo.address}</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                <Card className="border-l-4 border-l-wine-900">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <Clock className="h-8 w-8 text-wine-900" />
-                      <div>
-                        <h3 className="font-lato font-semibold text-lg">Horário de Atendimento</h3>
-                        <p className="font-lato text-gray-600">Segunda a Sexta: 7h às 17h</p>
-                        <p className="font-lato text-gray-600">Sábado: 8h às 12h</p>
+                  <Card className="border-l-4 border-l-wine-900">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <Clock className="h-8 w-8 text-wine-900" />
+                        <div>
+                          <h3 className="font-lato font-semibold text-lg">Horário de Atendimento</h3>
+                          {contactInfo.business_hours?.map((hour: any, idx: number) => (
+                            <p key={idx} className="font-lato text-gray-600">
+                              {hour.day}: {hour.hours}
+                            </p>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
 
               {/* WhatsApp Button */}
-              <Card className="bg-green-50 border-green-200">
-                <CardContent className="p-6 text-center">
-                  <MessageCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="font-lato font-semibold text-lg mb-2">Atendimento via WhatsApp</h3>
-                  <p className="font-lato text-gray-600 mb-4">
-                    Fale diretamente com nossos engenheiros para uma consultoria rápida
-                  </p>
-                  <Button className="bg-green-600 hover:bg-green-700 text-white w-full" onClick={() => {
-                  const whatsappNumber = localStorage.getItem('whatsappNumber') || '5511999999999';
-                  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-                  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-                }}>
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Iniciar Conversa no WhatsApp
-                  </Button>
-                </CardContent>
-              </Card>
+              {!loading && contactInfo && (
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="p-6 text-center">
+                    <MessageCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                    <h3 className="font-lato font-semibold text-lg mb-2">Atendimento via WhatsApp</h3>
+                    <p className="font-lato text-gray-600 mb-4">
+                      Fale diretamente com nossos engenheiros para uma consultoria rápida
+                    </p>
+                    <Button 
+                      className="bg-green-600 hover:bg-green-700 text-white w-full" 
+                      onClick={() => {
+                        const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+                        window.open(`https://wa.me/${contactInfo.whatsapp_number}?text=${message}`, '_blank');
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Iniciar Conversa no WhatsApp
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Contact Form */}
@@ -115,65 +205,84 @@ const Contact = () => {
                     Solicitar Orçamento
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Nome Completo</label>
-                      <Input placeholder="Seu nome completo" />
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="font-lato font-medium text-sm mb-2 block">Nome Completo *</label>
+                        <Input name="name" placeholder="Seu nome completo" required />
+                      </div>
+                      <div>
+                        <label className="font-lato font-medium text-sm mb-2 block">Empresa</label>
+                        <Input name="company" placeholder="Nome da empresa" />
+                      </div>
                     </div>
-                    <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Empresa</label>
-                      <Input placeholder="Nome da empresa" />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="font-lato font-medium text-sm mb-2 block">E-mail *</label>
+                        <Input name="email" type="email" placeholder="seu@email.com" required />
+                      </div>
+                      <div>
+                        <label className="font-lato font-medium text-sm mb-2 block">Telefone *</label>
+                        <Input name="phone" placeholder="(11) 99999-9999" required />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">E-mail</label>
-                      <Input type="email" placeholder="seu@email.com" />
+                      <label className="font-lato font-medium text-sm mb-2 block">Tipo de Serviço *</label>
+                      <select 
+                        name="service_type"
+                        className="w-full p-3 border border-input rounded-md font-lato bg-background"
+                        required
+                      >
+                        <option value="">Selecione o tipo de serviço</option>
+                        <option value="Redes e Infraestrutura">Redes e Infraestrutura</option>
+                        <option value="Energia e Elétrica">Energia e Elétrica</option>
+                        <option value="Automação Industrial">Automação Industrial</option>
+                        <option value="Segurança Industrial">Segurança Industrial</option>
+                        <option value="Data Center">Data Center</option>
+                        <option value="Outro">Outro</option>
+                      </select>
                     </div>
+
                     <div>
-                      <label className="font-lato font-medium text-sm mb-2 block">Telefone</label>
-                      <Input placeholder="(11) 99999-9999" />
+                      <label className="font-lato font-medium text-sm mb-2 block">Descrição do Projeto *</label>
+                      <Textarea 
+                        name="message"
+                        placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..." 
+                        rows={6}
+                        required
+                      />
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="font-lato font-medium text-sm mb-2 block">Tipo de Serviço</label>
-                    <select className="w-full p-3 border border-gray-300 rounded-md font-lato">
-                      <option>Selecione o tipo de serviço</option>
-                      <option>Redes e Infraestrutura</option>
-                      <option>Energia e Elétrica</option>
-                      <option>Automação Industrial</option>
-                      <option>Segurança Industrial</option>
-                      <option>Data Center</option>
-                      <option>Outro</option>
-                    </select>
-                  </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <h4 className="font-lato font-semibold text-sm mb-2">Informações Importantes:</h4>
+                      <ul className="font-lato text-xs text-muted-foreground space-y-1">
+                        <li>• Todos os projetos são assinados por engenheiros CREA</li>
+                        <li>• Compliance total com normas NR-10, NR-12 e ISO 9001</li>
+                        <li>• Atendimento em todo o território nacional</li>
+                        <li>• Orçamento gratuito e sem compromisso</li>
+                      </ul>
+                    </div>
 
-                  <div>
-                    <label className="font-lato font-medium text-sm mb-2 block">Descrição do Projeto</label>
-                    <Textarea placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..." rows={6} />
-                  </div>
+                    <Button 
+                      type="submit"
+                      disabled={submitting}
+                      className="bg-wine-900 hover:bg-wine-800 text-white w-full font-lato font-semibold py-3"
+                    >
+                      {submitting ? 'Enviando...' : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Enviar Solicitação de Orçamento
+                        </>
+                      )}
+                    </Button>
 
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-lato font-semibold text-sm mb-2">Informações Importantes:</h4>
-                    <ul className="font-lato text-xs text-gray-600 space-y-1">
-                      <li>• Todos os projetos são assinados por engenheiros CREA</li>
-                      <li>• Compliance total com normas NR-10, NR-12 e ISO 9001</li>
-                      <li>• Atendimento em todo o território nacional</li>
-                      <li>• Orçamento gratuito e sem compromisso</li>
-                    </ul>
-                  </div>
-
-                  <Button className="bg-wine-900 hover:bg-wine-800 text-white w-full font-lato font-semibold py-3">
-                    <Send className="mr-2 h-4 w-4" />
-                    Enviar Solicitação de Orçamento
-                  </Button>
-
-                  <p className="font-lato text-xs text-gray-500 text-center">
-                    Responderemos sua solicitação em até 2 horas úteis
-                  </p>
+                    <p className="font-lato text-xs text-muted-foreground text-center">
+                      Responderemos sua solicitação em até 2 horas úteis
+                    </p>
+                  </form>
                 </CardContent>
               </Card>
             </div>
@@ -182,18 +291,32 @@ const Contact = () => {
       </section>
 
       {/* Map Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <h2 className="font-playfair text-3xl font-bold text-center text-wine-900 mb-8">
             Nossa Localização
           </h2>
-          <div className="bg-gray-300 h-96 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="h-16 w-16 text-wine-900 mx-auto mb-4" />
-              <p className="font-lato text-lg text-gray-700">Mapa Interativo</p>
-              <p className="font-lato text-sm text-gray-600">Av. Paulista, 1000 - Brasília, DF</p>
+          {!loading && contactInfo?.map_embed_url ? (
+            <div className="rounded-lg overflow-hidden shadow-lg h-96">
+              <iframe
+                src={contactInfo.map_embed_url}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
-          </div>
+          ) : (
+            <div className="bg-muted h-96 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="h-16 w-16 text-wine-900 mx-auto mb-4" />
+                <p className="font-lato text-lg">Mapa será exibido aqui</p>
+                <p className="font-lato text-sm text-muted-foreground">Configure no painel admin</p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

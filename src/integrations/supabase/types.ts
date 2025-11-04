@@ -304,6 +304,87 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_info: {
+        Row: {
+          address: string
+          business_hours: Json
+          created_at: string | null
+          email: string
+          id: string
+          map_embed_url: string | null
+          map_latitude: number | null
+          map_longitude: number | null
+          phone: string
+          updated_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          address: string
+          business_hours?: Json
+          created_at?: string | null
+          email: string
+          id?: string
+          map_embed_url?: string | null
+          map_latitude?: number | null
+          map_longitude?: number | null
+          phone: string
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          address?: string
+          business_hours?: Json
+          created_at?: string | null
+          email?: string
+          id?: string
+          map_embed_url?: string | null
+          map_latitude?: number | null
+          map_longitude?: number | null
+          phone?: string
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          company: string | null
+          created_at: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string
+          service_type: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone: string
+          service_type: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string
+          service_type?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           applications: Json | null
