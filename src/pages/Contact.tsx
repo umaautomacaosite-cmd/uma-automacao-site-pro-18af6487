@@ -94,7 +94,9 @@ const Contact = () => {
       });
 
       // Reset form
-      e.currentTarget.reset();
+      if (e.currentTarget) {
+        e.currentTarget.reset();
+      }
     } catch (error) {
       console.error('Form submission error:', error);
       if (error instanceof z.ZodError) {

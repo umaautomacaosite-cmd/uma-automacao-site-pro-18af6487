@@ -91,11 +91,21 @@ const AdminContato = () => {
     setSaving(true);
 
     const formData = new FormData(e.currentTarget);
+    let mapEmbedUrl = formData.get('map_embed_url') as string;
+    
+    // Extrair URL do src se o usuário colar o HTML completo do iframe
+    if (mapEmbedUrl && mapEmbedUrl.includes('<iframe')) {
+      const srcMatch = mapEmbedUrl.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        mapEmbedUrl = srcMatch[1];
+      }
+    }
+    
     const data = {
       phone: formData.get('phone') as string,
       email: formData.get('email') as string,
       address: formData.get('address') as string,
-      map_embed_url: formData.get('map_embed_url') as string,
+      map_embed_url: mapEmbedUrl,
       business_hours: businessHours,
     };
 
@@ -268,11 +278,11 @@ const AdminContato = () => {
                 id="map_embed_url"
                 name="map_embed_url"
                 defaultValue={contactInfo?.map_embed_url}
-                placeholder="Cole aqui a URL de embed do Google Maps"
+                placeholder='Exemplo: https://www.google.com/maps/embed?pb=!1m18!1m12...'
                 rows={3}
               />
               <p className="text-sm text-muted-foreground mt-1">
-                Acesse Google Maps, clique em Compartilhar → Incorporar mapa → Copiar HTML
+                Acesse Google Maps, clique em Compartilhar → Incorporar mapa → Copiar HTML e cole APENAS a URL que está dentro do src="..."
               </p>
             </div>
 

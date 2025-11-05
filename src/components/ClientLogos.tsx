@@ -52,7 +52,7 @@ const ClientLogos = () => {
             const IconComponent = getIconComponent(client.icon_fallback);
             const content = (
               <>
-                {client.logo_url ? (
+                {client.logo_url && client.logo_url.trim() !== '' ? (
                   <img 
                     src={client.logo_url} 
                     alt={client.company_name}
