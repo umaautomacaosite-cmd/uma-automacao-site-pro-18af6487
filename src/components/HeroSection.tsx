@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 const HeroSection = () => {
   const [heroImage, setHeroImage] = useState(datacenterHero);
-  
   useEffect(() => {
     loadHeroImage();
   }, []);
@@ -27,9 +26,7 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto">
-          <h1 className="font-playfair text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in">
-            Soluções em Automação Industrial e Infraestrutura de 
-            <span className="text-gold-500"> Alta Performance</span>
+          <h1 className="font-playfair text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in">Soluções em Automação Predial e Infraestrutura de Alta Performance<span className="text-gold-500"> Alta Performance</span>
           </h1>
           
           <p className="font-lato text-xl md:text-2xl mb-6 text-gray-100 max-w-3xl mx-auto animate-fade-in" style={{
