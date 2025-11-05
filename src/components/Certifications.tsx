@@ -9,7 +9,7 @@ const Certifications = () => {
       icon: Shield,
       title: "CREA/DF",
       subtitle: "Registro: 123456",
-      color: "text-wine-900"
+      color: "text-blue-400"
     },
     {
       icon: Award,

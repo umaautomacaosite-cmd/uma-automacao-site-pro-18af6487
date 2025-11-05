@@ -57,13 +57,22 @@ const FeaturedCases = () => {
           {cases.map((caseItem, index) => (
             <Card 
               key={caseItem.id} 
-              className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 ${
+              className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden ${
                 isIntersecting 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-10'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
+              {caseItem.cover_image_url && (
+                <div className="w-full h-48 overflow-hidden">
+                  <img 
+                    src={caseItem.cover_image_url} 
+                    alt={caseItem.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              )}
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
                   <Badge className="bg-wine-900">{caseItem.sector}</Badge>

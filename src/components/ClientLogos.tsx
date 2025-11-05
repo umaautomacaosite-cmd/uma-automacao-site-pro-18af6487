@@ -56,7 +56,7 @@ const ClientLogos = () => {
                   <img 
                     src={client.logo_url} 
                     alt={client.company_name}
-                    className="h-12 w-12 object-contain mb-2"
+                    className="h-20 w-20 object-contain mb-2"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
@@ -64,19 +64,19 @@ const ClientLogos = () => {
                       if (parent && !parent.querySelector('svg')) {
                         const IconFallback = getIconComponent(client.icon_fallback);
                         const iconWrapper = document.createElement('div');
-                        iconWrapper.className = 'h-12 w-12 flex items-center justify-center mb-2';
+                        iconWrapper.className = 'h-20 w-20 flex items-center justify-center mb-2';
                         parent.insertBefore(iconWrapper, target);
                         
                         // Render the icon using React
                         import('react-dom/client').then(({ createRoot }) => {
                           const root = createRoot(iconWrapper);
-                          root.render(<IconFallback className="h-8 w-8 text-gold-500" />);
+                          root.render(<IconFallback className="h-16 w-16 text-gold-500" />);
                         });
                       }
                     }}
                   />
                 ) : (
-                  <IconComponent className="h-12 w-12 text-gold-500 mb-2" />
+                  <IconComponent className="h-20 w-20 text-gold-500 mb-2" />
                 )}
                 <span className="font-lato text-white text-sm font-semibold text-center">{client.company_name}</span>
               </>

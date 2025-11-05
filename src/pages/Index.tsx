@@ -7,6 +7,7 @@ import ClientLogos from '@/components/ClientLogos';
 import HowItWorks from '@/components/HowItWorks';
 import FeaturedCases from '@/components/FeaturedCases';
 import Certifications from '@/components/Certifications';
+import AboutSection from '@/components/AboutSection';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
@@ -95,6 +96,9 @@ const Index = () => {
       <Header />
       <HeroSection />
       <WhatsAppButton />
+      
+      {/* About Section */}
+      <AboutSection />
       
       {/* Services Overview */}
       <section className="py-20 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50">
@@ -204,7 +208,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-white hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
+                  className="border-white bg-white/10 hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
                 >
                   Falar com Especialista
                 </Button>
