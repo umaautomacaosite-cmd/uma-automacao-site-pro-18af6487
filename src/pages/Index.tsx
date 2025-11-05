@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 import { useCountUp } from '@/hooks/useCountUp';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any; value: number } }) => {
   const { count, ref } = useCountUp(stat.value, 2000);
@@ -31,6 +33,19 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
 
 const Index = () => {
   const { ref: servicesRef, isIntersecting: servicesVisible } = useIntersectionObserver({ threshold: 0.1 });
+  const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+
+  useEffect(() => {
+    const fetchWhatsappNumber = async () => {
+      const { data } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'whatsapp_number')
+        .single();
+      if (data?.value) setWhatsappNumber(data.value);
+    };
+    fetchWhatsappNumber();
+  }, []);
 
   const services = [{
     icon: Network,
@@ -180,19 +195,21 @@ const Index = () => {
                 Solicitar Orçamento Gratuito
               </Button>
             </Link>
-            <a 
-              href="https://wa.me/5561999999999?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial."
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
+            {whatsappNumber && (
+              <a 
+                href={`https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial.`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Falar com Especialista
-              </Button>
-            </a>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-white hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
+                >
+                  Falar com Especialista
+                </Button>
+              </a>
+            )}
           </div>
         </div>
       </section>

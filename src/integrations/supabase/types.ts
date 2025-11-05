@@ -281,6 +281,7 @@ export type Database = {
           is_active: boolean | null
           logo_url: string
           updated_at: string | null
+          website_url: string | null
         }
         Insert: {
           company_name: string
@@ -291,6 +292,7 @@ export type Database = {
           is_active?: boolean | null
           logo_url: string
           updated_at?: string | null
+          website_url?: string | null
         }
         Update: {
           company_name?: string
@@ -301,6 +303,7 @@ export type Database = {
           is_active?: boolean | null
           logo_url?: string
           updated_at?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }

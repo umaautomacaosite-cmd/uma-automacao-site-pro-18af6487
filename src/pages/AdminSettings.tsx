@@ -20,6 +20,7 @@ interface ClientLogo {
   display_order: number;
   is_active: boolean;
   icon_fallback?: string;
+  website_url?: string;
 }
 
 const AdminSettings = () => {
@@ -30,7 +31,8 @@ const AdminSettings = () => {
     company_name: '',
     logo_url: '',
     display_order: 0,
-    icon_fallback: 'Building2'
+    icon_fallback: 'Building2',
+    website_url: ''
   });
   const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -178,7 +180,8 @@ const AdminSettings = () => {
         company_name: newLogo.company_name,
         logo_url: newLogo.logo_url || '',
         display_order: newLogo.display_order,
-        icon_fallback: newLogo.icon_fallback
+        icon_fallback: newLogo.icon_fallback,
+        website_url: newLogo.website_url || null
       }]);
 
     if (error) {
@@ -187,7 +190,7 @@ const AdminSettings = () => {
     }
 
     toast.success('Logo adicionado!');
-    setNewLogo({ company_name: '', logo_url: '', display_order: 0, icon_fallback: 'Building2' });
+    setNewLogo({ company_name: '', logo_url: '', display_order: 0, icon_fallback: 'Building2', website_url: '' });
     setLogoFile(null);
     loadClientLogos();
   };
@@ -466,6 +469,18 @@ const AdminSettings = () => {
                   </Select>
                 </div>
               )}
+              
+              <div>
+                <label className="text-sm font-medium block mb-2">URL do Website (opcional)</label>
+                <Input
+                  placeholder="https://www.empresa.com.br"
+                  value={newLogo.website_url}
+                  onChange={(e) => setNewLogo({ ...newLogo, website_url: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Se preenchido, ao clicar no logo o usuário será redirecionado para este site
+                </p>
+              </div>
             </div>
             
             <Button onClick={handleAddLogo}>
@@ -485,17 +500,32 @@ const AdminSettings = () => {
                   <Card key={logo.id} className={!logo.is_active ? 'opacity-60' : ''}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
-                        <img
-                          src={logo.logo_url}
-                          alt={logo.company_name}
-                          className="w-16 h-16 object-contain rounded border"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=Logo';
-                          }}
-                        />
+                        {logo.logo_url ? (
+                          <img
+                            src={logo.logo_url}
+                            alt={logo.company_name}
+                            className="w-16 h-16 object-contain rounded border"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=Logo';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-16 h-16 flex items-center justify-center rounded border">
+                            <Building2 className="h-8 w-8 text-gold-500" />
+                          </div>
+                        )}
                         <div className="flex-1">
                           <h4 className="font-semibold">{logo.company_name}</h4>
-                          <p className="text-xs text-muted-foreground">{logo.logo_url}</p>
+                          {logo.website_url && (
+                            <a 
+                              href={logo.website_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-xs text-wine-700 hover:underline"
+                            >
+                              {logo.website_url}
+                            </a>
+                          )}
                           <div className="flex gap-2 mt-1">
                             <Badge variant="outline">Ordem: {logo.display_order}</Badge>
                             {logo.is_active ? (

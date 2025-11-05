@@ -5,13 +5,8 @@ import datacenterHero from '@/assets/datacenter-hero.jpg';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 const HeroSection = () => {
-  const [scrollY, setScrollY] = useState(0);
   const [heroImage, setHeroImage] = useState(datacenterHero);
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  
   useEffect(() => {
     loadHeroImage();
   }, []);
@@ -24,10 +19,9 @@ const HeroSection = () => {
     }
   };
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Blue Overlay and Parallax */}
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100" style={{
-      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${heroImage}')`,
-      transform: `translateY(${scrollY * 0.5}px)`
+      {/* Background Image with Blue Overlay */}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed" style={{
+      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${heroImage}')`
     }} />
       
       {/* Content */}

@@ -8,6 +8,7 @@ interface ClientLogo {
   logo_url: string;
   display_order: number;
   icon_fallback?: string;
+  website_url?: string;
 }
 
 const ClientLogos = () => {
@@ -49,11 +50,8 @@ const ClientLogos = () => {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8 items-center">
           {clients.map((client) => {
             const IconComponent = getIconComponent(client.icon_fallback);
-            return (
-              <div 
-                key={client.id} 
-                className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300"
-              >
+            const content = (
+              <>
                 {client.logo_url ? (
                   <img 
                     src={client.logo_url} 
@@ -81,6 +79,25 @@ const ClientLogos = () => {
                   <IconComponent className="h-12 w-12 text-gold-500 mb-2" />
                 )}
                 <span className="font-lato text-white text-sm font-semibold text-center">{client.company_name}</span>
+              </>
+            );
+
+            return client.website_url ? (
+              <a
+                key={client.id}
+                href={client.website_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer"
+              >
+                {content}
+              </a>
+            ) : (
+              <div 
+                key={client.id} 
+                className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300"
+              >
+                {content}
               </div>
             );
           })}
