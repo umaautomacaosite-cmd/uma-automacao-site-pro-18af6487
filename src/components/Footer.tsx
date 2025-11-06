@@ -73,7 +73,7 @@ const Footer = () => {
             <h3 className="font-lato font-semibold text-lg mb-4">Certificações</h3>
             <div className="space-y-3">
               <div className="bg-gray-800 p-3 rounded border border-wine-400">
-                <div className="font-semibold text-wine-400">CREA/DF</div>
+                <div className="font-semibold text-wine-400">CREA</div>
                 <div className="text-sm text-gray-300">
               </div>
               </div>
