@@ -9,31 +9,31 @@ import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
-
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Nome é obrigatório').max(100),
   email: z.string().trim().email('Email inválido').max(255),
   phone: z.string().trim().min(1, 'Telefone é obrigatório').max(20),
   company: z.string().trim().max(100).optional(),
   service_type: z.string().min(1, 'Selecione um tipo de serviço'),
-  message: z.string().trim().min(1, 'Mensagem é obrigatória').max(2000),
+  message: z.string().trim().min(1, 'Mensagem é obrigatória').max(2000)
 });
-
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState<any>(null);
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   useEffect(() => {
     fetchContactInfo();
     fetchWhatsappNumber();
   }, []);
-
   const fetchContactInfo = async () => {
     try {
-      const { data } = await supabase.from('contact_info').select('*').single();
+      const {
+        data
+      } = await supabase.from('contact_info').select('*').single();
       if (data) setContactInfo(data);
     } catch (error) {
       console.error('Error fetching contact info:', error);
@@ -41,24 +41,19 @@ const Contact = () => {
       setLoading(false);
     }
   };
-
   const fetchWhatsappNumber = async () => {
     try {
-      const { data } = await supabase
-        .from('settings')
-        .select('value')
-        .eq('key', 'whatsapp_number')
-        .single();
+      const {
+        data
+      } = await supabase.from('settings').select('value').eq('key', 'whatsapp_number').single();
       if (data?.value) setWhatsappNumber(data.value);
     } catch (error) {
       console.error('Error fetching WhatsApp number:', error);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-
     const formData = new FormData(e.currentTarget);
     const data = {
       name: formData.get('name') as string,
@@ -66,31 +61,30 @@ const Contact = () => {
       phone: formData.get('phone') as string,
       company: formData.get('company') as string,
       service_type: formData.get('service_type') as string,
-      message: formData.get('message') as string,
+      message: formData.get('message') as string
     };
-
     try {
       // Validate data
       contactSchema.parse(data);
 
       // Insert into database
-      const { error } = await supabase.from('contact_messages').insert([{
+      const {
+        error
+      } = await supabase.from('contact_messages').insert([{
         name: data.name,
         email: data.email,
         phone: data.phone,
         company: data.company || null,
         service_type: data.service_type,
-        message: data.message,
+        message: data.message
       }]);
-
       if (error) {
         console.error('Database error:', error);
         throw error;
       }
-
       toast({
         title: 'Mensagem enviada!',
-        description: 'Responderemos em breve. Obrigado pelo contato!',
+        description: 'Responderemos em breve. Obrigado pelo contato!'
       });
 
       // Reset form
@@ -103,13 +97,13 @@ const Contact = () => {
         toast({
           title: 'Erro de validação',
           description: error.errors[0].message,
-          variant: 'destructive',
+          variant: 'destructive'
         });
       } else {
         toast({
           title: 'Erro ao enviar',
           description: 'Não foi possível enviar a mensagem. Tente novamente.',
-          variant: 'destructive',
+          variant: 'destructive'
         });
       }
     } finally {
@@ -143,8 +137,7 @@ const Contact = () => {
               </div>
 
               {/* Contact Cards */}
-              {!loading && contactInfo && (
-                <div className="space-y-4">
+              {!loading && contactInfo && <div className="space-y-4">
                   <Card className="border-l-4 border-l-wine-900">
                     <CardContent className="p-6">
                       <div className="flex items-center space-x-4">
@@ -189,40 +182,32 @@ const Contact = () => {
                         <Clock className="h-8 w-8 text-wine-900" />
                         <div>
                           <h3 className="font-lato font-semibold text-lg">Horário de Atendimento</h3>
-                          {contactInfo.business_hours?.map((hour: any, idx: number) => (
-                            <p key={idx} className="font-lato text-gray-600">
+                          {contactInfo.business_hours?.map((hour: any, idx: number) => <p key={idx} className="font-lato text-gray-600">
                               {hour.day}: {hour.hours}
-                            </p>
-                          ))}
+                            </p>)}
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              )}
+                </div>}
 
               {/* WhatsApp Button */}
-              {!loading && whatsappNumber && (
-                <Card className="bg-green-50 border-green-200">
+              {!loading && whatsappNumber && <Card className="bg-green-50 border-green-200">
                   <CardContent className="p-6 text-center">
                     <MessageCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
                     <h3 className="font-lato font-semibold text-lg mb-2">Atendimento via WhatsApp</h3>
                     <p className="font-lato text-gray-600 mb-4">
                       Fale diretamente com nossos engenheiros para uma consultoria rápida
                     </p>
-                    <Button 
-                      className="bg-green-600 hover:bg-green-700 text-white w-full" 
-                      onClick={() => {
-                        const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
-                        window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-                      }}
-                    >
+                    <Button className="bg-green-600 hover:bg-green-700 text-white w-full" onClick={() => {
+                  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+                  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                }}>
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Iniciar Conversa no WhatsApp
                     </Button>
                   </CardContent>
-                </Card>
-              )}
+                </Card>}
             </div>
 
             {/* Contact Form */}
@@ -259,11 +244,7 @@ const Contact = () => {
 
                     <div>
                       <label className="font-lato font-medium text-sm mb-2 block">Tipo de Serviço *</label>
-                      <select 
-                        name="service_type"
-                        className="w-full p-3 border border-input rounded-md font-lato bg-background"
-                        required
-                      >
+                      <select name="service_type" className="w-full p-3 border border-input rounded-md font-lato bg-background" required>
                         <option value="">Selecione o tipo de serviço</option>
                         <option value="Redes e Infraestrutura">Redes e Infraestrutura</option>
                         <option value="Energia e Elétrica">Energia e Elétrica</option>
@@ -276,12 +257,7 @@ const Contact = () => {
 
                     <div>
                       <label className="font-lato font-medium text-sm mb-2 block">Descrição do Projeto *</label>
-                      <Textarea 
-                        name="message"
-                        placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..." 
-                        rows={6}
-                        required
-                      />
+                      <Textarea name="message" placeholder="Descreva detalhadamente seu projeto, necessidades específicas, localização e prazo desejado..." rows={6} required />
                     </div>
 
                     <div className="bg-muted p-4 rounded-lg">
@@ -294,22 +270,14 @@ const Contact = () => {
                       </ul>
                     </div>
 
-                    <Button 
-                      type="submit"
-                      disabled={submitting}
-                      className="bg-wine-900 hover:bg-wine-800 text-white w-full font-lato font-semibold py-3"
-                    >
-                      {submitting ? 'Enviando...' : (
-                        <>
+                    <Button type="submit" disabled={submitting} className="bg-wine-900 hover:bg-wine-800 text-white w-full font-lato font-semibold py-3">
+                      {submitting ? 'Enviando...' : <>
                           <Send className="mr-2 h-4 w-4" />
                           Enviar Solicitação de Orçamento
-                        </>
-                      )}
+                        </>}
                     </Button>
 
-                    <p className="font-lato text-xs text-muted-foreground text-center">
-                      Responderemos sua solicitação em até 2 horas úteis
-                    </p>
+                    <p className="font-lato text-xs text-muted-foreground text-center">Responderemos sua solicitação em breve</p>
                   </form>
                 </CardContent>
               </Card>
@@ -324,27 +292,17 @@ const Contact = () => {
           <h2 className="font-playfair text-3xl font-bold text-center text-wine-900 mb-8">
             Nossa Localização
           </h2>
-          {!loading && contactInfo?.map_embed_url ? (
-            <div className="rounded-lg overflow-hidden shadow-lg h-96">
-              <iframe
-                src={contactInfo.map_embed_url}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          ) : (
-            <div className="bg-muted h-96 rounded-lg flex items-center justify-center">
+          {!loading && contactInfo?.map_embed_url ? <div className="rounded-lg overflow-hidden shadow-lg h-96">
+              <iframe src={contactInfo.map_embed_url} width="100%" height="100%" style={{
+            border: 0
+          }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            </div> : <div className="bg-muted h-96 rounded-lg flex items-center justify-center">
               <div className="text-center">
                 <MapPin className="h-16 w-16 text-wine-900 mx-auto mb-4" />
                 <p className="font-lato text-lg">Mapa será exibido aqui</p>
                 <p className="font-lato text-sm text-muted-foreground">Configure no painel admin</p>
               </div>
-            </div>
-          )}
+            </div>}
         </div>
       </section>
 
