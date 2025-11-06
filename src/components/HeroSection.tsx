@@ -38,7 +38,7 @@ const HeroSection = () => {
           <div className="mb-8 max-w-4xl mx-auto animate-fade-in" style={{
           animationDelay: '0.3s'
         }}>
-            <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.<strong className="text-gold-500">Mais de 15 anos</strong> de experiência em projetos de automação industrial, 
+            <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.M<strong className="text-gold-500">Mais de 15 anos</strong> de experiência em projetos de automação industrial, 
               infraestrutura de TI e telecomunicações para empresas de médio e grande porte.
             </p>
             <p className="font-lato text-base md:text-lg text-gray-300">
