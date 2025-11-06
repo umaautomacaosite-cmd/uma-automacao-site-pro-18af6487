@@ -100,6 +100,12 @@ const Index = () => {
       {/* About Section */}
       <AboutSection />
       
+      {/* Featured Cases */}
+      <FeaturedCases />
+
+      {/* How It Works */}
+      <HowItWorks />
+
       {/* Services Overview */}
       <section className="py-20 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50">
         <div className="container mx-auto px-4">
@@ -153,12 +159,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* How It Works */}
-      <HowItWorks />
-
-      {/* Featured Cases */}
-      <FeaturedCases />
 
       {/* Certifications */}
       <Certifications />
