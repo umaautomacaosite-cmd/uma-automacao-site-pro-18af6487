@@ -271,6 +271,42 @@ export type Database = {
           },
         ]
       }
+      certifications: {
+        Row: {
+          created_at: string | null
+          description: string
+          display_order: number | null
+          icon: string
+          icon_color: string
+          id: string
+          is_active: boolean | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          icon?: string
+          icon_color?: string
+          id?: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          icon?: string
+          icon_color?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       client_logos: {
         Row: {
           company_name: string
@@ -460,6 +496,45 @@ export type Database = {
           key?: string
           updated_at?: string | null
           value?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          client_name: string
+          company: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          rating: number
+          testimonial: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          client_name: string
+          company: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          rating?: number
+          testimonial: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          client_name?: string
+          company?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          rating?: number
+          testimonial?: string
+          updated_at?: string | null
         }
         Relationships: []
       }

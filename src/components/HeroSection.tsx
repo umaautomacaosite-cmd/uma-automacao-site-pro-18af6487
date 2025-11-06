@@ -6,15 +6,32 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 const HeroSection = () => {
   const [heroImage, setHeroImage] = useState(datacenterHero);
+  const [heroTitle, setHeroTitle] = useState('Soluções em Automação Predial e Infraestrutura de Alta Performance');
+  const [heroSubtitle, setHeroSubtitle] = useState('Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.');
+  const [heroDescription, setHeroDescription] = useState('Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.');
+
   useEffect(() => {
-    loadHeroImage();
+    loadHeroSettings();
   }, []);
-  const loadHeroImage = async () => {
-    const {
-      data
-    } = await supabase.from('settings').select('value').eq('key', 'hero_image_url').single();
-    if (data?.value && data.value.trim() !== '') {
-      setHeroImage(data.value);
+
+  const loadHeroSettings = async () => {
+    const { data } = await supabase
+      .from('settings')
+      .select('key, value')
+      .in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
+    
+    if (data) {
+      data.forEach(setting => {
+        if (setting.key === 'hero_image_url' && setting.value && setting.value.trim() !== '') {
+          setHeroImage(setting.value);
+        } else if (setting.key === 'hero_title' && setting.value) {
+          setHeroTitle(setting.value);
+        } else if (setting.key === 'hero_subtitle' && setting.value) {
+          setHeroSubtitle(setting.value);
+        } else if (setting.key === 'hero_description' && setting.value) {
+          setHeroDescription(setting.value);
+        }
+      });
     }
   };
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -26,19 +43,21 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto">
-          <h1 className="font-playfair text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in">Soluções em Automação Predial e Infraestrutura de Alta Performance<span className="text-gold-500"> Alta Performance</span>
+          <h1 className="font-playfair text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in">
+            {heroTitle}
           </h1>
           
           <p className="font-lato text-xl md:text-2xl mb-6 text-gray-100 max-w-3xl mx-auto animate-fade-in" style={{
           animationDelay: '0.2s'
         }}>
-            Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.
+            {heroSubtitle}
           </p>
 
           <div className="mb-8 max-w-4xl mx-auto animate-fade-in" style={{
           animationDelay: '0.3s'
         }}>
-            <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.
+            <p className="font-lato text-lg md:text-xl text-gray-200 mb-4">
+              {heroDescription}
             </p>
             <p className="font-lato text-base md:text-lg text-gray-300">
               Especialistas em soluções completas: desde o projeto até a implementação e manutenção, 

@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, FileText, Users, BarChart, Eye, Info } from 'lucide-react';
+import { Settings, FileText, Users, BarChart, Eye, Info, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import AdminServices from './AdminServices';
 import AdminCaseStudies from './AdminCaseStudies';
 import AdminSettings from './AdminSettings';
+import AdminHome from './AdminHome';
+import AdminCertifications from './AdminCertifications';
+import AdminTestimonials from './AdminTestimonials';
 import AdminAbout from './AdminAbout';
 import AdminContato from './AdminContato';
 
@@ -44,10 +47,22 @@ const Admin = () => {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-7 mb-8">
+            <TabsList className="grid w-full grid-cols-10 mb-8">
               <TabsTrigger value="dashboard" className="flex items-center space-x-2">
                 <BarChart className="h-4 w-4" />
                 <span>Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger value="home" className="flex items-center space-x-2">
+                <Eye className="h-4 w-4" />
+                <span>HOME</span>
+              </TabsTrigger>
+              <TabsTrigger value="certificacoes" className="flex items-center space-x-2">
+                <Award className="h-4 w-4" />
+                <span>Certificações</span>
+              </TabsTrigger>
+              <TabsTrigger value="depoimentos" className="flex items-center space-x-2">
+                <Users className="h-4 w-4" />
+                <span>Depoimentos</span>
               </TabsTrigger>
               <TabsTrigger value="servicos" className="flex items-center space-x-2">
                 <Settings className="h-4 w-4" />
@@ -130,6 +145,18 @@ const Admin = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="home">
+              <AdminHome />
+            </TabsContent>
+
+            <TabsContent value="certificacoes">
+              <AdminCertifications />
+            </TabsContent>
+
+            <TabsContent value="depoimentos">
+              <AdminTestimonials />
             </TabsContent>
 
             <TabsContent value="servicos">
