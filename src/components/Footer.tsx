@@ -74,7 +74,8 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="bg-gray-800 p-3 rounded border border-wine-400">
                 <div className="font-semibold text-wine-400">CREA/DF</div>
-                <div className="text-sm text-gray-300">Registro: 123456</div>
+                <div className="text-sm text-gray-300">
+              </div>
               </div>
               <div className="bg-gray-800 p-3 rounded border border-gold-500">
                 <div className="font-semibold text-gold-500">ISO 9001</div>
