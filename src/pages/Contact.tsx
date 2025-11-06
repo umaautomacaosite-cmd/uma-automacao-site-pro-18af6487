@@ -158,7 +158,7 @@ const Contact = () => {
                         <div>
                           <h3 className="font-lato font-semibold text-lg">E-mail</h3>
                           <p className="font-lato text-gray-600">{contactInfo.email}</p>
-                          <p className="font-lato text-sm text-gray-500">Resposta em até 2 horas</p>
+                          <p className="font-lato text-sm text-gray-500">Responderemos sua solicitação em breve</p>
                         </div>
                       </div>
                     </CardContent>
