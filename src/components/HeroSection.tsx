@@ -34,10 +34,10 @@ const HeroSection = () => {
       });
     }
   };
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Blue Overlay */}
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden" key={heroImage}>
+      {/* Background Image with Subtle Overlay */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed" style={{
-      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.6)), url('${heroImage}')`
+      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.4), rgba(30, 58, 138, 0.3)), url('${heroImage}')`
     }} />
       
       {/* Content */}

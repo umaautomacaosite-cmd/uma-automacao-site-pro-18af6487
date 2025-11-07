@@ -8,28 +8,32 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 const AboutSection = () => {
   const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.2 });
-  const [contents, setContents] = useState<Record<string, string>>({});
+  const [homeAbout, setHomeAbout] = useState('');
+  const [homeMission, setHomeMission] = useState('');
+  const [homeVision, setHomeVision] = useState('');
+  const [homeValues, setHomeValues] = useState('');
 
   useEffect(() => {
-    fetchAboutContent();
+    fetchHomeContent();
   }, []);
 
-  const fetchAboutContent = async () => {
+  const fetchHomeContent = async () => {
     try {
       const { data } = await supabase
-        .from('about_content')
-        .select('*')
-        .eq('is_active', true);
+        .from('settings')
+        .select('key, value')
+        .in('key', ['home_about', 'home_mission', 'home_vision', 'home_values']);
       
       if (data) {
-        const contentMap: Record<string, string> = {};
         data.forEach((item: any) => {
-          contentMap[item.section_key] = item.content;
+          if (item.key === 'home_about') setHomeAbout(item.value || '');
+          if (item.key === 'home_mission') setHomeMission(item.value || '');
+          if (item.key === 'home_vision') setHomeVision(item.value || '');
+          if (item.key === 'home_values') setHomeValues(item.value || '');
         });
-        setContents(contentMap);
       }
     } catch (error) {
-      console.error('Erro ao carregar conteúdo sobre:', error);
+      console.error('Erro ao carregar conteúdo:', error);
     }
   };
 
@@ -41,7 +45,7 @@ const AboutSection = () => {
             Sobre Nós
           </h2>
           <p className="font-lato text-xl text-gray-600 max-w-3xl mx-auto">
-            {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
+            {homeAbout || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
           </p>
         </div>
 
@@ -58,7 +62,7 @@ const AboutSection = () => {
               <Target className="h-12 w-12 text-wine-900 mx-auto mb-4" />
               <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Missão</h3>
               <p className="font-lato text-gray-700">
-                {contents.mission || 'Fornecer soluções em automação industrial com excelência técnica, atendendo rigorosamente às normas regulamentadoras.'}
+                {homeMission || 'Fornecer soluções em automação industrial com excelência técnica, atendendo rigorosamente às normas regulamentadoras.'}
               </p>
             </CardContent>
           </Card>
@@ -75,7 +79,7 @@ const AboutSection = () => {
               <Eye className="h-12 w-12 text-wine-900 mx-auto mb-4" />
               <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Visão</h3>
               <p className="font-lato text-gray-700">
-                {contents.vision || 'Ser a empresa de referência em automação industrial no Brasil, reconhecida pela qualidade técnica e compromisso.'}
+                {homeVision || 'Ser a empresa de referência em automação industrial no Brasil, reconhecida pela qualidade técnica e compromisso.'}
               </p>
             </CardContent>
           </Card>
@@ -92,7 +96,7 @@ const AboutSection = () => {
               <Heart className="h-12 w-12 text-wine-900 mx-auto mb-4" />
               <h3 className="font-playfair text-2xl font-bold text-wine-900 mb-4">Valores</h3>
               <p className="font-lato text-gray-700">
-                {contents.values_summary || 'Ética, transparência, qualidade técnica, segurança no trabalho e compromisso com nossos clientes.'}
+                {homeValues || 'Ética, transparência, qualidade técnica, segurança no trabalho e compromisso com nossos clientes.'}
               </p>
             </CardContent>
           </Card>

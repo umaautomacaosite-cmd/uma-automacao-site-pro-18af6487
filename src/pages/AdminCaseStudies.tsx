@@ -89,6 +89,20 @@ const AdminCaseStudies = () => {
   };
 
   const handleCreate = async () => {
+    // Verificar limite de cases destacados
+    if (formData.is_featured) {
+      const { data: featuredCases } = await supabase
+        .from('case_studies')
+        .select('id')
+        .eq('is_featured', true)
+        .eq('is_active', true);
+      
+      if (featuredCases && featuredCases.length >= 6) {
+        toast.error('Limite de 6 cases destacados atingido! Desative outro case antes de destacar este.');
+        return;
+      }
+    }
+
     const { data: caseStudy, error } = await supabase
       .from('case_studies')
       .insert([formData as any])
@@ -110,6 +124,21 @@ const AdminCaseStudies = () => {
   };
 
   const handleUpdate = async (id: string) => {
+    // Verificar limite de cases destacados se está tentando destacar
+    if (formData.is_featured) {
+      const { data: featuredCases } = await supabase
+        .from('case_studies')
+        .select('id')
+        .eq('is_featured', true)
+        .eq('is_active', true)
+        .neq('id', id); // Excluir o case atual
+      
+      if (featuredCases && featuredCases.length >= 6) {
+        toast.error('Limite de 6 cases destacados atingido! Desative outro case antes de destacar este.');
+        return;
+      }
+    }
+
     const { error } = await supabase
       .from('case_studies')
       .update(formData as any)

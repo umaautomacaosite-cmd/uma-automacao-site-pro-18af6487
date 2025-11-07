@@ -21,6 +21,7 @@ interface Service {
   features_icon_color: 'green' | 'red';
   display_order: number;
   is_active: boolean;
+  is_featured: boolean;
 }
 
 const categories = [
@@ -47,6 +48,7 @@ const AdminServices = () => {
     features_icon_color: 'red',
     display_order: 0,
     is_active: true,
+    is_featured: false,
   });
 
   const { toast } = useToast();
@@ -77,6 +79,7 @@ const AdminServices = () => {
         features_icon_color: (service.features_icon_color || 'red') as 'green' | 'red',
         display_order: service.display_order,
         is_active: service.is_active,
+        is_featured: service.is_featured || false,
       }));
 
       setServices(formattedServices);
@@ -105,6 +108,7 @@ const AdminServices = () => {
       features_icon_color: 'red',
       display_order: services.length,
       is_active: true,
+      is_featured: false,
     });
     setEditingService(null);
   };
@@ -128,6 +132,34 @@ const AdminServices = () => {
         variant: 'destructive',
       });
       return;
+    }
+
+    // Verificar limite de serviços destacados
+    if (serviceForm.is_featured) {
+      const { data: featuredServices } = await supabase
+        .from('services')
+        .select('id')
+        .eq('is_featured', true)
+        .eq('is_active', true);
+      
+      if (!editingService && featuredServices && featuredServices.length >= 4) {
+        toast({
+          title: 'Limite atingido',
+          description: 'Máximo de 4 serviços destacados na HOME. Desative outro serviço antes.',
+          variant: 'destructive',
+        });
+        return;
+      } else if (editingService && featuredServices) {
+        const otherFeatured = featuredServices.filter(s => s.id !== editingService);
+        if (otherFeatured.length >= 4) {
+          toast({
+            title: 'Limite atingido',
+            description: 'Máximo de 4 serviços destacados na HOME.',
+            variant: 'destructive',
+          });
+          return;
+        }
+      }
     }
 
     try {

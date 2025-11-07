@@ -13,7 +13,7 @@ import AdminCaseStudies from './AdminCaseStudies';
 import AdminSettings from './AdminSettings';
 import AdminHome from './AdminHome';
 import AdminCertifications from './AdminCertifications';
-import AdminTestimonials from './AdminTestimonials';
+import AdminStats from './AdminStats';
 import AdminAbout from './AdminAbout';
 import AdminContato from './AdminContato';
 

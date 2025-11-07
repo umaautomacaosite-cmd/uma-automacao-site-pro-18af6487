@@ -15,6 +15,10 @@ const AdminHome = () => {
   const [heroDescription, setHeroDescription] = useState('');
   const [heroImageUrl, setHeroImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [homeAbout, setHomeAbout] = useState('');
+  const [homeMission, setHomeMission] = useState('');
+  const [homeVision, setHomeVision] = useState('');
+  const [homeValues, setHomeValues] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -27,7 +31,7 @@ const AdminHome = () => {
       const { data } = await supabase
         .from('settings')
         .select('key, value')
-        .in('key', ['hero_title', 'hero_subtitle', 'hero_description', 'hero_image_url']);
+        .in('key', ['hero_title', 'hero_subtitle', 'hero_description', 'hero_image_url', 'home_about', 'home_mission', 'home_vision', 'home_values']);
 
       if (data) {
         data.forEach(setting => {
@@ -43,6 +47,18 @@ const AdminHome = () => {
               break;
             case 'hero_image_url':
               setHeroImageUrl(setting.value || '');
+              break;
+            case 'home_about':
+              setHomeAbout(setting.value || '');
+              break;
+            case 'home_mission':
+              setHomeMission(setting.value || '');
+              break;
+            case 'home_vision':
+              setHomeVision(setting.value || '');
+              break;
+            case 'home_values':
+              setHomeValues(setting.value || '');
               break;
           }
         });
@@ -98,7 +114,11 @@ const AdminHome = () => {
         { key: 'hero_title', value: heroTitle },
         { key: 'hero_subtitle', value: heroSubtitle },
         { key: 'hero_description', value: heroDescription },
-        { key: 'hero_image_url', value: uploadedImageUrl }
+        { key: 'hero_image_url', value: uploadedImageUrl },
+        { key: 'home_about', value: homeAbout },
+        { key: 'home_mission', value: homeMission },
+        { key: 'home_vision', value: homeVision },
+        { key: 'home_values', value: homeValues }
       ];
 
       for (const update of updates) {
@@ -183,7 +203,7 @@ const AdminHome = () => {
           </div>
 
           <div>
-            <Label htmlFor="hero-image">Imagem de Fundo</Label>
+            <Label htmlFor="hero-image">Imagem de Fundo da Hero</Label>
             <div className="flex gap-2 items-end">
               <div className="flex-1">
                 <Input
@@ -192,9 +212,12 @@ const AdminHome = () => {
                   accept="image/*"
                   onChange={(e) => setImageFile(e.target.files?.[0] || null)}
                 />
+                <p className="text-sm text-muted-foreground mt-1">
+                  Tamanho recomendado: 1920x1080px (Full HD, proporção 16:9)
+                </p>
                 {heroImageUrl && !imageFile && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Imagem atual configurada
+                  <p className="text-sm text-green-600 mt-1">
+                    ✓ Imagem atual configurada
                   </p>
                 )}
               </div>
@@ -211,6 +234,60 @@ const AdminHome = () => {
               'Salvar Configurações'
             )}
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Seção "Sobre Nós" (HOME)</CardTitle>
+          <CardDescription>
+            Configure o conteúdo exibido na seção sobre da página HOME (diferente da página Sobre)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="home-about">Sobre Nós (texto resumido)</Label>
+            <Textarea
+              id="home-about"
+              value={homeAbout}
+              onChange={(e) => setHomeAbout(e.target.value)}
+              placeholder="Breve texto sobre a empresa para a HOME"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="home-mission">Missão</Label>
+            <Textarea
+              id="home-mission"
+              value={homeMission}
+              onChange={(e) => setHomeMission(e.target.value)}
+              placeholder="Missão da empresa"
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="home-vision">Visão</Label>
+            <Textarea
+              id="home-vision"
+              value={homeVision}
+              onChange={(e) => setHomeVision(e.target.value)}
+              placeholder="Visão da empresa"
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="home-values">Valores</Label>
+            <Textarea
+              id="home-values"
+              value={homeValues}
+              onChange={(e) => setHomeValues(e.target.value)}
+              placeholder="Valores da empresa"
+              rows={2}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

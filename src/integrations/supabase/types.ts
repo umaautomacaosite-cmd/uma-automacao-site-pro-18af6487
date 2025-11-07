@@ -20,6 +20,7 @@ export type Database = {
           created_at: string | null
           display_order: number | null
           id: string
+          image_url: string | null
           is_active: boolean | null
           section_key: string
           title: string
@@ -30,6 +31,7 @@ export type Database = {
           created_at?: string | null
           display_order?: number | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           section_key: string
           title: string
@@ -40,6 +42,7 @@ export type Database = {
           created_at?: string | null
           display_order?: number | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           section_key?: string
           title?: string
@@ -424,6 +427,39 @@ export type Database = {
         }
         Relationships: []
       }
+      home_stats: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          label: string
+          updated_at: string | null
+          value: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          label: string
+          updated_at?: string | null
+          value: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          updated_at?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           applications: Json | null
@@ -437,6 +473,7 @@ export type Database = {
           features_icon_color: string | null
           id: string
           is_active: boolean | null
+          is_featured: boolean | null
           standards: Json | null
           title: string
           updated_at: string | null
@@ -453,6 +490,7 @@ export type Database = {
           features_icon_color?: string | null
           id?: string
           is_active?: boolean | null
+          is_featured?: boolean | null
           standards?: Json | null
           title: string
           updated_at?: string | null
@@ -469,6 +507,7 @@ export type Database = {
           features_icon_color?: string | null
           id?: string
           is_active?: boolean | null
+          is_featured?: boolean | null
           standards?: Json | null
           title?: string
           updated_at?: string | null

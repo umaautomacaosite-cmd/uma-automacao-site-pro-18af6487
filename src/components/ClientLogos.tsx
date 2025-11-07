@@ -82,10 +82,16 @@ const ClientLogos = () => {
               </>
             );
 
-            return client.website_url ? (
+            const websiteUrl = client.website_url && client.website_url.trim() !== '' 
+              ? (client.website_url.startsWith('http://') || client.website_url.startsWith('https://') 
+                  ? client.website_url 
+                  : `https://${client.website_url}`)
+              : null;
+
+            return websiteUrl ? (
               <a
                 key={client.id}
-                href={client.website_url}
+                href={websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer"

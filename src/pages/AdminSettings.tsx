@@ -328,39 +328,6 @@ const AdminSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Hero Image */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Imagem Hero</CardTitle>
-          <CardDescription>Upload da imagem de fundo da seção principal (recomendado: 1920x1080px)</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium block mb-2">Upload da Imagem Hero</label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setHeroImageFile(e.target.files?.[0] || null)}
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Tamanho recomendado: 1920x1080px (Full HD, proporção 16:9)
-            </p>
-          </div>
-          {heroImageFile && (
-            <Button onClick={handleHeroImageUpload} disabled={uploadingHero}>
-              <Upload className="mr-2 h-4 w-4" />
-              {uploadingHero ? 'Enviando...' : 'Fazer Upload'}
-            </Button>
-          )}
-          {settings.hero_image_url && (
-            <div className="mt-4">
-              <p className="text-sm font-medium mb-2">Imagem Atual:</p>
-              <img src={settings.hero_image_url} alt="Hero atual" className="w-full max-w-md rounded-lg" />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Salvar Configurações */}
       <div className="flex justify-end">
         <Button onClick={handleSaveSettings} className="bg-wine-900 hover:bg-wine-800">
