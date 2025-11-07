@@ -19,6 +19,8 @@ export type Database = {
           content: string
           created_at: string | null
           display_order: number | null
+          history_p4: string | null
+          history_p5: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -30,6 +32,8 @@ export type Database = {
           content: string
           created_at?: string | null
           display_order?: number | null
+          history_p4?: string | null
+          history_p5?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -41,6 +45,8 @@ export type Database = {
           content?: string
           created_at?: string | null
           display_order?: number | null
+          history_p4?: string | null
+          history_p5?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null

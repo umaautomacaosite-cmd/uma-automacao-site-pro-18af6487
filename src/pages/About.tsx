@@ -51,9 +51,22 @@ const About = () => {
       ]);
 
       if (contentsRes.data) {
-        const contentMap: Record<string, string> = {};
-        contentsRes.data.forEach((item: AboutContent) => {
+        const contentMap: Record<string, any> = {};
+        contentsRes.data.forEach((item: any) => {
           contentMap[item.section_key] = item.content;
+          contentMap[`${item.section_key}_title`] = item.title;
+          // Add all history paragraphs
+          if (item.section_key === 'history') {
+            contentMap.history_p1 = item.content;
+            contentMap.history_p2 = item.history_p2;
+            contentMap.history_p3 = item.history_p3;
+            contentMap.history_p4 = item.history_p4;
+            contentMap.history_p5 = item.history_p5;
+          }
+          // Add brand image
+          if (item.section_key === 'brand_image' && item.image_url) {
+            contentMap.brand_image_url = item.image_url;
+          }
         });
         setContents(contentMap);
       }
@@ -109,13 +122,32 @@ const About = () => {
               <h2 className="font-playfair text-4xl font-bold text-wine-900 mb-6">
                 {contents.history_title || 'Nossa História'}
               </h2>
-              <p className="font-lato text-lg text-gray-700 mb-6">
-                {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
-              </p>
-              <p className="font-lato text-lg text-gray-700 mb-6">
-                {contents.history_p2 || 'Com uma equipe de engenheiros certificados CREA e técnicos especializados, desenvolvemos projetos que atendem rigorosamente às normas regulamentadoras.'}
-              </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <p className="font-lato text-lg text-gray-700">
+                  {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
+                </p>
+                {contents.history_p2 && (
+                  <p className="font-lato text-lg text-gray-700">
+                    {contents.history_p2}
+                  </p>
+                )}
+                {contents.history_p3 && (
+                  <p className="font-lato text-lg text-gray-700">
+                    {contents.history_p3}
+                  </p>
+                )}
+                {contents.history_p4 && (
+                  <p className="font-lato text-lg text-gray-700">
+                    {contents.history_p4}
+                  </p>
+                )}
+                {contents.history_p5 && (
+                  <p className="font-lato text-lg text-gray-700">
+                    {contents.history_p5}
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-8">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center p-4 bg-wine-50 rounded-lg">
                     <div className="font-playfair text-3xl font-bold text-wine-900">{stat.value}</div>
@@ -125,11 +157,19 @@ const About = () => {
               </div>
             </div>
             <div>
-              <img 
-                src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Escritório UMA AUTOMAÇÃO" 
-                className="rounded-lg shadow-lg" 
-              />
+              {contents.brand_image_url ? (
+                <img 
+                  src={contents.brand_image_url} 
+                  alt="UMA AUTOMAÇÃO" 
+                  className="rounded-lg shadow-lg w-full" 
+                />
+              ) : (
+                <img 
+                  src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Escritório UMA AUTOMAÇÃO" 
+                  className="rounded-lg shadow-lg" 
+                />
+              )}
             </div>
           </div>
         </div>

@@ -28,6 +28,10 @@ interface AboutContent {
   display_order: number;
   is_active: boolean;
   image_url?: string | null;
+  history_p2?: string | null;
+  history_p3?: string | null;
+  history_p4?: string | null;
+  history_p5?: string | null;
 }
 
 interface AboutValue {
@@ -159,6 +163,17 @@ const AdminAbout = () => {
         return;
       }
       setUploadingImage(false);
+    }
+
+    // Handle history paragraphs
+    const content = contents.find(c => c.id === id);
+    if (content?.section_key === 'history') {
+      const historyUpdates: any = { ...updates };
+      if ((content as any).history_p2 !== undefined) historyUpdates.history_p2 = (content as any).history_p2;
+      if ((content as any).history_p3 !== undefined) historyUpdates.history_p3 = (content as any).history_p3;
+      if ((content as any).history_p4 !== undefined) historyUpdates.history_p4 = (content as any).history_p4;
+      if ((content as any).history_p5 !== undefined) historyUpdates.history_p5 = (content as any).history_p5;
+      updates = historyUpdates;
     }
 
     const { error } = await supabase
@@ -321,8 +336,96 @@ const AdminAbout = () => {
         <CardHeader>
           <CardTitle>Conteúdo da Página Sobre</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {contents.map((content) => (
+        <CardContent className="space-y-6">
+          {/* Brand Image Section */}
+          {contents.find(c => c.section_key === 'brand_image') && (
+            <div className="border rounded-lg p-4 bg-blue-50">
+              <h3 className="font-semibold text-lg mb-4">Imagem da Marca</h3>
+              {editingContent === contents.find(c => c.section_key === 'brand_image')?.id ? (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Upload da Imagem da Marca</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      className="mt-2"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Esta imagem aparecerá na página Sobre
+                    </p>
+                  </div>
+                  {(contents.find(c => c.section_key === 'brand_image')?.image_url || imageFile) && (
+                    <div className="mt-2">
+                      <Label>Preview:</Label>
+                      {imageFile ? (
+                        <img 
+                          src={URL.createObjectURL(imageFile)} 
+                          alt="Preview" 
+                          className="w-48 h-48 object-contain border rounded mt-2" 
+                        />
+                      ) : (
+                        <img 
+                          src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
+                          alt="Marca" 
+                          className="w-48 h-48 object-contain border rounded mt-2" 
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() =>
+                        updateContent(contents.find(c => c.section_key === 'brand_image')!.id, {})
+                      }
+                      size="sm"
+                      disabled={uploadingImage}
+                    >
+                      {uploadingImage ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+                      Salvar Imagem
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        setImageFile(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm text-muted-foreground">
+                      Imagem que aparece na página Sobre
+                    </p>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'brand_image')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {contents.find(c => c.section_key === 'brand_image')?.image_url && (
+                    <img 
+                      src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
+                      alt="Marca" 
+                      className="w-48 h-48 object-contain border rounded" 
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Other Content Sections */}
+          {contents.filter(c => c.section_key !== 'brand_image' && c.section_key !== 'history').map((content) => (
             <div key={content.id} className="border rounded-lg p-4">
               {editingContent === content.id ? (
                 <div className="space-y-3">
@@ -349,21 +452,6 @@ const AdminAbout = () => {
                     placeholder="Conteúdo"
                     rows={4}
                   />
-                  {content.section_key === 'brand_image' && (
-                    <div>
-                      <Label>Imagem da Marca</Label>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                      />
-                      {content.image_url && !imageFile && (
-                        <div className="mt-2">
-                          <img src={content.image_url} alt="Marca" className="w-32 h-32 object-contain" />
-                        </div>
-                      )}
-                    </div>
-                  )}
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
@@ -373,15 +461,13 @@ const AdminAbout = () => {
                         })
                       }
                       size="sm"
-                      disabled={uploadingImage}
                     >
-                      {uploadingImage ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+                      <Save className="h-4 w-4 mr-1" />
                       Salvar
                     </Button>
                     <Button
                       onClick={() => {
                         setEditingContent(null);
-                        setImageFile(null);
                         fetchContents();
                       }}
                       variant="outline"
@@ -410,15 +496,165 @@ const AdminAbout = () => {
                     </Button>
                   </div>
                   <p className="text-sm">{content.content}</p>
-                  {content.image_url && (
-                    <div className="mt-2">
-                      <img src={content.image_url} alt="Marca" className="w-32 h-32 object-contain" />
-                    </div>
-                  )}
                 </div>
               )}
             </div>
           ))}
+
+          {/* History Section with 5 Paragraphs */}
+          {contents.find(c => c.section_key === 'history') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">Seção História</h3>
+              {editingContent === contents.find(c => c.section_key === 'history')?.id ? (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Título da Seção</Label>
+                    <Input
+                      value={contents.find(c => c.section_key === 'history')?.title || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, title: e.target.value } : c
+                          )
+                        )
+                      }
+                      placeholder="Título (ex: Nossa História)"
+                    />
+                  </div>
+                  <div>
+                    <Label>História - Parágrafo 1</Label>
+                    <Textarea
+                      value={contents.find(c => c.section_key === 'history')?.content || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, content: e.target.value } : c
+                          )
+                        )
+                      }
+                      placeholder="Primeiro parágrafo da história"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>História - Parágrafo 2</Label>
+                    <Textarea
+                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p2 || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, history_p2: e.target.value } as any : c
+                          )
+                        )
+                      }
+                      placeholder="Segundo parágrafo da história"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>História - Parágrafo 3</Label>
+                    <Textarea
+                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p3 || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, history_p3: e.target.value } as any : c
+                          )
+                        )
+                      }
+                      placeholder="Terceiro parágrafo da história"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>História - Parágrafo 4</Label>
+                    <Textarea
+                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p4 || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, history_p4: e.target.value } as any : c
+                          )
+                        )
+                      }
+                      placeholder="Quarto parágrafo da história"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>História - Parágrafo 5</Label>
+                    <Textarea
+                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p5 || ''}
+                      onChange={(e) =>
+                        setContents(
+                          contents.map((c) =>
+                            c.section_key === 'history' ? { ...c, history_p5: e.target.value } as any : c
+                          )
+                        )
+                      }
+                      placeholder="Quinto parágrafo da história"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const historyContent = contents.find(c => c.section_key === 'history');
+                        if (historyContent) {
+                          updateContent(historyContent.id, {
+                            title: historyContent.title,
+                            content: historyContent.content,
+                            ...(historyContent as any).history_p2 && { history_p2: (historyContent as any).history_p2 },
+                            ...(historyContent as any).history_p3 && { history_p3: (historyContent as any).history_p3 },
+                            ...(historyContent as any).history_p4 && { history_p4: (historyContent as any).history_p4 },
+                            ...(historyContent as any).history_p5 && { history_p5: (historyContent as any).history_p5 },
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar História
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history')?.title}</h4>
+                      <p className="text-sm text-muted-foreground mb-2">5 parágrafos da história</p>
+                      <div className="space-y-2 text-sm">
+                        <p><strong>P1:</strong> {contents.find(c => c.section_key === 'history')?.content?.substring(0, 100)}...</p>
+                        <p><strong>P2:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p2 || '')?.substring(0, 100)}...</p>
+                        <p><strong>P3:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p3 || '')?.substring(0, 100)}...</p>
+                        <p><strong>P4:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p4 || '')?.substring(0, 100)}...</p>
+                        <p><strong>P5:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p5 || '')?.substring(0, 100)}...</p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 
