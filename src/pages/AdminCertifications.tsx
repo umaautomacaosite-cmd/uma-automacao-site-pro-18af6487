@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Trash2, Eye, EyeOff, MoveUp, MoveDown } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Certification {
   id: string;
@@ -27,8 +27,27 @@ const AdminCertifications = () => {
     title: '',
     description: '',
     icon: 'Shield',
-    icon_color: 'text-blue-400'
+    icon_color: '#3b82f6'
   });
+
+  const iconOptions = [
+    { name: 'Shield', label: 'Escudo' },
+    { name: 'Award', label: 'Troféu' },
+    { name: 'CheckCircle', label: 'Check' },
+    { name: 'Zap', label: 'Raio' },
+    { name: 'Lock', label: 'Cadeado' },
+    { name: 'Star', label: 'Estrela' },
+    { name: 'Certificate', label: 'Certificado' },
+  ];
+
+  const colorOptions = [
+    { value: '#3b82f6', label: 'Azul' },
+    { value: '#10b981', label: 'Verde' },
+    { value: '#f59e0b', label: 'Laranja' },
+    { value: '#ef4444', label: 'Vermelho' },
+    { value: '#8b5cf6', label: 'Roxo' },
+    { value: '#ec4899', label: 'Rosa' },
+  ];
   const { toast } = useToast();
 
   useEffect(() => {
@@ -87,7 +106,7 @@ const AdminCertifications = () => {
         toast({ title: "Certificação adicionada!" });
       }
 
-      setFormData({ title: '', description: '', icon: 'Shield', icon_color: 'text-blue-400' });
+      setFormData({ title: '', description: '', icon: 'Shield', icon_color: '#3b82f6' });
       setEditingId(null);
       loadCertifications();
     } catch (error) {
@@ -201,13 +220,22 @@ const AdminCertifications = () => {
               />
             </div>
             <div>
-              <Label htmlFor="icon">Ícone (Lucide)</Label>
-              <Input
-                id="icon"
+              <Label htmlFor="icon">Ícone</Label>
+              <Select
                 value={formData.icon}
-                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                placeholder="Ex: Shield, Award, Zap"
-              />
+                onValueChange={(val) => setFormData({ ...formData, icon: val })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {iconOptions.map((icon) => (
+                    <SelectItem key={icon.name} value={icon.name}>
+                      {icon.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -223,13 +251,21 @@ const AdminCertifications = () => {
           </div>
 
           <div>
-            <Label htmlFor="icon_color">Cor do Ícone (Tailwind)</Label>
-            <Input
-              id="icon_color"
-              value={formData.icon_color}
-              onChange={(e) => setFormData({ ...formData, icon_color: e.target.value })}
-              placeholder="Ex: text-blue-400"
-            />
+            <Label htmlFor="icon_color">Cor do Ícone</Label>
+            <div className="flex gap-2">
+              {colorOptions.map((color) => (
+                <button
+                  key={color.value}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, icon_color: color.value })}
+                  className={`w-10 h-10 rounded-full border-2 ${
+                    formData.icon_color === color.value ? 'border-black' : 'border-gray-300'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-2">
@@ -240,7 +276,7 @@ const AdminCertifications = () => {
             {editingId && (
               <Button variant="outline" onClick={() => {
                 setEditingId(null);
-                setFormData({ title: '', description: '', icon: 'Shield', icon_color: 'text-blue-400' });
+                setFormData({ title: '', description: '', icon: 'Shield', icon_color: '#3b82f6' });
               }}>
                 Cancelar
               </Button>
@@ -261,7 +297,7 @@ const AdminCertifications = () => {
                   <h3 className="font-semibold">{cert.title}</h3>
                   <p className="text-sm text-muted-foreground">{cert.description}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Ícone: {cert.icon} | Cor: {cert.icon_color}
+                    Ícone: {cert.icon} | Cor: <span className="inline-block w-4 h-4 rounded" style={{ backgroundColor: cert.icon_color }}></span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

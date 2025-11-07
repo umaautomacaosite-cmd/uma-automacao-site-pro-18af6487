@@ -56,7 +56,7 @@ const Certifications = () => {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <IconComponent className={`h-12 w-12 ${cert.icon_color} mx-auto mb-4`} />
+                <IconComponent className={`h-12 w-12 mx-auto mb-4`} style={{ color: cert.icon_color }} />
                 <h3 className="font-lato font-bold text-white text-lg mb-1">{cert.title}</h3>
                 <p className="font-lato text-sm text-gray-300">{cert.description}</p>
               </div>

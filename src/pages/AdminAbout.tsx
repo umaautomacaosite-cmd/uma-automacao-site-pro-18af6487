@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Plus, Pencil, Trash2, Save, X, MoveUp, MoveDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, MoveUp, MoveDown, Loader2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -26,6 +27,7 @@ interface AboutContent {
   content: string;
   display_order: number;
   is_active: boolean;
+  image_url?: string | null;
 }
 
 interface AboutValue {
@@ -64,6 +66,8 @@ const AdminAbout = () => {
   const [editingTimeline, setEditingTimeline] = useState<string | null>(null);
   const [editingStat, setEditingStat] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchAllData();
@@ -129,6 +133,34 @@ const AdminAbout = () => {
   };
 
   const updateContent = async (id: string, updates: Partial<AboutContent>) => {
+    // Handle image upload if there's a new image
+    if (imageFile) {
+      setUploadingImage(true);
+      try {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `about-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('case-study-images')
+          .upload(fileName, imageFile);
+        
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('case-study-images')
+          .getPublicUrl(fileName);
+        
+        updates.image_url = publicUrl;
+        setImageFile(null);
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error('Erro ao fazer upload da imagem');
+        setUploadingImage(false);
+        return;
+      }
+      setUploadingImage(false);
+    }
+
     const { error } = await supabase
       .from('about_content')
       .update(updates)
@@ -317,6 +349,21 @@ const AdminAbout = () => {
                     placeholder="Conteúdo"
                     rows={4}
                   />
+                  {content.section_key === 'brand_image' && (
+                    <div>
+                      <Label>Imagem da Marca</Label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      />
+                      {content.image_url && !imageFile && (
+                        <div className="mt-2">
+                          <img src={content.image_url} alt="Marca" className="w-32 h-32 object-contain" />
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
@@ -326,13 +373,15 @@ const AdminAbout = () => {
                         })
                       }
                       size="sm"
+                      disabled={uploadingImage}
                     >
-                      <Save className="h-4 w-4 mr-1" />
+                      {uploadingImage ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
                       Salvar
                     </Button>
                     <Button
                       onClick={() => {
                         setEditingContent(null);
+                        setImageFile(null);
                         fetchContents();
                       }}
                       variant="outline"
@@ -361,6 +410,11 @@ const AdminAbout = () => {
                     </Button>
                   </div>
                   <p className="text-sm">{content.content}</p>
+                  {content.image_url && (
+                    <div className="mt-2">
+                      <img src={content.image_url} alt="Marca" className="w-32 h-32 object-contain" />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
