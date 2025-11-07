@@ -264,7 +264,7 @@ const Contact = () => {
                       <h4 className="font-lato font-semibold text-sm mb-2">Informações Importantes:</h4>
                       <ul className="font-lato text-xs text-muted-foreground space-y-1">
                         <li>• Todos os projetos são assinados por engenheiros CREA</li>
-                        <li>• Compliance total com normas NR-10, NR-12 e ISO 9001</li>
+                        <li>• Compliance total com normas NR-10, NR-12 e ABNT</li>
                         <li>• Atendimento em todo o território nacional</li>
                         <li>• Orçamento gratuito e sem compromisso</li>
                       </ul>
