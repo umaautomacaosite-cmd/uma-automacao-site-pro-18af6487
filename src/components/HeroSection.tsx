@@ -9,17 +9,13 @@ const HeroSection = () => {
   const [heroTitle, setHeroTitle] = useState('Soluções em Automação Predial e Infraestrutura de Alta Performance');
   const [heroSubtitle, setHeroSubtitle] = useState('Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.');
   const [heroDescription, setHeroDescription] = useState('Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.');
-
   useEffect(() => {
     loadHeroSettings();
   }, []);
-
   const loadHeroSettings = async () => {
-    const { data } = await supabase
-      .from('settings')
-      .select('key, value')
-      .in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
-    
+    const {
+      data
+    } = await supabase.from('settings').select('key, value').in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
     if (data) {
       data.forEach(setting => {
         if (setting.key === 'hero_image_url' && setting.value && setting.value.trim() !== '') {
@@ -75,7 +71,7 @@ const HeroSection = () => {
             </div>
             <div className="flex items-center space-x-2">
               <Award className="h-5 w-5 text-gold-500" />
-              <span>ISO 9001 | CREA/DF</span>
+              <span>ISO 9001 | CREA</span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="h-5 w-5 text-gold-500" />
