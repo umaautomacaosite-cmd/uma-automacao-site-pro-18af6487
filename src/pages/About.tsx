@@ -117,57 +117,57 @@ const About = () => {
       {/* Company Overview */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="font-playfair text-4xl font-bold text-wine-900 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            <div className="order-2 lg:order-1">
+              <h2 className="font-playfair text-3xl md:text-4xl font-bold text-wine-900 mb-6">
                 {contents.history_title || 'Nossa História'}
               </h2>
-              <div className="space-y-4">
-                <p className="font-lato text-lg text-gray-700">
+              <div className="space-y-4 text-justify">
+                <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                   {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
                 </p>
                 {contents.history_p2 && (
-                  <p className="font-lato text-lg text-gray-700">
+                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p2}
                   </p>
                 )}
                 {contents.history_p3 && (
-                  <p className="font-lato text-lg text-gray-700">
+                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p3}
                   </p>
                 )}
                 {contents.history_p4 && (
-                  <p className="font-lato text-lg text-gray-700">
+                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p4}
                   </p>
                 )}
                 {contents.history_p5 && (
-                  <p className="font-lato text-lg text-gray-700">
+                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p5}
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4 mt-8">
+              <div className="grid grid-cols-2 gap-3 md:gap-4 mt-8">
                 {stats.map((stat, index) => (
-                  <div key={index} className="text-center p-4 bg-wine-50 rounded-lg">
-                    <div className="font-playfair text-3xl font-bold text-wine-900">{stat.value}</div>
-                    <div className="font-lato text-sm text-gray-600">{stat.label}</div>
+                  <div key={index} className="text-center p-3 md:p-4 bg-wine-50 rounded-lg">
+                    <div className="font-playfair text-2xl md:text-3xl font-bold text-wine-900">{stat.value}</div>
+                    <div className="font-lato text-xs md:text-sm text-gray-600">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <div>
+            <div className="order-1 lg:order-2">
               {contents.brand_image_url ? (
                 <img 
                   src={contents.brand_image_url} 
                   alt="UMA AUTOMAÇÃO" 
-                  className="rounded-lg shadow-lg w-full" 
+                  className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" 
                 />
               ) : (
                 <img 
                   src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Escritório UMA AUTOMAÇÃO" 
-                  className="rounded-lg shadow-lg" 
+                  className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" 
                 />
               )}
             </div>
@@ -231,10 +231,30 @@ const About = () => {
       {/* Timeline */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="font-playfair text-4xl font-bold text-center text-wine-900 mb-16">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-center text-wine-900 mb-12 md:mb-16">
             Nossa Trajetória
           </h2>
-          <div className="relative">
+          
+          {/* Mobile Timeline */}
+          <div className="block md:hidden space-y-6">
+            {timeline.map((event, index) => (
+              <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
+                <CardContent className="p-0">
+                  <Badge className="bg-wine-900 text-white mb-3 inline-flex items-center">
+                    <Calendar className="mr-1 h-3 w-3" />
+                    {event.year}
+                  </Badge>
+                  <h4 className="font-playfair text-lg font-bold text-wine-900 mb-2">
+                    {event.title}
+                  </h4>
+                  <p className="font-lato text-sm text-gray-700 leading-relaxed">{event.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop Timeline */}
+          <div className="hidden md:block relative">
             {/* Timeline line */}
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-wine-200"></div>
             
@@ -243,8 +263,8 @@ const About = () => {
                 <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <Card className="p-6 hover:shadow-lg transition-shadow">
-                      <CardContent>
-                        <Badge className="bg-wine-900 text-white mb-2">
+                      <CardContent className="p-0">
+                        <Badge className="bg-wine-900 text-white mb-2 inline-flex items-center">
                           <Calendar className="mr-1 h-3 w-3" />
                           {event.year}
                         </Badge>

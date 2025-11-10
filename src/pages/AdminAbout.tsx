@@ -337,115 +337,29 @@ const AdminAbout = () => {
           <CardTitle>Conteúdo da Página Sobre</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Brand Image Section */}
-          {contents.find(c => c.section_key === 'brand_image') && (
+          {/* Sobre a UMA AUTOMAÇÃO */}
+          {contents.find(c => c.section_key === 'hero') && (
             <div className="border rounded-lg p-4 bg-blue-50">
-              <h3 className="font-semibold text-lg mb-4">Imagem da Marca</h3>
-              {editingContent === contents.find(c => c.section_key === 'brand_image')?.id ? (
-                <div className="space-y-3">
-                  <div>
-                    <Label>Upload da Imagem da Marca</Label>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                      className="mt-2"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Esta imagem aparecerá na página Sobre
-                    </p>
-                  </div>
-                  {(contents.find(c => c.section_key === 'brand_image')?.image_url || imageFile) && (
-                    <div className="mt-2">
-                      <Label>Preview:</Label>
-                      {imageFile ? (
-                        <img 
-                          src={URL.createObjectURL(imageFile)} 
-                          alt="Preview" 
-                          className="w-48 h-48 object-contain border rounded mt-2" 
-                        />
-                      ) : (
-                        <img 
-                          src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
-                          alt="Marca" 
-                          className="w-48 h-48 object-contain border rounded mt-2" 
-                        />
-                      )}
-                    </div>
-                  )}
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() =>
-                        updateContent(contents.find(c => c.section_key === 'brand_image')!.id, {})
-                      }
-                      size="sm"
-                      disabled={uploadingImage}
-                    >
-                      {uploadingImage ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
-                      Salvar Imagem
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setEditingContent(null);
-                        setImageFile(null);
-                        fetchContents();
-                      }}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Cancelar
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm text-muted-foreground">
-                      Imagem que aparece na página Sobre
-                    </p>
-                    <Button
-                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'brand_image')?.id || null)}
-                      variant="ghost"
-                      size="sm"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  {contents.find(c => c.section_key === 'brand_image')?.image_url && (
-                    <img 
-                      src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
-                      alt="Marca" 
-                      className="w-48 h-48 object-contain border rounded" 
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Other Content Sections */}
-          {contents.filter(c => c.section_key !== 'brand_image' && c.section_key !== 'history').map((content) => (
-            <div key={content.id} className="border rounded-lg p-4">
-              {editingContent === content.id ? (
+              <h3 className="font-semibold text-lg mb-4">✅ Sobre a UMA AUTOMAÇÃO</h3>
+              {editingContent === contents.find(c => c.section_key === 'hero')?.id ? (
                 <div className="space-y-3">
                   <Input
-                    value={content.title}
+                    value={contents.find(c => c.section_key === 'hero')?.title || ''}
                     onChange={(e) =>
                       setContents(
                         contents.map((c) =>
-                          c.id === content.id ? { ...c, title: e.target.value } : c
+                          c.section_key === 'hero' ? { ...c, title: e.target.value } : c
                         )
                       )
                     }
                     placeholder="Título"
                   />
                   <Textarea
-                    value={content.content}
+                    value={contents.find(c => c.section_key === 'hero')?.content || ''}
                     onChange={(e) =>
                       setContents(
                         contents.map((c) =>
-                          c.id === content.id ? { ...c, content: e.target.value } : c
+                          c.section_key === 'hero' ? { ...c, content: e.target.value } : c
                         )
                       )
                     }
@@ -454,12 +368,15 @@ const AdminAbout = () => {
                   />
                   <div className="flex gap-2">
                     <Button
-                      onClick={() =>
-                        updateContent(content.id, {
-                          title: content.title,
-                          content: content.content,
-                        })
-                      }
+                      onClick={() => {
+                        const heroContent = contents.find(c => c.section_key === 'hero');
+                        if (heroContent) {
+                          updateContent(heroContent.id, {
+                            title: heroContent.title,
+                            content: heroContent.content,
+                          });
+                        }
+                      }}
                       size="sm"
                     >
                       <Save className="h-4 w-4 mr-1" />
@@ -482,29 +399,106 @@ const AdminAbout = () => {
                 <div>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-semibold">{content.title}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Chave: {content.section_key}
-                      </p>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'hero')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: hero</p>
                     </div>
                     <Button
-                      onClick={() => setEditingContent(content.id)}
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'hero')?.id || null)}
                       variant="ghost"
                       size="sm"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
-                  <p className="text-sm">{content.content}</p>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'hero')?.content}</p>
                 </div>
               )}
             </div>
-          ))}
+          )}
+
+          {/* Subtítulo Hero */}
+          {contents.find(c => c.section_key === 'hero_subtitle') && (
+            <div className="border rounded-lg p-4 bg-purple-50">
+              <h3 className="font-semibold text-lg mb-4">✅ Subtítulo Hero</h3>
+              {editingContent === contents.find(c => c.section_key === 'hero_subtitle')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'hero_subtitle')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'hero_subtitle' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'hero_subtitle')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'hero_subtitle' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'hero_subtitle');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'hero_subtitle')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: hero_subtitle</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'hero_subtitle')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'hero_subtitle')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* History Section with 5 Paragraphs */}
           {contents.find(c => c.section_key === 'history') && (
             <div className="border rounded-lg p-4 bg-green-50">
-              <h3 className="font-semibold text-lg mb-4">Seção História</h3>
+              <h3 className="font-semibold text-lg mb-4">✅ Nossa História</h3>
               {editingContent === contents.find(c => c.section_key === 'history')?.id ? (
                 <div className="space-y-3">
                   <div>
@@ -522,7 +516,7 @@ const AdminAbout = () => {
                     />
                   </div>
                   <div>
-                    <Label>História - Parágrafo 1</Label>
+                    <Label>✅ História Parágrafo 1</Label>
                     <Textarea
                       value={contents.find(c => c.section_key === 'history')?.content || ''}
                       onChange={(e) =>
@@ -537,7 +531,7 @@ const AdminAbout = () => {
                     />
                   </div>
                   <div>
-                    <Label>História - Parágrafo 2</Label>
+                    <Label>✅ História Parágrafo 2</Label>
                     <Textarea
                       value={(contents.find(c => c.section_key === 'history') as any)?.history_p2 || ''}
                       onChange={(e) =>
@@ -552,7 +546,7 @@ const AdminAbout = () => {
                     />
                   </div>
                   <div>
-                    <Label>História - Parágrafo 3</Label>
+                    <Label>✅ História Parágrafo 3</Label>
                     <Textarea
                       value={(contents.find(c => c.section_key === 'history') as any)?.history_p3 || ''}
                       onChange={(e) =>
@@ -567,7 +561,7 @@ const AdminAbout = () => {
                     />
                   </div>
                   <div>
-                    <Label>História - Parágrafo 4</Label>
+                    <Label>✅ História Parágrafo 4</Label>
                     <Textarea
                       value={(contents.find(c => c.section_key === 'history') as any)?.history_p4 || ''}
                       onChange={(e) =>
@@ -582,7 +576,7 @@ const AdminAbout = () => {
                     />
                   </div>
                   <div>
-                    <Label>História - Parágrafo 5</Label>
+                    <Label>✅ História Parágrafo 5</Label>
                     <Textarea
                       value={(contents.find(c => c.section_key === 'history') as any)?.history_p5 || ''}
                       onChange={(e) =>
@@ -651,6 +645,330 @@ const AdminAbout = () => {
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Missão */}
+          {contents.find(c => c.section_key === 'mission') && (
+            <div className="border rounded-lg p-4 bg-yellow-50">
+              <h3 className="font-semibold text-lg mb-4">✅ Missão</h3>
+              {editingContent === contents.find(c => c.section_key === 'mission')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'mission')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'mission' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'mission')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'mission' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'mission');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'mission')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: mission</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'mission')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'mission')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Visão */}
+          {contents.find(c => c.section_key === 'vision') && (
+            <div className="border rounded-lg p-4 bg-pink-50">
+              <h3 className="font-semibold text-lg mb-4">✅ Visão</h3>
+              {editingContent === contents.find(c => c.section_key === 'vision')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'vision')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'vision' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'vision')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'vision' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'vision');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'vision')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: vision</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'vision')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'vision')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Valores */}
+          {contents.find(c => c.section_key === 'values_summary') && (
+            <div className="border rounded-lg p-4 bg-orange-50">
+              <h3 className="font-semibold text-lg mb-4">✅ Valores</h3>
+              {editingContent === contents.find(c => c.section_key === 'values_summary')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'values_summary')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'values_summary' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'values_summary')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'values_summary' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'values_summary');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'values_summary')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: values_summary</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'values_summary')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'values_summary')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Brand Image Upload */}
+          {contents.find(c => c.section_key === 'brand_image') && (
+            <div className="border rounded-lg p-4 bg-indigo-50">
+              <h3 className="font-semibold text-lg mb-4">Imagem da Marca</h3>
+              {editingContent === contents.find(c => c.section_key === 'brand_image')?.id ? (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Upload da Imagem da Marca</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      className="mt-2"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Esta imagem aparecerá na seção "Nossa História"
+                    </p>
+                  </div>
+                  {(contents.find(c => c.section_key === 'brand_image')?.image_url || imageFile) && (
+                    <div className="mt-2">
+                      <Label>Preview:</Label>
+                      {imageFile ? (
+                        <img 
+                          src={URL.createObjectURL(imageFile)} 
+                          alt="Preview" 
+                          className="w-48 h-48 object-contain border rounded mt-2" 
+                        />
+                      ) : (
+                        <img 
+                          src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
+                          alt="Marca" 
+                          className="w-48 h-48 object-contain border rounded mt-2" 
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() =>
+                        updateContent(contents.find(c => c.section_key === 'brand_image')!.id, {})
+                      }
+                      size="sm"
+                      disabled={uploadingImage}
+                    >
+                      {uploadingImage ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+                      Salvar Imagem
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        setImageFile(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm text-muted-foreground">
+                      Imagem que aparece na seção "Nossa História"
+                    </p>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'brand_image')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {contents.find(c => c.section_key === 'brand_image')?.image_url && (
+                    <img 
+                      src={contents.find(c => c.section_key === 'brand_image')?.image_url || ''} 
+                      alt="Marca" 
+                      className="w-48 h-48 object-contain border rounded" 
+                    />
+                  )}
                 </div>
               )}
             </div>
