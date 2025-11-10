@@ -36,6 +36,7 @@ const AdminCaseStudies = () => {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [featuredCount, setFeaturedCount] = useState(0);
   const [formData, setFormData] = useState<Partial<CaseStudy>>({
     title: '',
     client: '',
@@ -86,6 +87,10 @@ const AdminCaseStudies = () => {
     }
 
     setCaseStudies((data || []) as CaseStudy[]);
+    
+    // Contar cases destacados ativos
+    const featured = (data || []).filter(c => c.is_featured && c.is_active);
+    setFeaturedCount(featured.length);
   };
 
   const handleCreate = async () => {
@@ -351,7 +356,13 @@ const AdminCaseStudies = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gerenciar Cases</h2>
+        <div>
+          <h2 className="text-2xl font-bold">Gerenciar Cases</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Cases destacados na HOME: <span className={featuredCount >= 6 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}>{featuredCount}/6</span>
+            {featuredCount >= 6 && <span className="text-red-600"> - Limite atingido! Desative um case antes de destacar outro.</span>}
+          </p>
+        </div>
         {!isCreating && (
           <Button onClick={() => setIsCreating(true)}>
             <Plus className="mr-2 h-4 w-4" />

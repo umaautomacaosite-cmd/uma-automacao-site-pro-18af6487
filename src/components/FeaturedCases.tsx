@@ -42,7 +42,9 @@ const FeaturedCases = () => {
       return;
     }
 
-    setCases((data || []) as CaseStudy[]);
+    const cases = (data || []) as CaseStudy[];
+    console.log('Featured cases loaded:', cases.length); // Debug
+    setCases(cases);
   };
 
   const nextSlide = () => {
