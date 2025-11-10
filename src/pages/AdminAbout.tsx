@@ -28,10 +28,6 @@ interface AboutContent {
   display_order: number;
   is_active: boolean;
   image_url?: string | null;
-  history_p2?: string | null;
-  history_p3?: string | null;
-  history_p4?: string | null;
-  history_p5?: string | null;
 }
 
 interface AboutValue {
@@ -163,17 +159,6 @@ const AdminAbout = () => {
         return;
       }
       setUploadingImage(false);
-    }
-
-    // Handle history paragraphs
-    const content = contents.find(c => c.id === id);
-    if (content?.section_key === 'history') {
-      const historyUpdates: any = { ...updates };
-      if ((content as any).history_p2 !== undefined) historyUpdates.history_p2 = (content as any).history_p2;
-      if ((content as any).history_p3 !== undefined) historyUpdates.history_p3 = (content as any).history_p3;
-      if ((content as any).history_p4 !== undefined) historyUpdates.history_p4 = (content as any).history_p4;
-      if ((content as any).history_p5 !== undefined) historyUpdates.history_p5 = (content as any).history_p5;
-      updates = historyUpdates;
     }
 
     const { error } = await supabase
@@ -338,28 +323,28 @@ const AdminAbout = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Sobre a UMA AUTOMAÇÃO */}
-          {contents.find(c => c.section_key === 'hero') && (
+          {contents.find(c => c.section_key === 'hero_title') && (
             <div className="border rounded-lg p-4 bg-blue-50">
               <h3 className="font-semibold text-lg mb-4">✅ Sobre a UMA AUTOMAÇÃO</h3>
-              {editingContent === contents.find(c => c.section_key === 'hero')?.id ? (
+              {editingContent === contents.find(c => c.section_key === 'hero_title')?.id ? (
                 <div className="space-y-3">
                   <Input
-                    value={contents.find(c => c.section_key === 'hero')?.title || ''}
+                    value={contents.find(c => c.section_key === 'hero_title')?.title || ''}
                     onChange={(e) =>
                       setContents(
                         contents.map((c) =>
-                          c.section_key === 'hero' ? { ...c, title: e.target.value } : c
+                          c.section_key === 'hero_title' ? { ...c, title: e.target.value } : c
                         )
                       )
                     }
                     placeholder="Título"
                   />
                   <Textarea
-                    value={contents.find(c => c.section_key === 'hero')?.content || ''}
+                    value={contents.find(c => c.section_key === 'hero_title')?.content || ''}
                     onChange={(e) =>
                       setContents(
                         contents.map((c) =>
-                          c.section_key === 'hero' ? { ...c, content: e.target.value } : c
+                          c.section_key === 'hero_title' ? { ...c, content: e.target.value } : c
                         )
                       )
                     }
@@ -369,7 +354,7 @@ const AdminAbout = () => {
                   <div className="flex gap-2">
                     <Button
                       onClick={() => {
-                        const heroContent = contents.find(c => c.section_key === 'hero');
+                        const heroContent = contents.find(c => c.section_key === 'hero_title');
                         if (heroContent) {
                           updateContent(heroContent.id, {
                             title: heroContent.title,
@@ -399,18 +384,18 @@ const AdminAbout = () => {
                 <div>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'hero')?.title}</h4>
-                      <p className="text-sm text-muted-foreground">Chave: hero</p>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'hero_title')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: hero_title</p>
                     </div>
                     <Button
-                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'hero')?.id || null)}
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'hero_title')?.id || null)}
                       variant="ghost"
                       size="sm"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
-                  <p className="text-sm">{contents.find(c => c.section_key === 'hero')?.content}</p>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'hero_title')?.content}</p>
                 </div>
               )}
             </div>
@@ -495,120 +480,50 @@ const AdminAbout = () => {
             </div>
           )}
 
-          {/* History Section with 5 Paragraphs */}
-          {contents.find(c => c.section_key === 'history') && (
+          {/* Nossa História - Título */}
+          {contents.find(c => c.section_key === 'history_title') && (
             <div className="border rounded-lg p-4 bg-green-50">
               <h3 className="font-semibold text-lg mb-4">✅ Nossa História</h3>
-              {editingContent === contents.find(c => c.section_key === 'history')?.id ? (
+              {editingContent === contents.find(c => c.section_key === 'history_title')?.id ? (
                 <div className="space-y-3">
-                  <div>
-                    <Label>Título da Seção</Label>
-                    <Input
-                      value={contents.find(c => c.section_key === 'history')?.title || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, title: e.target.value } : c
-                          )
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_title')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_title' ? { ...c, title: e.target.value } : c
                         )
-                      }
-                      placeholder="Título (ex: Nossa História)"
-                    />
-                  </div>
-                  <div>
-                    <Label>✅ História Parágrafo 1</Label>
-                    <Textarea
-                      value={contents.find(c => c.section_key === 'history')?.content || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, content: e.target.value } : c
-                          )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_title')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_title' ? { ...c, content: e.target.value } : c
                         )
-                      }
-                      placeholder="Primeiro parágrafo da história"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label>✅ História Parágrafo 2</Label>
-                    <Textarea
-                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p2 || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, history_p2: e.target.value } as any : c
-                          )
-                        )
-                      }
-                      placeholder="Segundo parágrafo da história"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label>✅ História Parágrafo 3</Label>
-                    <Textarea
-                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p3 || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, history_p3: e.target.value } as any : c
-                          )
-                        )
-                      }
-                      placeholder="Terceiro parágrafo da história"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label>✅ História Parágrafo 4</Label>
-                    <Textarea
-                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p4 || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, history_p4: e.target.value } as any : c
-                          )
-                        )
-                      }
-                      placeholder="Quarto parágrafo da história"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label>✅ História Parágrafo 5</Label>
-                    <Textarea
-                      value={(contents.find(c => c.section_key === 'history') as any)?.history_p5 || ''}
-                      onChange={(e) =>
-                        setContents(
-                          contents.map((c) =>
-                            c.section_key === 'history' ? { ...c, history_p5: e.target.value } as any : c
-                          )
-                        )
-                      }
-                      placeholder="Quinto parágrafo da história"
-                      rows={3}
-                    />
-                  </div>
+                      )
+                    }
+                    placeholder="Conteúdo"
+                    rows={4}
+                  />
                   <div className="flex gap-2">
                     <Button
                       onClick={() => {
-                        const historyContent = contents.find(c => c.section_key === 'history');
-                        if (historyContent) {
-                          updateContent(historyContent.id, {
-                            title: historyContent.title,
-                            content: historyContent.content,
-                            ...(historyContent as any).history_p2 && { history_p2: (historyContent as any).history_p2 },
-                            ...(historyContent as any).history_p3 && { history_p3: (historyContent as any).history_p3 },
-                            ...(historyContent as any).history_p4 && { history_p4: (historyContent as any).history_p4 },
-                            ...(historyContent as any).history_p5 && { history_p5: (historyContent as any).history_p5 },
+                        const content = contents.find(c => c.section_key === 'history_title');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
                           });
                         }
                       }}
                       size="sm"
                     >
                       <Save className="h-4 w-4 mr-1" />
-                      Salvar História
+                      Salvar
                     </Button>
                     <Button
                       onClick={() => {
@@ -626,25 +541,414 @@ const AdminAbout = () => {
               ) : (
                 <div>
                   <div className="flex justify-between items-start mb-2">
-                    <div className="flex-1">
-                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history')?.title}</h4>
-                      <p className="text-sm text-muted-foreground mb-2">5 parágrafos da história</p>
-                      <div className="space-y-2 text-sm">
-                        <p><strong>P1:</strong> {contents.find(c => c.section_key === 'history')?.content?.substring(0, 100)}...</p>
-                        <p><strong>P2:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p2 || '')?.substring(0, 100)}...</p>
-                        <p><strong>P3:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p3 || '')?.substring(0, 100)}...</p>
-                        <p><strong>P4:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p4 || '')?.substring(0, 100)}...</p>
-                        <p><strong>P5:</strong> {((contents.find(c => c.section_key === 'history') as any)?.history_p5 || '')?.substring(0, 100)}...</p>
-                      </div>
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_title')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_title</p>
                     </div>
                     <Button
-                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history')?.id || null)}
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_title')?.id || null)}
                       variant="ghost"
                       size="sm"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_title')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* História Parágrafo 1 */}
+          {contents.find(c => c.section_key === 'history_p1') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">✅ História Parágrafo 1</h3>
+              {editingContent === contents.find(c => c.section_key === 'history_p1')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_p1')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p1' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_p1')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p1' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo do parágrafo 1"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'history_p1');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_p1')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_p1</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_p1')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_p1')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* História Parágrafo 2 */}
+          {contents.find(c => c.section_key === 'history_p2') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">✅ História Parágrafo 2</h3>
+              {editingContent === contents.find(c => c.section_key === 'history_p2')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_p2')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p2' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_p2')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p2' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo do parágrafo 2"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'history_p2');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_p2')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_p2</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_p2')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_p2')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* História Parágrafo 3 */}
+          {contents.find(c => c.section_key === 'history_p3') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">✅ História Parágrafo 3</h3>
+              {editingContent === contents.find(c => c.section_key === 'history_p3')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_p3')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p3' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_p3')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p3' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo do parágrafo 3"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'history_p3');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_p3')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_p3</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_p3')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_p3')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* História Parágrafo 4 */}
+          {contents.find(c => c.section_key === 'history_p4') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">✅ História Parágrafo 4</h3>
+              {editingContent === contents.find(c => c.section_key === 'history_p4')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_p4')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p4' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_p4')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p4' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo do parágrafo 4"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'history_p4');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_p4')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_p4</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_p4')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_p4')?.content}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* História Parágrafo 5 */}
+          {contents.find(c => c.section_key === 'history_p5') && (
+            <div className="border rounded-lg p-4 bg-green-50">
+              <h3 className="font-semibold text-lg mb-4">✅ História Parágrafo 5</h3>
+              {editingContent === contents.find(c => c.section_key === 'history_p5')?.id ? (
+                <div className="space-y-3">
+                  <Input
+                    value={contents.find(c => c.section_key === 'history_p5')?.title || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p5' ? { ...c, title: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Título"
+                  />
+                  <Textarea
+                    value={contents.find(c => c.section_key === 'history_p5')?.content || ''}
+                    onChange={(e) =>
+                      setContents(
+                        contents.map((c) =>
+                          c.section_key === 'history_p5' ? { ...c, content: e.target.value } : c
+                        )
+                      )
+                    }
+                    placeholder="Conteúdo do parágrafo 5"
+                    rows={4}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => {
+                        const content = contents.find(c => c.section_key === 'history_p5');
+                        if (content) {
+                          updateContent(content.id, {
+                            title: content.title,
+                            content: content.content,
+                          });
+                        }
+                      }}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditingContent(null);
+                        fetchContents();
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{contents.find(c => c.section_key === 'history_p5')?.title}</h4>
+                      <p className="text-sm text-muted-foreground">Chave: history_p5</p>
+                    </div>
+                    <Button
+                      onClick={() => setEditingContent(contents.find(c => c.section_key === 'history_p5')?.id || null)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm">{contents.find(c => c.section_key === 'history_p5')?.content}</p>
                 </div>
               )}
             </div>
