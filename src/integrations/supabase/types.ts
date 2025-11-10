@@ -19,8 +19,6 @@ export type Database = {
           content: string
           created_at: string | null
           display_order: number | null
-          history_p4: string | null
-          history_p5: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -32,8 +30,6 @@ export type Database = {
           content: string
           created_at?: string | null
           display_order?: number | null
-          history_p4?: string | null
-          history_p5?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -45,8 +41,6 @@ export type Database = {
           content?: string
           created_at?: string | null
           display_order?: number | null
-          history_p4?: string | null
-          history_p5?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -186,6 +180,7 @@ export type Database = {
           created_at: string | null
           description: string
           display_order: number | null
+          end_year: string | null
           icon: string
           id: string
           image_url: string | null
@@ -195,6 +190,7 @@ export type Database = {
           results: Json | null
           sector: string
           standards: Json | null
+          start_year: string | null
           technologies: Json | null
           title: string
           updated_at: string | null
@@ -206,6 +202,7 @@ export type Database = {
           created_at?: string | null
           description: string
           display_order?: number | null
+          end_year?: string | null
           icon?: string
           id?: string
           image_url?: string | null
@@ -215,6 +212,7 @@ export type Database = {
           results?: Json | null
           sector: string
           standards?: Json | null
+          start_year?: string | null
           technologies?: Json | null
           title: string
           updated_at?: string | null
@@ -226,6 +224,7 @@ export type Database = {
           created_at?: string | null
           description?: string
           display_order?: number | null
+          end_year?: string | null
           icon?: string
           id?: string
           image_url?: string | null
@@ -235,6 +234,7 @@ export type Database = {
           results?: Json | null
           sector?: string
           standards?: Json | null
+          start_year?: string | null
           technologies?: Json | null
           title?: string
           updated_at?: string | null

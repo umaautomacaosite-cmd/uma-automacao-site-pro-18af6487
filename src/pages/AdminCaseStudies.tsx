@@ -42,6 +42,8 @@ const AdminCaseStudies = () => {
     client: '',
     sector: '',
     year: new Date().getFullYear().toString(),
+    start_year: new Date().getFullYear().toString(),
+    end_year: new Date().getFullYear().toString(),
     location: '',
     icon: 'Building',
     description: '',
@@ -229,6 +231,8 @@ const AdminCaseStudies = () => {
       client: '',
       sector: '',
       year: new Date().getFullYear().toString(),
+      start_year: new Date().getFullYear().toString(),
+      end_year: new Date().getFullYear().toString(),
       location: '',
       icon: 'Building',
       description: '',
@@ -383,7 +387,7 @@ const AdminCaseStudies = () => {
                 <Input
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Título do case"
+                  placeholder="Ex: Automação Predial Completa"
                 />
               </div>
 
@@ -397,20 +401,20 @@ const AdminCaseStudies = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Setor</label>
+                <label className="text-sm font-medium">Ano Inicial</label>
                 <Input
-                  value={formData.sector}
-                  onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
-                  placeholder="Setor de atuação"
+                  value={formData.start_year}
+                  onChange={(e) => setFormData({ ...formData, start_year: e.target.value })}
+                  placeholder="Ex: 2023"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Ano</label>
+                <label className="text-sm font-medium">Ano Final</label>
                 <Input
-                  value={formData.year}
-                  onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                  placeholder="Ano do projeto"
+                  value={formData.end_year}
+                  onChange={(e) => setFormData({ ...formData, end_year: e.target.value })}
+                  placeholder="Ex: 2024"
                 />
               </div>
 
@@ -422,26 +426,6 @@ const AdminCaseStudies = () => {
                   placeholder="Cidade, Estado"
                 />
               </div>
-
-              <div>
-                <label className="text-sm font-medium">Ícone</label>
-                <Select
-                  value={formData.icon}
-                  onValueChange={(value) => setFormData({ ...formData, icon: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {iconOptions.map((icon) => (
-                      <SelectItem key={icon} value={icon}>
-                        {icon}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
 
               <div>
                 <label className="text-sm font-medium">Ordem de Exibição</label>
@@ -677,17 +661,18 @@ const AdminCaseStudies = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-lg">{caseStudy.client}</h3>
+                    <h3 className="font-semibold text-lg">{caseStudy.title}</h3>
                     {caseStudy.is_featured && (
                       <Badge variant="secondary">Destaque</Badge>
                     )}
-                    <Badge variant="outline">{caseStudy.sector}</Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{caseStudy.title}</p>
-                  <p className="text-sm mb-2">{caseStudy.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{caseStudy.client}</p>
+                  <p className="text-sm mb-2 line-clamp-2">{caseStudy.description}</p>
                   <div className="flex flex-wrap gap-2 mb-2">
                     <Badge variant="secondary">📍 {caseStudy.location}</Badge>
-                    <Badge variant="secondary">📅 {caseStudy.year}</Badge>
+                    <Badge variant="secondary">📅 {caseStudy.start_year && caseStudy.end_year 
+                      ? `${caseStudy.start_year} - ${caseStudy.end_year}`
+                      : caseStudy.year}</Badge>
                   </div>
                 </div>
                 <div className="flex space-x-2">

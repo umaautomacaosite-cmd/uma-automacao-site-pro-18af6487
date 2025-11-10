@@ -101,12 +101,10 @@ const FeaturedCases = () => {
 
           <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {visibleCases.map((caseItem, index) => {
-              const IconComponent = (LucideIcons as any)[caseItem.icon] || Building2;
-
               return (
                 <Card 
                   key={caseItem.id} 
-                  className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden ${
+                  className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden flex flex-col ${
                     isIntersecting 
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-10'
@@ -123,25 +121,25 @@ const FeaturedCases = () => {
                     </div>
                   )}
                   <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge className="bg-wine-900">{caseItem.sector}</Badge>
-                      <IconComponent className="h-5 w-5 text-wine-900" />
-                    </div>
                     <CardTitle className="font-lato text-xl">{caseItem.title}</CardTitle>
                     <CardDescription className="font-lato line-clamp-2">{caseItem.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-3 flex flex-col h-full">
                     <div className="space-y-1 text-sm">
                       <div className="flex items-center text-gray-500">
                         <Calendar className="h-4 w-4 mr-2" />
-                        <span>{caseItem.year}</span>
+                        <span>
+                          {caseItem.start_year && caseItem.end_year 
+                            ? `${caseItem.start_year} - ${caseItem.end_year}`
+                            : caseItem.year}
+                        </span>
                       </div>
                       <div className="flex items-center text-gray-500">
                         <MapPin className="h-4 w-4 mr-2" />
                         <span>{caseItem.location}</span>
                       </div>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-grow">
                       {caseItem.results.slice(0, 2).map((result, idx) => (
                         <div key={idx} className="flex items-center space-x-2">
                           <div className="w-2 h-2 rounded-full bg-green-600 flex-shrink-0" />

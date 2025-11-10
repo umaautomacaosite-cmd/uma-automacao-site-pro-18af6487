@@ -121,16 +121,12 @@ const CaseStudies = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {cases.map((caseStudy, index) => {
-              const IconComponent = iconMap[caseStudy.icon] || Building;
               return (
-              <Card key={caseStudy.id} className="border-2 hover:shadow-xl transition-shadow overflow-hidden">
+              <Card key={caseStudy.id} className="border-2 hover:shadow-xl transition-shadow overflow-hidden flex flex-col">
                 <div 
                   className="h-48 bg-cover bg-center relative"
                   style={{ backgroundImage: `url(${caseStudy.cover_image_url || caseStudy.image_url || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})` }}
                 >
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <IconComponent className="h-16 w-16 text-white" />
-                  </div>
                   <Badge className="absolute top-4 right-4 bg-wine-900 text-white">
                     Conformidade Total
                   </Badge>
@@ -138,16 +134,15 @@ const CaseStudies = () => {
                 
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
-                    <Badge variant="outline" className="font-lato text-sm">
-                      {caseStudy.sector}
-                    </Badge>
-                    <div className="text-sm text-gray-500 font-lato">
-                      {caseStudy.year}
+                    <CardTitle className="font-playfair text-xl text-wine-900">
+                      {caseStudy.title}
+                    </CardTitle>
+                    <div className="text-sm text-gray-500 font-lato whitespace-nowrap ml-2">
+                      {caseStudy.start_year && caseStudy.end_year 
+                        ? `${caseStudy.start_year} - ${caseStudy.end_year}`
+                        : caseStudy.year}
                     </div>
                   </div>
-                  <CardTitle className="font-playfair text-xl text-wine-900">
-                    {caseStudy.client}
-                  </CardTitle>
                   <CardDescription className="font-lato">
                     <div className="flex items-center space-x-1 text-sm">
                       <MapPin className="h-4 w-4" />
@@ -156,79 +151,81 @@ const CaseStudies = () => {
                   </CardDescription>
                 </CardHeader>
 
-                 <CardContent className="space-y-4">
-                   <div>
-                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
-                       Solução Aplicada
-                     </h4>
-                     <p className="font-lato text-sm text-gray-700 line-clamp-3">
-                       {caseStudy.description}
-                     </p>
-                   </div>
-
-                   <div>
-                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
-                       Tecnologias
-                     </h4>
-                     <div className="flex flex-wrap gap-2">
-                       {caseStudy.technologies.slice(0, 3).map((tech, idx) => (
-                         <Badge key={idx} variant="secondary" className="text-xs">
-                           {tech}
-                         </Badge>
-                       ))}
-                       {caseStudy.technologies.length > 3 && (
-                         <Badge variant="secondary" className="text-xs">
-                           +{caseStudy.technologies.length - 3} mais
-                         </Badge>
-                       )}
+                 <CardContent className="space-y-4 flex flex-col flex-grow">
+                   <div className="flex-grow">
+                     <div>
+                       <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                         Solução Aplicada
+                       </h4>
+                       <p className="font-lato text-sm text-gray-700 line-clamp-3">
+                         {caseStudy.description}
+                       </p>
                      </div>
-                   </div>
 
-                   <div>
-                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
-                       Normas Aplicadas
-                     </h4>
-                     <div className="flex flex-wrap gap-2">
-                       {caseStudy.standards.slice(0, 3).map((standard, idx) => (
-                         <Badge key={idx} variant="outline" className="text-xs">
-                           {standard}
-                         </Badge>
-                       ))}
-                       {caseStudy.standards.length > 3 && (
-                         <Badge variant="outline" className="text-xs">
-                           +{caseStudy.standards.length - 3} mais
-                         </Badge>
-                       )}
+                     <div className="mt-4">
+                       <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                         Tecnologias
+                       </h4>
+                       <div className="flex flex-wrap gap-2">
+                         {caseStudy.technologies.slice(0, 3).map((tech, idx) => (
+                           <Badge key={idx} variant="secondary" className="text-xs">
+                             {tech}
+                           </Badge>
+                         ))}
+                         {caseStudy.technologies.length > 3 && (
+                           <Badge variant="secondary" className="text-xs">
+                             +{caseStudy.technologies.length - 3} mais
+                           </Badge>
+                         )}
+                       </div>
                      </div>
-                   </div>
 
-                   <div>
-                     <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
-                       Resultados Obtidos
-                     </h4>
-                     <div className="space-y-1">
-                       {caseStudy.results.slice(0, 2).map((result, idx) => (
-                         <div key={idx} className="flex items-start space-x-2">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                           <span className="font-lato text-xs line-clamp-1">{result}</span>
-                         </div>
-                       ))}
-                       {caseStudy.results.length > 2 && (
-                         <p className="text-xs text-gray-500 font-lato">
-                           +{caseStudy.results.length - 2} resultados adicionais
-                         </p>
-                       )}
+                     <div className="mt-4">
+                       <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                         Normas Aplicadas
+                       </h4>
+                       <div className="flex flex-wrap gap-2">
+                         {caseStudy.standards.slice(0, 3).map((standard, idx) => (
+                           <Badge key={idx} variant="outline" className="text-xs">
+                             {standard}
+                           </Badge>
+                         ))}
+                         {caseStudy.standards.length > 3 && (
+                           <Badge variant="outline" className="text-xs">
+                             +{caseStudy.standards.length - 3} mais
+                           </Badge>
+                         )}
+                       </div>
+                     </div>
+
+                     <div className="mt-4">
+                       <h4 className="font-lato font-semibold text-wine-900 mb-2 text-sm">
+                         Resultados Obtidos
+                       </h4>
+                       <div className="space-y-1">
+                         {caseStudy.results.slice(0, 2).map((result, idx) => (
+                           <div key={idx} className="flex items-start space-x-2">
+                             <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                             <span className="font-lato text-xs line-clamp-1">{result}</span>
+                           </div>
+                         ))}
+                         {caseStudy.results.length > 2 && (
+                           <p className="text-xs text-gray-500 font-lato">
+                             +{caseStudy.results.length - 2} resultados adicionais
+                           </p>
+                         )}
+                       </div>
                      </div>
                    </div>
 
                    <Button 
-                     onClick={() => handleViewDetails(caseStudy)}
-                     className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full"
-                   >
-                     <Eye className="mr-2 h-4 w-4" />
-                     Ver Detalhes Completos
-                   </Button>
-                 </CardContent>
+                      onClick={() => handleViewDetails(caseStudy)}
+                      className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full mt-4"
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      Ver Detalhes Completos
+                    </Button>
+                  </CardContent>
               </Card>
               );
             })}
@@ -247,7 +244,9 @@ const CaseStudies = () => {
                 </DialogTitle>
                 <DialogDescription className="flex items-center gap-2 text-base">
                   <MapPin className="h-4 w-4" />
-                  {selectedCase.location} • {selectedCase.year}
+                  {selectedCase.location} • {selectedCase.start_year && selectedCase.end_year 
+                    ? `${selectedCase.start_year} - ${selectedCase.end_year}`
+                    : selectedCase.year}
                 </DialogDescription>
               </DialogHeader>
 
