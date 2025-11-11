@@ -18,9 +18,10 @@ interface CaseStudy extends Omit<CaseStudyDb, 'technologies' | 'standards' | 're
 }
 
 const FeaturedCases = () => {
-  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.2 });
+  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.1 });
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
   
   const VISIBLE_CASES = 3;
 
@@ -29,6 +30,7 @@ const FeaturedCases = () => {
   }, []);
 
   const loadFeaturedCases = async () => {
+    setLoading(true);
     const { data, error } = await supabase
       .from('case_studies')
       .select('*')
@@ -39,12 +41,14 @@ const FeaturedCases = () => {
 
     if (error) {
       console.error('Error loading featured cases:', error);
+      setLoading(false);
       return;
     }
 
     const cases = (data || []) as CaseStudy[];
-    console.log('Featured cases loaded:', cases.length); // Debug
+    console.log('Featured cases loaded:', cases.length, cases);
     setCases(cases);
+    setLoading(false);
   };
 
   const nextSlide = () => {
@@ -61,7 +65,7 @@ const FeaturedCases = () => {
 
   const visibleCases = cases.slice(currentIndex, currentIndex + VISIBLE_CASES);
 
-  if (cases.length === 0) return null;
+  if (loading || cases.length === 0) return null;
 
   return (
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
@@ -104,12 +108,11 @@ const FeaturedCases = () => {
               return (
                 <Card 
                   key={caseItem.id} 
-                  className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden flex flex-col ${
-                    isIntersecting 
-                      ? 'opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-10'
-                  }`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
+                  className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden flex flex-col opacity-100 translate-y-0`}
+                  style={{ 
+                    transitionDelay: `${index * 100}ms`,
+                    animation: isIntersecting ? `fadeInUp 0.6s ease-out ${index * 100}ms forwards` : 'none'
+                  }}
                 >
                   {caseItem.cover_image_url && (
                     <div className="w-full h-48 overflow-hidden">

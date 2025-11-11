@@ -58,6 +58,7 @@ const AdminCaseStudies = () => {
   });
   
   const [images, setImages] = useState<CaseStudyImage[]>([]);
+  const [coverImageIndex, setCoverImageIndex] = useState<number | null>(null);
   const [newTech, setNewTech] = useState('');
   const [newStandard, setNewStandard] = useState('');
   const [newResult, setNewResult] = useState('');
@@ -121,8 +122,16 @@ const AdminCaseStudies = () => {
       return;
     }
 
-    // Upload images
-    await uploadImages(caseStudy.id);
+    // Upload images and get cover URL
+    const coverUrl = await uploadImages(caseStudy.id);
+    
+    // Update with cover URL if exists
+    if (coverUrl) {
+      await supabase
+        .from('case_studies')
+        .update({ cover_image_url: coverUrl })
+        .eq('id', caseStudy.id);
+    }
 
     toast.success('Case criado com sucesso!');
     setIsCreating(false);
@@ -146,18 +155,24 @@ const AdminCaseStudies = () => {
       }
     }
 
+    // Upload new images and get cover URL
+    const coverUrl = await uploadImages(id);
+    
+    // Update form data with new cover URL if exists
+    const updateData = { ...formData };
+    if (coverUrl) {
+      updateData.cover_image_url = coverUrl;
+    }
+
     const { error } = await supabase
       .from('case_studies')
-      .update(formData as any)
+      .update(updateData as any)
       .eq('id', id);
 
     if (error) {
       toast.error('Erro ao atualizar case');
       return;
     }
-
-    // Upload new images
-    await uploadImages(id);
 
     setEditingId(null);
     resetForm();
@@ -209,12 +224,19 @@ const AdminCaseStudies = () => {
       .order('display_order', { ascending: true });
     
     if (imageData) {
-      setImages(imageData.map(img => ({
+      const loadedImages = imageData.map(img => ({
         id: img.id,
         image_url: img.image_url,
         description: img.description || '',
         display_order: img.display_order
-      })));
+      }));
+      setImages(loadedImages);
+      
+      // Set cover image index if exists
+      if (caseStudy.cover_image_url) {
+        const coverIndex = loadedImages.findIndex(img => img.image_url === caseStudy.cover_image_url);
+        setCoverImageIndex(coverIndex !== -1 ? coverIndex : null);
+      }
     }
   };
 
@@ -223,6 +245,7 @@ const AdminCaseStudies = () => {
     setIsCreating(false);
     resetForm();
     setImages([]);
+    setCoverImageIndex(null);
   };
 
   const resetForm = () => {
@@ -246,10 +269,15 @@ const AdminCaseStudies = () => {
       is_active: true
     });
     setImages([]);
+    setCoverImageIndex(null);
   };
 
-  const uploadImages = async (caseStudyId: string) => {
-    for (const image of images) {
+  const uploadImages = async (caseStudyId: string): Promise<string | null> => {
+    let coverUrl: string | null = null;
+    
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      
       if (image.file) {
         // Upload to storage
         const fileExt = image.file.name.split('.').pop();
@@ -278,6 +306,11 @@ const AdminCaseStudies = () => {
             description: image.description,
             display_order: image.display_order
           });
+        
+        // If this is the cover image, save the public URL
+        if (i === coverImageIndex) {
+          coverUrl = publicUrl;
+        }
       } else if (image.id) {
         // Update existing image description
         await supabase
@@ -287,8 +320,15 @@ const AdminCaseStudies = () => {
             display_order: image.display_order 
           })
           .eq('id', image.id);
+        
+        // If this is the cover image and it already exists, use its URL
+        if (i === coverImageIndex && image.image_url) {
+          coverUrl = image.image_url;
+        }
       }
     }
+    
+    return coverUrl;
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -599,11 +639,15 @@ const AdminCaseStudies = () => {
                               <Button
                                 type="button"
                                 size="sm"
-                                variant={image.image_url === formData.cover_image_url ? 'default' : 'outline'}
-                                onClick={() => setFormData({ ...formData, cover_image_url: image.image_url })}
+                                variant={index === coverImageIndex ? 'default' : 'outline'}
+                                onClick={() => {
+                                  setCoverImageIndex(index);
+                                  setFormData({ ...formData, cover_image_url: image.image_url });
+                                }}
                                 title="Definir como capa"
                               >
                                 <ImageIcon className="h-4 w-4" />
+                                {index === coverImageIndex && ' ✓'}
                               </Button>
                             </div>
                           </div>
