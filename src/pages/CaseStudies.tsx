@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,37 +7,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  Building, 
-  Factory, 
-  Hospital, 
-  GraduationCap,
-  Store,
-  Warehouse,
-  Zap,
-  Cpu,
-  MapPin,
-  CheckCircle,
-  Award,
-  Eye
-} from 'lucide-react';
+import { Building, Factory, Hospital, GraduationCap, Store, Warehouse, Zap, Cpu, MapPin, CheckCircle, Award, Eye } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
-
 type CaseStudyDb = Tables<'case_studies'>;
-
 interface CaseStudy extends Omit<CaseStudyDb, 'technologies' | 'standards' | 'results'> {
   technologies: string[];
   standards: string[];
   results: string[];
 }
-
 interface CaseStudyImage {
   id: string;
   image_url: string;
   description: string | null;
   display_order: number;
 }
-
 const iconMap: Record<string, any> = {
   Building,
   Factory,
@@ -49,53 +31,44 @@ const iconMap: Record<string, any> = {
   Zap,
   Cpu
 };
-
 const CaseStudies = () => {
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
   const [caseImages, setCaseImages] = useState<CaseStudyImage[]>([]);
-
   useEffect(() => {
     loadCases();
   }, []);
-
   const loadCases = async () => {
-    const { data, error } = await supabase
-      .from('case_studies')
-      .select('*')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true });
-
+    const {
+      data,
+      error
+    } = await supabase.from('case_studies').select('*').eq('is_active', true).order('display_order', {
+      ascending: true
+    });
     if (error) {
       console.error('Error loading cases:', error);
       return;
     }
-
     setCases((data || []) as CaseStudy[]);
   };
-
   const loadCaseImages = async (caseId: string) => {
-    const { data, error } = await supabase
-      .from('case_study_images')
-      .select('*')
-      .eq('case_study_id', caseId)
-      .order('display_order', { ascending: true });
-
+    const {
+      data,
+      error
+    } = await supabase.from('case_study_images').select('*').eq('case_study_id', caseId).order('display_order', {
+      ascending: true
+    });
     if (error) {
       console.error('Error loading case images:', error);
       return;
     }
-
     setCaseImages((data || []) as CaseStudyImage[]);
   };
-
   const handleViewDetails = async (caseStudy: CaseStudy) => {
     setSelectedCase(caseStudy);
     await loadCaseImages(caseStudy.id);
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       
       {/* Page Header */}
@@ -108,8 +81,7 @@ const CaseStudies = () => {
             Projetos entregues com excelência técnica, conformidade total com normas regulamentadoras e resultados comprovados em diversos setores.
           </p>
           <div className="mt-8">
-            <Badge className="bg-gold-500 text-black font-semibold px-4 py-2 text-lg">
-              <Award className="mr-2 h-5 w-5" />
+            <Badge className="bg-gold-500 text-black font-semibold px-4 py-2 text-lg">1500+ Projetos Entregues<Award className="mr-2 h-5 w-5" />
               500+ Projetos Entregues
             </Badge>
           </div>
@@ -121,12 +93,10 @@ const CaseStudies = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {cases.map((caseStudy, index) => {
-              return (
-              <Card key={caseStudy.id} className="border-2 hover:shadow-xl transition-shadow overflow-hidden flex flex-col">
-                <div 
-                  className="h-48 bg-cover bg-center relative"
-                  style={{ backgroundImage: `url(${caseStudy.cover_image_url || caseStudy.image_url || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})` }}
-                >
+            return <Card key={caseStudy.id} className="border-2 hover:shadow-xl transition-shadow overflow-hidden flex flex-col">
+                <div className="h-48 bg-cover bg-center relative" style={{
+                backgroundImage: `url(${caseStudy.cover_image_url || caseStudy.image_url || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})`
+              }}>
                   <Badge className="absolute top-4 right-4 bg-wine-900 text-white">
                     Conformidade Total
                   </Badge>
@@ -138,9 +108,7 @@ const CaseStudies = () => {
                       {caseStudy.title}
                     </CardTitle>
                     <div className="text-sm text-gray-500 font-lato whitespace-nowrap ml-2">
-                      {caseStudy.start_year && caseStudy.end_year 
-                        ? `${caseStudy.start_year} - ${caseStudy.end_year}`
-                        : caseStudy.year}
+                      {caseStudy.start_year && caseStudy.end_year ? `${caseStudy.start_year} - ${caseStudy.end_year}` : caseStudy.year}
                     </div>
                   </div>
                   <CardDescription className="font-lato">
@@ -167,16 +135,12 @@ const CaseStudies = () => {
                          Tecnologias
                        </h4>
                        <div className="flex flex-wrap gap-2">
-                         {caseStudy.technologies.slice(0, 3).map((tech, idx) => (
-                           <Badge key={idx} variant="secondary" className="text-xs">
+                         {caseStudy.technologies.slice(0, 3).map((tech, idx) => <Badge key={idx} variant="secondary" className="text-xs">
                              {tech}
-                           </Badge>
-                         ))}
-                         {caseStudy.technologies.length > 3 && (
-                           <Badge variant="secondary" className="text-xs">
+                           </Badge>)}
+                         {caseStudy.technologies.length > 3 && <Badge variant="secondary" className="text-xs">
                              +{caseStudy.technologies.length - 3} mais
-                           </Badge>
-                         )}
+                           </Badge>}
                        </div>
                      </div>
 
@@ -185,16 +149,12 @@ const CaseStudies = () => {
                          Normas Aplicadas
                        </h4>
                        <div className="flex flex-wrap gap-2">
-                         {caseStudy.standards.slice(0, 3).map((standard, idx) => (
-                           <Badge key={idx} variant="outline" className="text-xs">
+                         {caseStudy.standards.slice(0, 3).map((standard, idx) => <Badge key={idx} variant="outline" className="text-xs">
                              {standard}
-                           </Badge>
-                         ))}
-                         {caseStudy.standards.length > 3 && (
-                           <Badge variant="outline" className="text-xs">
+                           </Badge>)}
+                         {caseStudy.standards.length > 3 && <Badge variant="outline" className="text-xs">
                              +{caseStudy.standards.length - 3} mais
-                           </Badge>
-                         )}
+                           </Badge>}
                        </div>
                      </div>
 
@@ -203,78 +163,57 @@ const CaseStudies = () => {
                          Resultados Obtidos
                        </h4>
                        <div className="space-y-1">
-                         {caseStudy.results.slice(0, 2).map((result, idx) => (
-                           <div key={idx} className="flex items-start space-x-2">
+                         {caseStudy.results.slice(0, 2).map((result, idx) => <div key={idx} className="flex items-start space-x-2">
                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                              <span className="font-lato text-xs line-clamp-1">{result}</span>
-                           </div>
-                         ))}
-                         {caseStudy.results.length > 2 && (
-                           <p className="text-xs text-gray-500 font-lato">
+                           </div>)}
+                         {caseStudy.results.length > 2 && <p className="text-xs text-gray-500 font-lato">
                              +{caseStudy.results.length - 2} resultados adicionais
-                           </p>
-                         )}
+                           </p>}
                        </div>
                      </div>
                    </div>
 
-                   <Button 
-                      onClick={() => handleViewDetails(caseStudy)}
-                      className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full mt-4"
-                    >
+                   <Button onClick={() => handleViewDetails(caseStudy)} className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold w-full mt-4">
                       <Eye className="mr-2 h-4 w-4" />
                       Ver Detalhes Completos
                     </Button>
                   </CardContent>
-              </Card>
-              );
-            })}
+              </Card>;
+          })}
           </div>
         </div>
       </section>
 
       {/* Modal de Detalhes */}
-      <Dialog open={!!selectedCase} onOpenChange={(open) => !open && setSelectedCase(null)}>
+      <Dialog open={!!selectedCase} onOpenChange={open => !open && setSelectedCase(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          {selectedCase && (
-            <>
+          {selectedCase && <>
               <DialogHeader>
                 <DialogTitle className="font-playfair text-2xl text-wine-900">
                   {selectedCase.client}
                 </DialogTitle>
                 <DialogDescription className="flex items-center gap-2 text-base">
                   <MapPin className="h-4 w-4" />
-                  {selectedCase.location} • {selectedCase.start_year && selectedCase.end_year 
-                    ? `${selectedCase.start_year} - ${selectedCase.end_year}`
-                    : selectedCase.year}
+                  {selectedCase.location} • {selectedCase.start_year && selectedCase.end_year ? `${selectedCase.start_year} - ${selectedCase.end_year}` : selectedCase.year}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6">
                 {/* Imagens do Case */}
-                {caseImages.length > 0 && (
-                  <div className="space-y-4">
+                {caseImages.length > 0 && <div className="space-y-4">
                     <h3 className="font-lato font-semibold text-wine-900 text-lg">
                       Imagens do Projeto
                     </h3>
                     <div className="grid grid-cols-1 gap-6">
-                      {caseImages.map((image) => (
-                        <div key={image.id} className="space-y-3">
-                          <img 
-                            src={image.image_url} 
-                            alt={image.description || 'Imagem do projeto'}
-                            className="w-full h-auto max-h-96 object-contain rounded-lg border"
-                          />
-                          {image.description && (
-                            <p className="text-sm text-gray-600 text-center italic px-4">
+                      {caseImages.map(image => <div key={image.id} className="space-y-3">
+                          <img src={image.image_url} alt={image.description || 'Imagem do projeto'} className="w-full h-auto max-h-96 object-contain rounded-lg border" />
+                          {image.description && <p className="text-sm text-gray-600 text-center italic px-4">
                               {image.description}
-                            </p>
-                          )}
-                        </div>
-                      ))}
+                            </p>}
+                        </div>)}
                     </div>
-                  </div>
-                )}
+                  </div>}
 
                 {/* Descrição */}
                 <div>
@@ -292,11 +231,9 @@ const CaseStudies = () => {
                     Tecnologias Utilizadas
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedCase.technologies.map((tech, idx) => (
-                      <Badge key={idx} variant="secondary">
+                    {selectedCase.technologies.map((tech, idx) => <Badge key={idx} variant="secondary">
                         {tech}
-                      </Badge>
-                    ))}
+                      </Badge>)}
                   </div>
                 </div>
 
@@ -306,11 +243,9 @@ const CaseStudies = () => {
                     Normas Aplicadas
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedCase.standards.map((standard, idx) => (
-                      <Badge key={idx} variant="outline">
+                    {selectedCase.standards.map((standard, idx) => <Badge key={idx} variant="outline">
                         {standard}
-                      </Badge>
-                    ))}
+                      </Badge>)}
                   </div>
                 </div>
 
@@ -320,12 +255,10 @@ const CaseStudies = () => {
                     Resultados Obtidos
                   </h3>
                   <div className="space-y-2">
-                    {selectedCase.results.map((result, idx) => (
-                      <div key={idx} className="flex items-start space-x-2">
+                    {selectedCase.results.map((result, idx) => <div key={idx} className="flex items-start space-x-2">
                         <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <span className="font-lato">{result}</span>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
 
@@ -338,8 +271,7 @@ const CaseStudies = () => {
                   </Link>
                 </div>
               </div>
-            </>
-          )}
+            </>}
         </DialogContent>
       </Dialog>
 
@@ -361,8 +293,6 @@ const CaseStudies = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default CaseStudies;
