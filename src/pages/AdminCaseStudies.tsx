@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit, Save, X, Power, PowerOff, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Edit, Save, X, Power, PowerOff, Upload, Image as ImageIcon, Star } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -238,6 +238,9 @@ const AdminCaseStudies = () => {
         setCoverImageIndex(coverIndex !== -1 ? coverIndex : null);
       }
     }
+    
+    // Scroll to top for editing
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const cancelEdit = () => {
@@ -705,6 +708,11 @@ const AdminCaseStudies = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
+                    {caseStudy.is_featured && caseStudy.is_active && (
+                      <div className="bg-yellow-500 rounded-full p-1.5 shadow-md" title="Destaque na HOME">
+                        <Star className="h-4 w-4 text-white fill-white" />
+                      </div>
+                    )}
                     <h3 className="font-semibold text-lg">{caseStudy.title}</h3>
                     {caseStudy.is_featured && (
                       <Badge variant="secondary">Destaque</Badge>
