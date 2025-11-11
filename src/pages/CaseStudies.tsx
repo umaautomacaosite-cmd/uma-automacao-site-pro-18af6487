@@ -81,8 +81,7 @@ const CaseStudies = () => {
             Projetos entregues com excelência técnica, conformidade total com normas regulamentadoras e resultados comprovados em diversos setores.
           </p>
           <div className="mt-8">
-            <Badge className="bg-gold-500 text-black font-semibold px-4 py-2 text-lg">1500+ Projetos Entregues<Award className="mr-2 h-5 w-5" />
-              500+ Projetos Entregues
+            <Badge className="bg-gold-500 text-black font-semibold px-4 py-2 text-lg">1500+ Projetos Entregues
             </Badge>
           </div>
         </div>
