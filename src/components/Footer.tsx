@@ -10,13 +10,14 @@ const Footer = () => {
   const [facebookUrl, setFacebookUrl] = useState('');
   const [instagramUrl, setInstagramUrl] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [cnpj, setCnpj] = useState('');
   useEffect(() => {
     loadSettings();
   }, []);
   const loadSettings = async () => {
     const {
       data
-    } = await supabase.from('settings').select('key, value').in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'facebook_url', 'instagram_url', 'linkedin_url']);
+    } = await supabase.from('settings').select('key, value').in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
     if (data) {
       const phone = data.find(s => s.key === 'footer_phone');
       const email = data.find(s => s.key === 'footer_email');
@@ -24,12 +25,14 @@ const Footer = () => {
       const facebook = data.find(s => s.key === 'facebook_url');
       const instagram = data.find(s => s.key === 'instagram_url');
       const linkedin = data.find(s => s.key === 'linkedin_url');
+      const cnpjSetting = data.find(s => s.key === 'cnpj');
       if (phone?.value) setFooterPhone(phone.value);
       if (email?.value) setFooterEmail(email.value);
       if (whatsapp?.value) setWhatsappNumber(whatsapp.value);
       if (facebook?.value) setFacebookUrl(facebook.value);
       if (instagram?.value) setInstagramUrl(instagram.value);
       if (linkedin?.value) setLinkedinUrl(linkedin.value);
+      if (cnpjSetting?.value) setCnpj(cnpjSetting.value);
     }
   };
   return <footer className="bg-gray-900 text-white">
@@ -54,6 +57,12 @@ const Footer = () => {
                 <MapPin className="h-4 w-4 text-wine-400" />
                 <span>Brasília, DF - Brasil</span>
               </div>
+              {cnpj && (
+                <div className="flex items-center space-x-2 text-sm mt-2">
+                  <span className="font-semibold">CNPJ:</span>
+                  <span>{cnpj}</span>
+                </div>
+              )}
             </div>
           </div>
 

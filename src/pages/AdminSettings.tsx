@@ -289,6 +289,18 @@ const AdminSettings = () => {
               onChange={(e) => setSettings({ ...settings, footer_email: e.target.value })}
             />
           </div>
+
+          <div>
+            <label className="text-sm font-medium block mb-2">CNPJ</label>
+            <Input
+              placeholder="00.000.000/0000-00"
+              value={settings.cnpj || ''}
+              onChange={(e) => setSettings({ ...settings, cnpj: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              CNPJ exibido no rodapé do site
+            </p>
+          </div>
         </CardContent>
       </Card>
 

@@ -35,17 +35,49 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
 const Index = () => {
   const { ref: servicesRef, isIntersecting: servicesVisible } = useIntersectionObserver({ threshold: 0.1 });
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+  const [stats, setStats] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchWhatsappNumber = async () => {
-      const { data } = await supabase
+    const fetchData = async () => {
+      // Fetch WhatsApp number
+      const { data: whatsappData } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'whatsapp_number')
         .single();
-      if (data?.value) setWhatsappNumber(data.value);
+      if (whatsappData?.value) setWhatsappNumber(whatsappData.value);
+
+      // Fetch stats
+      const { data: statsData } = await supabase
+        .from('home_stats')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+      
+      if (statsData) {
+        const mappedStats = statsData.map((stat) => {
+          const iconMap: Record<string, any> = {
+            'Award': Award,
+            'Users': Users,
+            'MapPin': MapPin,
+            'Shield': Shield,
+            'TrendingUp': Award,
+            'CheckCircle': Award
+          };
+          
+          const numericValue = parseInt(stat.value.replace(/\D/g, '')) || 0;
+          
+          return {
+            number: stat.value,
+            label: stat.label,
+            icon: iconMap[stat.icon] || Award,
+            value: numericValue
+          };
+        });
+        setStats(mappedStats);
+      }
     };
-    fetchWhatsappNumber();
+    fetchData();
   }, []);
 
   const services = [{
@@ -68,28 +100,6 @@ const Index = () => {
     title: "Segurança Industrial",
     description: "Sistemas de segurança conforme normas regulamentadoras",
     features: ["NR-10", "NR-12", "NR-33"]
-  }];
-
-  const stats = [{
-    number: "1500+",
-    label: "Projetos Entregues",
-    icon: Award,
-    value: 1500
-  }, {
-    number: "25+",
-    label: "Anos de Experiência",
-    icon: Users,
-    value: 25
-  }, {
-    number: "100%",
-    label: "Atendimento Nacional",
-    icon: MapPin,
-    value: 100
-  }, {
-    number: "24/7",
-    label: "Suporte Técnico",
-    icon: Shield,
-    value: 24
   }];
 
   return <div className="min-h-screen">
