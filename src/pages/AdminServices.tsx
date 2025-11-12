@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, X, Network, Zap, Shield, Database, Settings } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Network, Zap, Shield, Database, Settings, Wrench } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Service {
@@ -28,6 +28,7 @@ const categories = [
   { id: 'automacao', name: 'Automação Predial', icon: Settings },
   { id: 'seguranca', name: 'Segurança Predial', icon: Shield },
   { id: 'datacenter', name: 'Data Center', icon: Database },
+  { id: 'manutencao', name: 'Manutenção e Operação', icon: Wrench },
 ];
 
 const AdminServices = () => {

@@ -12,6 +12,7 @@ import {
   Settings, 
   Shield, 
   Database,
+  Wrench,
   Wifi,
   HardDrive,
   MonitorSpeaker,
@@ -54,6 +55,7 @@ const Services = () => {
     { id: 'automacao', name: 'Automação Predial', icon: Settings },
     { id: 'seguranca', name: 'Segurança Predial', icon: Shield },
     { id: 'datacenter', name: 'Data Center', icon: Database },
+    { id: 'manutencao', name: 'Manutenção e Operação', icon: Wrench },
   ];
 
   useEffect(() => {
