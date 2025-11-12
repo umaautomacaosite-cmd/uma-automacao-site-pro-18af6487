@@ -41,7 +41,7 @@ const Services = () => {
   const categories = [
     { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
     { id: 'energia', name: 'Energia e Elétrica', icon: Zap },
-    { id: 'automacao', name: 'Automação Industrial', icon: Settings },
+    { id: 'automacao', name: 'Automação Predial', icon: Settings },
     { id: 'datacenter', name: 'Data Center', icon: Database },
   ];
 
