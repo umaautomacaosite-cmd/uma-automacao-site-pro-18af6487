@@ -27,8 +27,8 @@ interface Service {
 const categories = [
   { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
   { id: 'energia', name: 'Energia e Elétrica', icon: Zap },
-  { id: 'automacao', name: 'Automação Industrial', icon: Settings },
-  { id: 'seguranca', name: 'Segurança Industrial', icon: Shield },
+  { id: 'automacao', name: 'Automação Predial', icon: Settings },
+  { id: 'seguranca', name: 'Segurança Predial', icon: Shield },
   { id: 'datacenter', name: 'Data Center', icon: Database },
 ];
 
