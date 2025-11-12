@@ -403,12 +403,14 @@ const AdminStatsSection = () => {
             <div>
               <Label>Valor</Label>
               <Input
+                type="text"
                 value={stat.value}
                 onChange={(e) => {
                   const newStats = [...stats];
                   newStats[index].value = e.target.value;
                   setStats(newStats);
                 }}
+                placeholder="Ex: 24/7, 100+, etc."
               />
             </div>
             <div>

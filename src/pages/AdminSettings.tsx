@@ -150,12 +150,13 @@ const AdminSettings = () => {
   const handleSaveSettings = async () => {
     let hasError = false;
     for (const [key, value] of Object.entries(settings)) {
+      // Use upsert to handle both insert and update
       const { error } = await supabase
         .from('settings')
-        .update({ value })
-        .eq('key', key);
+        .upsert({ key, value }, { onConflict: 'key' });
       
       if (error) {
+        console.error(`Error saving setting ${key}:`, error);
         hasError = true;
         break;
       }
@@ -165,6 +166,7 @@ const AdminSettings = () => {
       toast.error('Erro ao atualizar configurações');
     } else {
       toast.success('Configurações atualizadas com sucesso!');
+      await loadSettings(); // Reload to confirm changes
     }
   };
 
