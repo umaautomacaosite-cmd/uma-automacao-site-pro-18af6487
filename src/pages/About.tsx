@@ -6,50 +6,37 @@ import { Badge } from '@/components/ui/badge';
 import { Award, Users, MapPin, Target, Eye, Heart, CheckCircle, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import * as LucideIcons from 'lucide-react';
-
 interface AboutContent {
   section_key: string;
   title: string;
   content: string;
 }
-
 interface AboutValue {
   icon: string;
   title: string;
   description: string;
 }
-
 interface AboutTimeline {
   year: string;
   title: string;
   description: string;
 }
-
 interface AboutStat {
   value: string;
   label: string;
 }
-
 const About = () => {
   const [contents, setContents] = useState<Record<string, string>>({});
   const [values, setValues] = useState<AboutValue[]>([]);
   const [timeline, setTimeline] = useState<AboutTimeline[]>([]);
   const [stats, setStats] = useState<AboutStat[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     fetchData();
   }, []);
-
   const fetchData = async () => {
     try {
-      const [contentsRes, valuesRes, timelineRes, statsRes] = await Promise.all([
-        supabase.from('about_content').select('*').eq('is_active', true),
-        supabase.from('about_values').select('*').eq('is_active', true).order('display_order'),
-        supabase.from('about_timeline').select('*').eq('is_active', true).order('display_order'),
-        supabase.from('about_stats').select('*').eq('is_active', true).order('display_order')
-      ]);
-
+      const [contentsRes, valuesRes, timelineRes, statsRes] = await Promise.all([supabase.from('about_content').select('*').eq('is_active', true), supabase.from('about_values').select('*').eq('is_active', true).order('display_order'), supabase.from('about_timeline').select('*').eq('is_active', true).order('display_order'), supabase.from('about_stats').select('*').eq('is_active', true).order('display_order')]);
       if (contentsRes.data) {
         const contentMap: Record<string, any> = {};
         contentsRes.data.forEach((item: any) => {
@@ -70,7 +57,6 @@ const About = () => {
         });
         setContents(contentMap);
       }
-
       if (valuesRes.data) setValues(valuesRes.data);
       if (timelineRes.data) setTimeline(timelineRes.data);
       if (statsRes.data) setStats(statsRes.data);
@@ -80,26 +66,20 @@ const About = () => {
       setLoading(false);
     }
   };
-
   const getIcon = (iconName: string) => {
     const Icon = (LucideIcons as any)[iconName] || Target;
     return Icon;
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen">
+    return <div className="min-h-screen">
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
           <p>Carregando...</p>
         </div>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       
       {/* Page Header */}
@@ -126,50 +106,28 @@ const About = () => {
                 <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                   {contents.history_p1 || 'Fundada em 2008, a UMA AUTOMAÇÃO nasceu com o propósito de fornecer soluções técnicas de excelência em automação industrial.'}
                 </p>
-                {contents.history_p2 && (
-                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
+                {contents.history_p2 && <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p2}
-                  </p>
-                )}
-                {contents.history_p3 && (
-                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
+                  </p>}
+                {contents.history_p3 && <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p3}
-                  </p>
-                )}
-                {contents.history_p4 && (
-                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
+                  </p>}
+                {contents.history_p4 && <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p4}
-                  </p>
-                )}
-                {contents.history_p5 && (
-                  <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
+                  </p>}
+                {contents.history_p5 && <p className="font-lato text-base md:text-lg text-gray-700 leading-relaxed">
                     {contents.history_p5}
-                  </p>
-                )}
+                  </p>}
               </div>
               <div className="grid grid-cols-2 gap-3 md:gap-4 mt-8">
-                {stats.map((stat, index) => (
-                  <div key={index} className="text-center p-3 md:p-4 bg-wine-50 rounded-lg">
+                {stats.map((stat, index) => <div key={index} className="text-center p-3 md:p-4 bg-wine-50 rounded-lg">
                     <div className="font-playfair text-2xl md:text-3xl font-bold text-wine-900">{stat.value}</div>
                     <div className="font-lato text-xs md:text-sm text-gray-600">{stat.label}</div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
             <div className="order-1 lg:order-2">
-              {contents.brand_image_url ? (
-                <img 
-                  src={contents.brand_image_url} 
-                  alt="UMA AUTOMAÇÃO" 
-                  className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" 
-                />
-              ) : (
-                <img 
-                  src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="Escritório UMA AUTOMAÇÃO" 
-                  className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" 
-                />
-              )}
+              {contents.brand_image_url ? <img src={contents.brand_image_url} alt="UMA AUTOMAÇÃO" className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" /> : <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Escritório UMA AUTOMAÇÃO" className="rounded-lg shadow-lg w-full h-64 md:h-80 lg:h-96 object-cover" />}
             </div>
           </div>
         </div>
@@ -213,17 +171,15 @@ const About = () => {
           {/* Values Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => {
-              const IconComponent = getIcon(value.icon);
-              return (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+            const IconComponent = getIcon(value.icon);
+            return <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
                   <CardContent>
                     <IconComponent className="h-10 w-10 text-wine-900 mx-auto mb-4" />
                     <h4 className="font-lato font-semibold text-lg mb-2">{value.title}</h4>
                     <p className="font-lato text-sm text-gray-600">{value.description}</p>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
       </section>
@@ -237,8 +193,7 @@ const About = () => {
           
           {/* Mobile Timeline */}
           <div className="block md:hidden space-y-6">
-            {timeline.map((event, index) => (
-              <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
+            {timeline.map((event, index) => <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
                 <CardContent className="p-0">
                   <Badge className="bg-wine-900 text-white mb-3 inline-flex items-center">
                     <Calendar className="mr-1 h-3 w-3" />
@@ -249,8 +204,7 @@ const About = () => {
                   </h4>
                   <p className="font-lato text-sm text-gray-700 leading-relaxed">{event.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
 
           {/* Desktop Timeline */}
@@ -259,8 +213,7 @@ const About = () => {
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-wine-200"></div>
             
             <div className="space-y-12">
-              {timeline.map((event, index) => (
-                <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+              {timeline.map((event, index) => <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                     <Card className="p-6 hover:shadow-lg transition-shadow">
                       <CardContent className="p-0">
@@ -277,8 +230,7 @@ const About = () => {
                   </div>
                   <div className="w-4 h-4 bg-wine-900 rounded-full border-4 border-white shadow-lg relative z-10"></div>
                   <div className="w-1/2"></div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -298,7 +250,7 @@ const About = () => {
             </div>
             <div className="bg-white text-gray-900 p-6 rounded-lg">
               <Users className="h-12 w-12 text-wine-900 mx-auto mb-4" />
-              <h3 className="font-lato font-bold text-lg mb-2">CREA/DF</h3>
+              <h3 className="font-lato font-bold text-lg mb-2">CREA</h3>
               <p className="font-lato text-sm">Engenheiros Registrados e Certificados</p>
             </div>
             <div className="bg-white text-gray-900 p-6 rounded-lg">
@@ -311,8 +263,6 @@ const About = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default About;
