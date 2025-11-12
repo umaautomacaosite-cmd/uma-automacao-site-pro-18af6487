@@ -59,7 +59,7 @@ const Services = () => {
         .from('services')
         .select('*')
         .eq('is_active', true)
-        .order('display_order', { ascending: true });
+        .order('title', { ascending: true });
 
       if (error) throw error;
       
