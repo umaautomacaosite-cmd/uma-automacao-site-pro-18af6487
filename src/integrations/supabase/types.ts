@@ -473,8 +473,6 @@ export type Database = {
           category: string
           created_at: string | null
           description: string
-          display_order: number | null
-          engineer: string
           features: Json | null
           features_icon_color: string | null
           id: string
@@ -490,8 +488,6 @@ export type Database = {
           category: string
           created_at?: string | null
           description: string
-          display_order?: number | null
-          engineer: string
           features?: Json | null
           features_icon_color?: string | null
           id?: string
@@ -507,8 +503,6 @@ export type Database = {
           category?: string
           created_at?: string | null
           description?: string
-          display_order?: number | null
-          engineer?: string
           features?: Json | null
           features_icon_color?: string | null
           id?: string

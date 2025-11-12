@@ -28,7 +28,6 @@ interface Service {
   applications: string[];
   standards: string[];
   features: string[];
-  engineer: string;
   applications_icon_color: 'green' | 'red';
   features_icon_color: 'green' | 'red';
 }
@@ -37,6 +36,11 @@ const Services = () => {
   const [activeCategory, setActiveCategory] = useState('redes');
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const categories = [
     { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
@@ -68,7 +72,6 @@ const Services = () => {
         applications: (service.applications as unknown as string[]) || [],
         standards: (service.standards as unknown as string[]) || [],
         features: (service.features as unknown as string[]) || [],
-        engineer: service.engineer,
         applications_icon_color: (service.applications_icon_color || 'green') as 'green' | 'red',
         features_icon_color: (service.features_icon_color || 'red') as 'green' | 'red',
       }));
@@ -127,7 +130,7 @@ const Services = () => {
                   {categories.map((category) => (
                     <button
                       key={category.id}
-                      onClick={() => setActiveCategory(category.id)}
+                      onClick={() => handleCategoryChange(category.id)}
                       className={`w-full text-left p-3 md:p-4 rounded-lg font-lato font-medium transition-colors flex items-center space-x-3 ${
                         activeCategory === category.id
                           ? 'bg-wine-900 text-white'
@@ -205,18 +208,6 @@ const Services = () => {
                               </div>
                             ))}
                           </div>
-                        </div>
-
-                        {/* Engineer */}
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <Users className="h-5 w-5 text-wine-900" />
-                            <span className="font-lato font-semibold">Engenheiro Responsável:</span>
-                            <span className="font-lato">{service.engineer}</span>
-                          </div>
-                          <Badge className="mt-2 bg-green-600 text-white">
-                            Atendimento Nacional
-                          </Badge>
                         </div>
 
                         <Link to="/contato">

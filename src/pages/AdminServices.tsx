@@ -16,10 +16,8 @@ interface Service {
   applications: string[];
   standards: string[];
   features: string[];
-  engineer: string;
   applications_icon_color: 'green' | 'red';
   features_icon_color: 'green' | 'red';
-  display_order: number;
   is_active: boolean;
   is_featured: boolean;
 }
@@ -43,10 +41,8 @@ const AdminServices = () => {
     applications: [''],
     standards: [''],
     features: [''],
-    engineer: '',
     applications_icon_color: 'green',
     features_icon_color: 'red',
-    display_order: 0,
     is_active: true,
     is_featured: false,
   });
@@ -74,10 +70,8 @@ const AdminServices = () => {
         applications: (service.applications as unknown as string[]) || [],
         standards: (service.standards as unknown as string[]) || [],
         features: (service.features as unknown as string[]) || [],
-        engineer: service.engineer,
         applications_icon_color: (service.applications_icon_color || 'green') as 'green' | 'red',
         features_icon_color: (service.features_icon_color || 'red') as 'green' | 'red',
-        display_order: service.display_order,
         is_active: service.is_active,
         is_featured: service.is_featured || false,
       }));
@@ -103,10 +97,8 @@ const AdminServices = () => {
       applications: [''],
       standards: [''],
       features: [''],
-      engineer: '',
       applications_icon_color: 'green',
       features_icon_color: 'red',
-      display_order: services.length,
       is_active: true,
       is_featured: false,
     });
@@ -125,7 +117,7 @@ const AdminServices = () => {
 
   const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!serviceForm.title || !serviceForm.description || !serviceForm.engineer) {
+    if (!serviceForm.title || !serviceForm.description) {
       toast({
         title: 'Erro',
         description: 'Preencha todos os campos obrigatórios.',
@@ -170,10 +162,8 @@ const AdminServices = () => {
         applications: serviceForm.applications.filter((app) => app.trim() !== ''),
         standards: serviceForm.standards.filter((std) => std.trim() !== ''),
         features: serviceForm.features.filter((feat) => feat.trim() !== ''),
-        engineer: serviceForm.engineer,
         applications_icon_color: serviceForm.applications_icon_color,
         features_icon_color: serviceForm.features_icon_color,
-        display_order: serviceForm.display_order,
         is_active: serviceForm.is_active,
       };
 
@@ -338,7 +328,7 @@ const AdminServices = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="font-lato font-medium text-sm mb-2 block">Cor dos Ícones das Aplicações *</label>
                 <select
@@ -363,15 +353,6 @@ const AdminServices = () => {
                   <option value="red">Vermelho</option>
                 </select>
               </div>
-              <div>
-                <label className="font-lato font-medium text-sm mb-2 block">Ordem de Exibição</label>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  value={serviceForm.display_order}
-                  onChange={(e) => setServiceForm({ ...serviceForm, display_order: parseInt(e.target.value) || 0 })}
-                />
-              </div>
             </div>
 
             <div>
@@ -381,16 +362,6 @@ const AdminServices = () => {
                 rows={4}
                 value={serviceForm.description}
                 onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="font-lato font-medium text-sm mb-2 block">Engenheiro Responsável *</label>
-              <Input
-                placeholder="Ex: Eng. Carlos Silva - CREA/SP 123456"
-                value={serviceForm.engineer}
-                onChange={(e) => setServiceForm({ ...serviceForm, engineer: e.target.value })}
                 required
               />
             </div>
@@ -534,8 +505,6 @@ const AdminServices = () => {
                   <p className="font-lato text-sm text-gray-600 mb-2">{service.description}</p>
                   <div className="flex gap-2 text-xs text-gray-500">
                     <span>Categoria: {service.category}</span>
-                    <span>•</span>
-                    <span>Ordem: {service.display_order}</span>
                   </div>
                 </div>
                 <div className="flex gap-2">
