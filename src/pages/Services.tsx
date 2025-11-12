@@ -39,13 +39,20 @@ const Services = () => {
 
   const handleCategoryChange = (categoryId: string) => {
     setActiveCategory(categoryId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to the services content area after a short delay to ensure DOM is updated
+    setTimeout(() => {
+      const servicesContent = document.getElementById('services-content');
+      if (servicesContent) {
+        servicesContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const categories = [
     { id: 'redes', name: 'Redes e Infraestrutura', icon: Network },
     { id: 'energia', name: 'Energia e Elétrica', icon: Zap },
     { id: 'automacao', name: 'Automação Predial', icon: Settings },
+    { id: 'seguranca', name: 'Segurança Predial', icon: Shield },
     { id: 'datacenter', name: 'Data Center', icon: Database },
   ];
 
@@ -152,7 +159,7 @@ const Services = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-900"></div>
                 </div>
               ) : servicesByCategory[activeCategory]?.length > 0 ? (
-                <div className="space-y-8">
+                <div id="services-content" className="space-y-8">
                   {servicesByCategory[activeCategory].map((service) => (
                     <Card key={service.id} className="border-2 hover:shadow-lg transition-shadow">
                       <CardHeader>
