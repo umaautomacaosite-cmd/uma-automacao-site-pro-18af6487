@@ -108,7 +108,7 @@ const Services = () => {
           <h1 className="font-playfair text-3xl md:text-5xl font-bold mb-4">
             Nossos Serviços
           </h1>
-          <p className="font-lato text-lg md:text-xl max-w-3xl mx-auto">Soluções técnicas especializadas em automação predial com compliance total às normas regulamentadoras e certificações internacionais.</p>
+          <p className="font-lato text-lg md:text-xl max-w-3xl mx-auto">Soluções técnicas especializadas em automação predial com compliance total às normas regulamentadoras e certificações.  </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4 sm:space-x-4">
             <Badge variant="secondary" className="bg-gold-500 text-black font-semibold">
               <Award className="mr-2 h-4 w-4" />
