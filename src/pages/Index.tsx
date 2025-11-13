@@ -17,7 +17,7 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any; value: number } }) => {
+const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any; value: number; hasSlash: boolean } }) => {
   const { count, ref } = useCountUp(stat.value, 2000);
   const IconComponent = stat.icon;
 
@@ -25,7 +25,7 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
     <div ref={ref} className="text-center group">
       <IconComponent className="h-12 w-12 text-gold-500 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
       <div className="font-playfair text-4xl font-bold mb-2">
-        {count}{stat.number.includes('+') ? '+' : stat.number.includes('%') ? '%' : ''}
+        {stat.hasSlash ? stat.number : `${count}${stat.number.includes('+') ? '+' : stat.number.includes('%') ? '%' : ''}`}
       </div>
       <div className="font-lato text-lg text-gray-200">{stat.label}</div>
     </div>
@@ -65,13 +65,15 @@ const Index = () => {
             'CheckCircle': Award
           };
           
+          const hasSlash = stat.value.includes('/');
           const numericValue = parseInt(stat.value.replace(/\D/g, '')) || 0;
           
           return {
             number: stat.value,
             label: stat.label,
             icon: iconMap[stat.icon] || Award,
-            value: numericValue
+            value: numericValue,
+            hasSlash
           };
         });
         setStats(mappedStats);
