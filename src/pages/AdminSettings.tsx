@@ -148,25 +148,35 @@ const AdminSettings = () => {
   };
 
   const handleSaveSettings = async () => {
-    let hasError = false;
-    for (const [key, value] of Object.entries(settings)) {
-      // Use upsert to handle both insert and update
-      const { error } = await supabase
+    try {
+      console.log('Iniciando salvamento de configurações:', settings);
+      
+      const updates = Object.entries(settings).map(([key, value]) => ({ key, value }));
+      
+      const { data, error } = await supabase
         .from('settings')
-        .upsert({ key, value }, { onConflict: 'key' });
+        .upsert(updates, { onConflict: 'key' })
+        .select();
       
       if (error) {
-        console.error(`Error saving setting ${key}:`, error);
-        hasError = true;
-        break;
+        console.error('Erro detalhado do Supabase ao salvar configurações:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw new Error(`Falha ao salvar: ${error.message} (Código: ${error.code})`);
       }
-    }
-    
-    if (hasError) {
-      toast.error('Erro ao atualizar configurações');
-    } else {
+
+      console.log('Configurações salvas com sucesso:', data);
       toast.success('Configurações atualizadas com sucesso!');
-      await loadSettings(); // Reload to confirm changes
+      await loadSettings();
+    } catch (error: any) {
+      console.error('Erro ao salvar configurações:', {
+        message: error.message,
+        stack: error.stack
+      });
+      toast.error(`Erro ao salvar: ${error.message || 'Erro desconhecido'}`);
     }
   };
 
