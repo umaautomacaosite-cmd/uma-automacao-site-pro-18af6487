@@ -83,23 +83,23 @@ const Index = () => {
   const services = [{
     icon: Network,
     title: "Redes e Infraestrutura",
-    description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 7/6a/6",
-    features: ["Certificação OTDR", "Normas ANSI/TIA-568", "ISO/IEC 11801"]
+    description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 5/6/6A",
+    features: ["Certificação OTDR", "Certificação Fluke", "Organização de Racks"]
   }, {
     icon: Zap,
     title: "Energia e Elétrica",
-    description: "Busway trifásico, fechamento de quadros elétricos",
-    features: ["NR-12 Compliance", "ABNT NBR 5410", "Projeto CREA"]
+    description: "Sistemas Fotovoltaicos, fechamento de quadros elétricos",
+    features: ["Distribuição de Energia e Aterramento", "Piso elevado", "Data Centers"]
   }, {
     icon: Settings,
-    title: "Automação Industrial",
-    description: "Sistemas de controle e monitoramento industrial",
-    features: ["PLCs", "IHMs", "SCADA"]
+    title: "Automação Predial",
+    description: "Sistemas de controle e monitoramento predial",
+    features: ["Integração de Sistemas", "Relatórios de Eficiência Energética", "Monitoramento em Tempo Real"]
   }, {
     icon: Shield,
-    title: "Segurança Industrial",
+    title: "Segurança Predial",
     description: "Sistemas de segurança conforme normas regulamentadoras",
-    features: ["NR-10", "NR-12", "NR-33"]
+    features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"]
   }];
 
   return <div className="min-h-screen">
