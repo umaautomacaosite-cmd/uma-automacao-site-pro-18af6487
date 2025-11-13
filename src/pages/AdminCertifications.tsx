@@ -379,13 +379,47 @@ const AdminStatsSection = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
+      console.log('Iniciando atualização de estatísticas:', stats);
+      
       for (const stat of stats) {
-        await supabase
+        console.log(`Atualizando estatística ${stat.id}:`, {
+          label: stat.label,
+          value: stat.value,
+          icon: stat.icon
+        });
+        
+        const { data, error } = await supabase
           .from('home_stats')
           .update({ label: stat.label, value: stat.value, icon: stat.icon })
-          .eq('id', stat.id);
+          .eq('id', stat.id)
+          .select();
+
+        if (error) {
+          console.error('Erro detalhado do Supabase ao atualizar estatística:', {
+            statId: stat.id,
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
+          throw new Error(`Falha ao atualizar estatística: ${error.message}`);
+        }
+        
+        console.log(`Estatística ${stat.id} atualizada:`, data);
       }
-      toast({ title: "Estatísticas atualizadas!" });
+      
+      toast({ title: "Estatísticas atualizadas com sucesso!" });
+      await loadStats();
+    } catch (error: any) {
+      console.error('Erro ao salvar estatísticas:', {
+        message: error.message,
+        stack: error.stack
+      });
+      toast({ 
+        title: "Erro ao salvar", 
+        description: error.message || 'Erro desconhecido',
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }
