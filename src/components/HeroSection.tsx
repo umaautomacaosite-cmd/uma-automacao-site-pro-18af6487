@@ -4,37 +4,112 @@ import { Link } from 'react-router-dom';
 import datacenterHero from '@/assets/datacenter-hero.jpg';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+
+const CACHE_KEY = 'hero_settings_cache';
+const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos
+
 const HeroSection = () => {
-  const [heroImage, setHeroImage] = useState(datacenterHero);
-  const [heroTitle, setHeroTitle] = useState('Soluções em Automação Predial e Infraestrutura de Alta Performance');
-  const [heroSubtitle, setHeroSubtitle] = useState('Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.');
-  const [heroDescription, setHeroDescription] = useState('Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.');
+  // Inicializar com valores do cache se existirem
+  const getCachedSettings = () => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          return data;
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao ler cache:', error);
+    }
+    return null;
+  };
+
+  const cachedSettings = getCachedSettings();
+  
+  const [isLoading, setIsLoading] = useState(!cachedSettings);
+  const [heroImage, setHeroImage] = useState(cachedSettings?.heroImage || datacenterHero);
+  const [heroTitle, setHeroTitle] = useState(cachedSettings?.heroTitle || 'Soluções em Automação Predial e Infraestrutura de Alta Performance');
+  const [heroSubtitle, setHeroSubtitle] = useState(cachedSettings?.heroSubtitle || 'Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.');
+  const [heroDescription, setHeroDescription] = useState(cachedSettings?.heroDescription || 'Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.');
+
   useEffect(() => {
     loadHeroSettings();
   }, []);
+
   const loadHeroSettings = async () => {
-    const {
-      data
-    } = await supabase.from('settings').select('key, value').in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
-    if (data) {
-      data.forEach(setting => {
-        if (setting.key === 'hero_image_url' && setting.value && setting.value.trim() !== '') {
-          setHeroImage(setting.value);
-        } else if (setting.key === 'hero_title' && setting.value) {
-          setHeroTitle(setting.value);
-        } else if (setting.key === 'hero_subtitle' && setting.value) {
-          setHeroSubtitle(setting.value);
-        } else if (setting.key === 'hero_description' && setting.value) {
-          setHeroDescription(setting.value);
+    try {
+      const { data } = await supabase
+        .from('settings')
+        .select('key, value')
+        .in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
+
+      if (data) {
+        const settings = {
+          heroImage: datacenterHero,
+          heroTitle: 'Soluções em Automação Predial e Infraestrutura de Alta Performance',
+          heroSubtitle: 'Atendimento em todo o território nacional, com engenheiros certificados CREA e compliance com normas NRs, ISO 9001 e ABNT.',
+          heroDescription: 'Mais de 15 anos de experiência em projetos de automação predial, infraestrutura de TI e telecomunicações para empresas de médio e grande porte.'
+        };
+
+        data.forEach(setting => {
+          if (setting.key === 'hero_image_url' && setting.value && setting.value.trim() !== '') {
+            settings.heroImage = setting.value;
+          } else if (setting.key === 'hero_title' && setting.value) {
+            settings.heroTitle = setting.value;
+          } else if (setting.key === 'hero_subtitle' && setting.value) {
+            settings.heroSubtitle = setting.value;
+          } else if (setting.key === 'hero_description' && setting.value) {
+            settings.heroDescription = setting.value;
+          }
+        });
+
+        // Atualizar estados
+        setHeroImage(settings.heroImage);
+        setHeroTitle(settings.heroTitle);
+        setHeroSubtitle(settings.heroSubtitle);
+        setHeroDescription(settings.heroDescription);
+
+        // Salvar no cache
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: settings,
+            timestamp: Date.now()
+          }));
+        } catch (error) {
+          console.error('Erro ao salvar cache:', error);
         }
-      });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar configurações do hero:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden" key={heroImage}>
+  if (isLoading) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-wine-900 via-wine-800 to-wine-900">
+        <div className="relative z-10 container mx-auto px-4 text-center text-white">
+          <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
+            <div className="h-16 bg-white/10 rounded-lg mx-auto w-3/4" />
+            <div className="h-8 bg-white/10 rounded-lg mx-auto w-2/3" />
+            <div className="h-6 bg-white/10 rounded-lg mx-auto w-1/2" />
+            <div className="flex justify-center gap-4 mt-8">
+              <div className="h-12 bg-white/10 rounded-lg w-48" />
+              <div className="h-12 bg-white/10 rounded-lg w-48" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" key={heroImage}>
       {/* Background Image with Subtle Overlay */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed" style={{
-      backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.4), rgba(30, 58, 138, 0.3)), url('${heroImage}')`
-    }} />
+        backgroundImage: `linear-gradient(rgba(30, 58, 138, 0.4), rgba(30, 58, 138, 0.3)), url('${heroImage}')`
+      }} />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
@@ -102,6 +177,8 @@ const HeroSection = () => {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce hidden md:block">
         
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
