@@ -1,1 +1,7 @@
 project_id = "betxwzazlsgdeegxhquk"
+
+[functions.renew-access-codes]
+verify_jwt = false
+
+[functions.export-user-data]
+verify_jwt = true
