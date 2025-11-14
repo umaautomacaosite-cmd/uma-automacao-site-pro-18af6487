@@ -433,6 +433,36 @@ export type Database = {
         }
         Relationships: []
       }
+      data_export_requests: {
+        Row: {
+          completed_at: string | null
+          download_url: string | null
+          expires_at: string | null
+          id: string
+          requested_at: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          download_url?: string | null
+          expires_at?: string | null
+          id?: string
+          requested_at?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          download_url?: string | null
+          expires_at?: string | null
+          id?: string
+          requested_at?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       home_stats: {
         Row: {
           created_at: string | null
@@ -463,6 +493,83 @@ export type Database = {
           label?: string
           updated_at?: string | null
           value?: string
+        }
+        Relationships: []
+      }
+      legal_document_access_logs: {
+        Row: {
+          access_type: string
+          accessed_at: string | null
+          document_id: string | null
+          document_type: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_type: string
+          accessed_at?: string | null
+          document_id?: string | null
+          document_type: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_type?: string
+          accessed_at?: string | null
+          document_id?: string | null
+          document_type?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_document_access_logs_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "legal_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_documents: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string | null
+          document_type: string
+          effective_date: string
+          id: string
+          is_active: boolean | null
+          title: string
+          version: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          document_type: string
+          effective_date: string
+          id?: string
+          is_active?: boolean | null
+          title: string
+          version: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          document_type?: string
+          effective_date?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          version?: string
         }
         Relationships: []
       }
@@ -577,6 +684,50 @@ export type Database = {
         }
         Relationships: []
       }
+      user_legal_consents: {
+        Row: {
+          consented_at: string | null
+          cookie_preferences: Json | null
+          document_id: string | null
+          document_type: string
+          document_version: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          consented_at?: string | null
+          cookie_preferences?: Json | null
+          document_id?: string | null
+          document_type: string
+          document_version: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          consented_at?: string | null
+          cookie_preferences?: Json | null
+          document_id?: string | null
+          document_type?: string
+          document_version?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_legal_consents_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "legal_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -611,12 +762,31 @@ export type Database = {
     Functions: {
       check_and_renew_access_codes: { Args: never; Returns: undefined }
       generate_new_access_code: { Args: never; Returns: undefined }
+      get_latest_legal_document: {
+        Args: { doc_type: string }
+        Returns: {
+          content: string
+          document_type: string
+          effective_date: string
+          id: string
+          title: string
+          version: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      user_needs_consent: {
+        Args: { user_uuid: string }
+        Returns: {
+          document_type: string
+          latest_version: string
+          needs_consent: boolean
+        }[]
       }
     }
     Enums: {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { X } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface CookiePreferences {
   essential: boolean;
@@ -43,15 +43,38 @@ const CookieConsent = ({ onPreferencesChange }: CookieConsentProps) => {
     setShowBanner(true);
   }, [onPreferencesChange]);
 
-  const savePreferences = (prefs: CookiePreferences) => {
-    localStorage.setItem(
-      COOKIE_CONSENT_KEY,
-      JSON.stringify({
-        version: COOKIE_CONSENT_VERSION,
-        preferences: prefs,
-        timestamp: new Date().toISOString(),
-      })
-    );
+  const savePreferences = async (prefs: CookiePreferences) => {
+    const consentData = {
+      version: COOKIE_CONSENT_VERSION,
+      preferences: prefs,
+      timestamp: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consentData));
+    
+    // Save to Supabase if user is authenticated
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: latestDocs } = await supabase
+        .from('legal_documents')
+        .select('id, document_type, version')
+        .eq('is_active', true);
+
+      if (latestDocs) {
+        for (const doc of latestDocs) {
+          await supabase.from('user_legal_consents').insert([{
+            user_id: user.id,
+            document_id: doc.id,
+            document_type: doc.document_type,
+            document_version: doc.version,
+            cookie_preferences: prefs as any,
+            ip_address: null,
+            user_agent: navigator.userAgent,
+          }]);
+        }
+      }
+    }
+    
     onPreferencesChange(prefs);
     setShowBanner(false);
   };
@@ -86,16 +109,8 @@ const CookieConsent = ({ onPreferencesChange }: CookieConsentProps) => {
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 pointer-events-none">
       <Card className="w-full max-w-2xl pointer-events-auto animate-in slide-in-from-bottom-5">
         <CardContent className="p-6">
-          <div className="flex justify-between items-start mb-4">
+          <div className="mb-4">
             <h3 className="text-lg font-semibold">Preferências de Cookies</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleAcceptEssential}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           <p className="text-sm text-muted-foreground mb-4">
