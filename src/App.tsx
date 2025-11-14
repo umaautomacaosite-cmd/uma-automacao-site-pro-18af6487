@@ -14,8 +14,10 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdminLegalDocuments from "./pages/AdminLegalDocuments";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import CookieConsent, { CookiePreferences } from "./components/CookieConsent";
+import { ReconsentModal } from "./components/ReconsentModal";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,7 @@ const App = () => {
             enabled={cookiePreferences.analytics} 
           />
           <CookieConsent onPreferencesChange={setCookiePreferences} />
+          <ReconsentModal />
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
@@ -58,6 +61,7 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/termos-de-uso" element={<TermsOfService />} />
               <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
+              <Route path="/admin/legal-documents" element={<AdminLegalDocuments />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
