@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -100,6 +101,23 @@ const Services = () => {
     return acc;
   }, {} as Record<string, Service[]>);
   return <div className="min-h-screen">
+      <SEO 
+        title="Nossos Serviços - UMA AUTOMAÇÃO"
+        description="Soluções técnicas especializadas em automação predial com compliance total às normas regulamentadoras. Redes, infraestrutura, energia elétrica e segurança predial."
+        keywords="automação predial, redes estruturadas, fibra óptica, sistemas fotovoltaicos, segurança predial, CREA, certificação Fluke"
+        canonical="/servicos"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "serviceType": "Automação Industrial e Predial",
+          "provider": {
+            "@type": "Organization",
+            "name": "UMA AUTOMAÇÃO"
+          },
+          "areaServed": "BR",
+          "description": "Soluções em automação predial, redes, infraestrutura, energia elétrica e segurança"
+        }}
+      />
       <Header />
       
       {/* Page Header */}

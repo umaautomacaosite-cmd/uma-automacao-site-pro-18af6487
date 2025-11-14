@@ -74,6 +74,8 @@ const Footer = () => {
               <li><Link to="/cases" className="text-gray-300 hover:text-wine-400 transition-colors">Cases de Sucesso</Link></li>
               <li><Link to="/sobre" className="text-gray-300 hover:text-wine-400 transition-colors">Sobre Nós</Link></li>
               <li><Link to="/contato" className="text-gray-300 hover:text-wine-400 transition-colors">Contato</Link></li>
+              <li><Link to="/termos-de-uso" className="text-gray-300 hover:text-wine-400 transition-colors">Termos de Uso</Link></li>
+              <li><Link to="/politica-de-privacidade" className="text-gray-300 hover:text-wine-400 transition-colors">Política de Privacidade</Link></li>
             </ul>
           </div>
 

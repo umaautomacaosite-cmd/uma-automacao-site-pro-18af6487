@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Award, Users, MapPin, Target, Eye, Heart, CheckCircle, Calendar } from 'lucide-react';
@@ -80,6 +81,18 @@ const About = () => {
       </div>;
   }
   return <div className="min-h-screen">
+      <SEO 
+        title="Sobre Nós - UMA AUTOMAÇÃO"
+        description="Conheça a história, missão, visão e valores da UMA AUTOMAÇÃO. Engenheiros certificados CREA com atuação nacional em automação industrial."
+        keywords="sobre nós, história, missão, visão, valores, CREA, automação industrial"
+        canonical="/sobre"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "Sobre a UMA AUTOMAÇÃO",
+          "description": "História, missão, visão e valores da empresa de automação industrial"
+        }}
+      />
       <Header />
       
       {/* Page Header */}

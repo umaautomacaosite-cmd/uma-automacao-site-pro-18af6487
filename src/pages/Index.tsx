@@ -8,6 +8,7 @@ import HowItWorks from '@/components/HowItWorks';
 import FeaturedCases from '@/components/FeaturedCases';
 import Certifications from '@/components/Certifications';
 import AboutSection from '@/components/AboutSection';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
@@ -104,7 +105,40 @@ const Index = () => {
     features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"]
   }];
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "UMA AUTOMAÇÃO",
+    "url": "https://umaautomacao.com.br",
+    "logo": "https://umaautomacao.com.br/logo.png",
+    "description": "Soluções em Automação Industrial e Infraestrutura de Alta Performance",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Brasília",
+      "addressRegion": "DF",
+      "addressCountry": "BR"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": whatsappNumber,
+      "contactType": "customer service",
+      "availableLanguage": "Portuguese"
+    },
+    "sameAs": [
+      "https://www.facebook.com/umaautomacao",
+      "https://www.instagram.com/umaautomacao",
+      "https://www.linkedin.com/company/umaautomacao"
+    ]
+  };
+
   return <div className="min-h-screen">
+      <SEO 
+        title="UMA AUTOMAÇÃO - Soluções em Automação Industrial"
+        description="Soluções em Automação Industrial e Infraestrutura de Alta Performance. Atendimento nacional com engenheiros certificados CREA."
+        keywords="automação industrial, automação predial, infraestrutura, CREA, Brasília, data center, engenharia, fibra óptica, sistemas fotovoltaicos"
+        canonical="/"
+        schema={organizationSchema}
+      />
       <Header />
       <HeroSection />
       <WhatsAppButton />
