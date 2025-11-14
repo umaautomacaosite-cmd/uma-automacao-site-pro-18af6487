@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -111,6 +112,18 @@ const Contact = () => {
     }
   };
   return <div className="min-h-screen">
+      <SEO 
+        title="Entre em Contato - UMA AUTOMAÇÃO"
+        description="Solicite uma consultoria gratuita e receba uma proposta personalizada para seu projeto de automação industrial. Atendimento nacional."
+        keywords="contato, orçamento, consultoria, automação industrial, proposta técnica"
+        canonical="/contato"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": "Contato",
+          "description": "Entre em contato com a UMA AUTOMAÇÃO para consultoria e orçamentos"
+        }}
+      />
       <Header />
       
       {/* Page Header */}

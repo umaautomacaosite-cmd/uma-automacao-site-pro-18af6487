@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -69,6 +70,18 @@ const CaseStudies = () => {
     await loadCaseImages(caseStudy.id);
   };
   return <div className="min-h-screen">
+      <SEO 
+        title="Cases de Sucesso - UMA AUTOMAÇÃO"
+        description="Conheça nossos projetos realizados em data centers, hospitais, indústrias e instituições de ensino. Cases de automação industrial e predial."
+        keywords="cases de sucesso, projetos de automação, data center, hospital, indústria, automação predial"
+        canonical="/cases"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Cases de Sucesso",
+          "description": "Portfólio de projetos de automação industrial e predial realizados pela UMA AUTOMAÇÃO"
+        }}
+      />
       <Header />
       
       {/* Page Header */}
