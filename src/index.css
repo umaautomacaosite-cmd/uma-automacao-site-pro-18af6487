@@ -103,3 +103,32 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Prose styles for legal documents */
+.prose {
+  @apply text-foreground;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold mb-4 mt-8 text-foreground;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mb-3 mt-6 text-foreground;
+}
+
+.prose p {
+  @apply mb-4 leading-relaxed text-muted-foreground;
+}
+
+.prose ul {
+  @apply list-disc pl-6 mb-4 space-y-2;
+}
+
+.prose li {
+  @apply text-muted-foreground leading-relaxed;
+}
+
+.prose strong {
+  @apply font-semibold text-foreground;
+}
