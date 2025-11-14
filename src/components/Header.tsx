@@ -3,10 +3,31 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+
+const CACHE_KEY = 'header_settings_cache';
+const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos
+
 const Header = () => {
+  const getCachedSettings = () => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          return data;
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao ler cache do header:', error);
+    }
+    return null;
+  };
+
+  const cachedSettings = getCachedSettings();
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [headerPhone, setHeaderPhone] = useState('(61) 99999-9999');
-  const [headerEmail, setHeaderEmail] = useState('contato@umaautomacao.com.br');
+  const [headerPhone, setHeaderPhone] = useState(cachedSettings?.phone || '(61) 99999-9999');
+  const [headerEmail, setHeaderEmail] = useState(cachedSettings?.email || 'contato@umaautomacao.com.br');
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
@@ -15,16 +36,36 @@ const Header = () => {
   }, []);
 
   const loadSettings = async () => {
-    const { data } = await supabase
-      .from('settings')
-      .select('key, value')
-      .in('key', ['header_phone', 'header_email']);
+    try {
+      const { data } = await supabase
+        .from('settings')
+        .select('key, value')
+        .in('key', ['header_phone', 'header_email']);
 
-    if (data) {
-      const phone = data.find(s => s.key === 'header_phone');
-      const email = data.find(s => s.key === 'header_email');
-      if (phone?.value) setHeaderPhone(phone.value);
-      if (email?.value) setHeaderEmail(email.value);
+      if (data) {
+        const phone = data.find(s => s.key === 'header_phone');
+        const email = data.find(s => s.key === 'header_email');
+        
+        const settings = {
+          phone: phone?.value || '(61) 99999-9999',
+          email: email?.value || 'contato@umaautomacao.com.br'
+        };
+        
+        setHeaderPhone(settings.phone);
+        setHeaderEmail(settings.email);
+
+        // Salvar no cache
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: settings,
+            timestamp: Date.now()
+          }));
+        } catch (error) {
+          console.error('Erro ao salvar cache do header:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar configurações do header:', error);
     }
   };
   const navItems = [{

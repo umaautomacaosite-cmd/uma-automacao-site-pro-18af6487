@@ -3,36 +3,86 @@ import { useEffect, useState } from 'react';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+
+const CACHE_KEY = 'footer_settings_cache';
+const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos
+
 const Footer = () => {
-  const [footerPhone, setFooterPhone] = useState('(61) 99999-9999');
-  const [footerEmail, setFooterEmail] = useState('contato@umaautomacao.com.br');
-  const [whatsappNumber, setWhatsappNumber] = useState('5561999999999');
-  const [facebookUrl, setFacebookUrl] = useState('');
-  const [instagramUrl, setInstagramUrl] = useState('');
-  const [linkedinUrl, setLinkedinUrl] = useState('');
-  const [cnpj, setCnpj] = useState('');
+  const getCachedSettings = () => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          return data;
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao ler cache do footer:', error);
+    }
+    return null;
+  };
+
+  const cachedSettings = getCachedSettings();
+  
+  const [footerPhone, setFooterPhone] = useState(cachedSettings?.phone || '(61) 99999-9999');
+  const [footerEmail, setFooterEmail] = useState(cachedSettings?.email || 'contato@umaautomacao.com.br');
+  const [whatsappNumber, setWhatsappNumber] = useState(cachedSettings?.whatsapp || '5561999999999');
+  const [facebookUrl, setFacebookUrl] = useState(cachedSettings?.facebook || '');
+  const [instagramUrl, setInstagramUrl] = useState(cachedSettings?.instagram || '');
+  const [linkedinUrl, setLinkedinUrl] = useState(cachedSettings?.linkedin || '');
+  const [cnpj, setCnpj] = useState(cachedSettings?.cnpj || '');
+  
   useEffect(() => {
     loadSettings();
   }, []);
+  
   const loadSettings = async () => {
-    const {
-      data
-    } = await supabase.from('settings').select('key, value').in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
-    if (data) {
-      const phone = data.find(s => s.key === 'footer_phone');
-      const email = data.find(s => s.key === 'footer_email');
-      const whatsapp = data.find(s => s.key === 'whatsapp_number');
-      const facebook = data.find(s => s.key === 'facebook_url');
-      const instagram = data.find(s => s.key === 'instagram_url');
-      const linkedin = data.find(s => s.key === 'linkedin_url');
-      const cnpjSetting = data.find(s => s.key === 'cnpj');
-      if (phone?.value) setFooterPhone(phone.value);
-      if (email?.value) setFooterEmail(email.value);
-      if (whatsapp?.value) setWhatsappNumber(whatsapp.value);
-      if (facebook?.value) setFacebookUrl(facebook.value);
-      if (instagram?.value) setInstagramUrl(instagram.value);
-      if (linkedin?.value) setLinkedinUrl(linkedin.value);
-      if (cnpjSetting?.value) setCnpj(cnpjSetting.value);
+    try {
+      const { data } = await supabase
+        .from('settings')
+        .select('key, value')
+        .in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
+      
+      if (data) {
+        const phone = data.find(s => s.key === 'footer_phone');
+        const email = data.find(s => s.key === 'footer_email');
+        const whatsapp = data.find(s => s.key === 'whatsapp_number');
+        const facebook = data.find(s => s.key === 'facebook_url');
+        const instagram = data.find(s => s.key === 'instagram_url');
+        const linkedin = data.find(s => s.key === 'linkedin_url');
+        const cnpjSetting = data.find(s => s.key === 'cnpj');
+        
+        const settings = {
+          phone: phone?.value || '(61) 99999-9999',
+          email: email?.value || 'contato@umaautomacao.com.br',
+          whatsapp: whatsapp?.value || '5561999999999',
+          facebook: facebook?.value || '',
+          instagram: instagram?.value || '',
+          linkedin: linkedin?.value || '',
+          cnpj: cnpjSetting?.value || ''
+        };
+        
+        setFooterPhone(settings.phone);
+        setFooterEmail(settings.email);
+        setWhatsappNumber(settings.whatsapp);
+        setFacebookUrl(settings.facebook);
+        setInstagramUrl(settings.instagram);
+        setLinkedinUrl(settings.linkedin);
+        setCnpj(settings.cnpj);
+
+        // Salvar no cache
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: settings,
+            timestamp: Date.now()
+          }));
+        } catch (error) {
+          console.error('Erro ao salvar cache do footer:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar configurações do footer:', error);
     }
   };
   return <footer className="bg-gray-900 text-white">
