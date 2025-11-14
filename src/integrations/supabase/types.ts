@@ -761,6 +761,7 @@ export type Database = {
     }
     Functions: {
       check_and_renew_access_codes: { Args: never; Returns: undefined }
+      check_contact_rate_limit: { Args: never; Returns: boolean }
       generate_new_access_code: { Args: never; Returns: undefined }
       get_latest_legal_document: {
         Args: { doc_type: string }

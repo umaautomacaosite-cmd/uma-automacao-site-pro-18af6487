@@ -1,3 +1,10 @@
+// Edge Function para renovar códigos de acesso e manter o projeto ativo
+// Esta função pode ser chamada por um serviço de cron externo (ex: cron-job.org)
+// para evitar que o projeto Supabase entre em pausa por inatividade
+// 
+// Configure um cron job para chamar esta URL a cada 6 horas:
+// https://betxwzazlsgdeegxhquk.supabase.co/functions/v1/renew-access-codes
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
