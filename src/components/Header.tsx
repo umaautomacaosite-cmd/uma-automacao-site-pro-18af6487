@@ -37,12 +37,20 @@ const Header = () => {
 
   const loadSettings = async () => {
     try {
-      const { data } = await supabase
+      console.log('Carregando configurações do header...');
+      const { data, error } = await supabase
         .from('settings')
         .select('key, value')
         .in('key', ['header_phone', 'header_email']);
 
-      if (data) {
+      if (error) {
+        console.error('Erro ao buscar configurações do header:', error);
+        return;
+      }
+
+      console.log('Dados recebidos do Supabase (header):', data);
+
+      if (data && data.length > 0) {
         const phone = data.find(s => s.key === 'header_phone');
         const email = data.find(s => s.key === 'header_email');
         
@@ -50,6 +58,9 @@ const Header = () => {
           phone: phone?.value || '(61) 99999-9999',
           email: email?.value || 'contato@umaautomacao.com.br'
         };
+        
+        console.log('Atualizando phone:', settings.phone);
+        console.log('Atualizando email:', settings.email);
         
         setHeaderPhone(settings.phone);
         setHeaderEmail(settings.email);

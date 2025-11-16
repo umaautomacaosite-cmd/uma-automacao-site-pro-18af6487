@@ -39,12 +39,21 @@ const HeroSection = () => {
 
   const loadHeroSettings = async () => {
     try {
-      const { data } = await supabase
+      console.log('Carregando configurações do hero...');
+      const { data, error } = await supabase
         .from('settings')
         .select('key, value')
         .in('key', ['hero_image_url', 'hero_title', 'hero_subtitle', 'hero_description']);
 
-      if (data) {
+      if (error) {
+        console.error('Erro ao buscar configurações do hero:', error);
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Dados recebidos do Supabase:', data);
+
+      if (data && data.length > 0) {
         const settings = {
           heroImage: datacenterHero,
           heroTitle: 'Soluções em Automação Predial e Infraestrutura de Alta Performance',
@@ -63,6 +72,8 @@ const HeroSection = () => {
             settings.heroDescription = setting.value;
           }
         });
+
+        console.log('Settings processados:', settings);
 
         // Atualizar estados
         setHeroImage(settings.heroImage);
