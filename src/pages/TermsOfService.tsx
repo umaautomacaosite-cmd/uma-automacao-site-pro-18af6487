@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import DOMPurify from 'dompurify';
 
 const TermsOfService = () => {
   const [content, setContent] = useState<string>('');
@@ -52,7 +53,10 @@ const TermsOfService = () => {
           ) : (
             <div 
               className="prose prose-slate max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: content }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, {
+                ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'span', 'div'],
+                ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+              }) }}
             />
           )}
         </div>
