@@ -16,7 +16,7 @@ interface ClientLogo {
 const ClientLogos = () => {
   const [clients, setClients] = useState<ClientLogo[]>([]);
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
+    loop: false,
     align: 'start',
     slidesToScroll: 6
   });
@@ -60,7 +60,7 @@ const ClientLogos = () => {
         
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
+            <div className="flex gap-4">
               {clients.map((client, index) => {
               const IconComponent = getIconComponent(client.icon_fallback);
               const content = (
@@ -108,14 +108,14 @@ const ClientLogos = () => {
                   href={websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-[0_0_calc(16.666%-1.33rem)] min-w-0"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-[0_0_calc(16.666%-14px)] min-w-0"
                 >
                   {content}
                 </a>
               ) : (
                 <div 
                   key={`${client.id}-${index}`}
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-[0_0_calc(16.666%-1.33rem)] min-w-0"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-[0_0_calc(16.666%-14px)] min-w-0"
                 >
                   {content}
                 </div>
