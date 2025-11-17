@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { FileText, Plus, Eye, Download } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import DOMPurify from 'dompurify';
 
 interface LegalDocument {
   id: string;
@@ -285,7 +286,10 @@ const AdminLegalDocuments = () => {
                       </DialogHeader>
                       <div
                         className="prose prose-sm max-w-none"
-                        dangerouslySetInnerHTML={{ __html: doc.content }}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(doc.content, {
+                          ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'span', 'div'],
+                          ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+                        }) }}
                       />
                     </DialogContent>
                   </Dialog>
