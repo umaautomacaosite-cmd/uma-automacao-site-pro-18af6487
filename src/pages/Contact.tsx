@@ -21,6 +21,7 @@ const contactSchema = z.object({
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState<any>(null);
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+  const [whatsappMessage, setWhatsappMessage] = useState<string>('Olá! Gostaria de falar com um especialista em automação predial.');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const {
@@ -28,7 +29,7 @@ const Contact = () => {
   } = useToast();
   useEffect(() => {
     fetchContactInfo();
-    fetchWhatsappNumber();
+    fetchWhatsappData();
   }, []);
   const fetchContactInfo = async () => {
     try {
@@ -42,14 +43,20 @@ const Contact = () => {
       setLoading(false);
     }
   };
-  const fetchWhatsappNumber = async () => {
+  const fetchWhatsappData = async () => {
     try {
       const {
         data
-      } = await supabase.from('settings').select('value').eq('key', 'whatsapp_number').single();
-      if (data?.value) setWhatsappNumber(data.value);
+      } = await supabase.from('settings').select('key, value').in('key', ['whatsapp_number', 'whatsapp_default_message']);
+      if (data) {
+        const numberData = data.find(item => item.key === 'whatsapp_number');
+        const messageData = data.find(item => item.key === 'whatsapp_default_message');
+        
+        if (numberData?.value) setWhatsappNumber(numberData.value);
+        if (messageData?.value) setWhatsappMessage(messageData.value);
+      }
     } catch (error) {
-      console.error('Error fetching WhatsApp number:', error);
+      console.error('Error fetching WhatsApp data:', error);
     }
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -213,7 +220,7 @@ const Contact = () => {
                       Fale diretamente com nossos engenheiros para uma consultoria rápida
                     </p>
                     <Button className="bg-green-600 hover:bg-green-700 text-white w-full" onClick={() => {
-                  const message = encodeURIComponent('Olá! Gostaria de falar com um especialista em automação industrial.');
+                  const message = encodeURIComponent(whatsappMessage);
                   window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
                 }}>
                       <MessageCircle className="mr-2 h-4 w-4" />
