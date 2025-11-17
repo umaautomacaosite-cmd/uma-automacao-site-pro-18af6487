@@ -1,8 +1,8 @@
-import { Building2, Store, Factory, Briefcase, Users, Globe } from 'lucide-react';
+import { Building2, Store, Factory, Briefcase, Users, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import useEmblaCarousel from 'embla-carousel-react';
-import AutoScroll from 'embla-carousel-auto-scroll';
+import { Button } from '@/components/ui/button';
 
 interface ClientLogo {
   id: string;
@@ -15,10 +15,11 @@ interface ClientLogo {
 
 const ClientLogos = () => {
   const [clients, setClients] = useState<ClientLogo[]>([]);
-  const [emblaRef] = useEmblaCarousel(
-    { loop: true, dragFree: true },
-    [AutoScroll({ playOnInit: true, speed: 1, stopOnInteraction: false })]
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: 'start',
+    slidesToScroll: 6
+  });
 
   useEffect(() => {
     loadClientLogos();
@@ -47,8 +48,8 @@ const ClientLogos = () => {
     }
   };
 
-  // Duplicar logos para efeito infinito seamless
-  const duplicatedClients = [...clients, ...clients];
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
 
   return (
     <div className="py-12 bg-white/10 backdrop-blur-sm">
@@ -57,9 +58,10 @@ const ClientLogos = () => {
           Empresas que confiam em nossos serviços
         </p>
         
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-8">
-            {duplicatedClients.map((client, index) => {
+        <div className="relative">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {clients.map((client, index) => {
               const IconComponent = getIconComponent(client.icon_fallback);
               const content = (
                 <>
@@ -106,20 +108,39 @@ const ClientLogos = () => {
                   href={websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-shrink-0 min-w-[140px]"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-[0_0_calc(16.666%-1.33rem)] min-w-0"
                 >
                   {content}
                 </a>
               ) : (
                 <div 
                   key={`${client.id}-${index}`}
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-shrink-0 min-w-[140px]"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-[0_0_calc(16.666%-1.33rem)] min-w-0"
                 >
                   {content}
                 </div>
               );
             })}
+            </div>
           </div>
+
+          {/* Navigation Buttons */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={scrollPrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white border-wine-900/20 text-wine-900"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={scrollNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white border-wine-900/20 text-wine-900"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
         </div>
       </div>
     </div>

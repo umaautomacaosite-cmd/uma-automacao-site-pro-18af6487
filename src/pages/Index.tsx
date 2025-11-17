@@ -36,17 +36,23 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
 const Index = () => {
   const { ref: servicesRef, isIntersecting: servicesVisible } = useIntersectionObserver({ threshold: 0.1 });
   const [whatsappNumber, setWhatsappNumber] = useState<string>('');
+  const [whatsappMessage, setWhatsappMessage] = useState<string>('Olá! Gostaria de falar com um especialista em automação predial.');
   const [stats, setStats] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch WhatsApp number
+      // Fetch WhatsApp number and message
       const { data: whatsappData } = await supabase
         .from('settings')
-        .select('value')
-        .eq('key', 'whatsapp_number')
-        .single();
-      if (whatsappData?.value) setWhatsappNumber(whatsappData.value);
+        .select('key, value')
+        .in('key', ['whatsapp_number', 'whatsapp_default_message']);
+      
+      if (whatsappData) {
+        const numberData = whatsappData.find(item => item.key === 'whatsapp_number');
+        const messageData = whatsappData.find(item => item.key === 'whatsapp_default_message');
+        if (numberData?.value) setWhatsappNumber(numberData.value);
+        if (messageData?.value) setWhatsappMessage(messageData.value);
+      }
 
       // Fetch stats
       const { data: statsData } = await supabase
@@ -247,7 +253,7 @@ const Index = () => {
             </Link>
             {whatsappNumber && (
               <a 
-                href={`https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial.`}
+                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

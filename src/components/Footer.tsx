@@ -28,6 +28,7 @@ const Footer = () => {
   const [footerPhone, setFooterPhone] = useState(cachedSettings?.phone || '(61) 99999-9999');
   const [footerEmail, setFooterEmail] = useState(cachedSettings?.email || 'contato@umaautomacao.com.br');
   const [whatsappNumber, setWhatsappNumber] = useState(cachedSettings?.whatsapp || '5561999999999');
+  const [whatsappMessage, setWhatsappMessage] = useState(cachedSettings?.whatsappMessage || 'Olá! Gostaria de falar com um especialista em automação predial.');
   const [facebookUrl, setFacebookUrl] = useState(cachedSettings?.facebook || '');
   const [instagramUrl, setInstagramUrl] = useState(cachedSettings?.instagram || '');
   const [linkedinUrl, setLinkedinUrl] = useState(cachedSettings?.linkedin || '');
@@ -42,12 +43,13 @@ const Footer = () => {
       const { data } = await supabase
         .from('settings')
         .select('key, value')
-        .in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
+        .in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'whatsapp_default_message', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
       
       if (data) {
         const phone = data.find(s => s.key === 'footer_phone');
         const email = data.find(s => s.key === 'footer_email');
         const whatsapp = data.find(s => s.key === 'whatsapp_number');
+        const whatsappMsg = data.find(s => s.key === 'whatsapp_default_message');
         const facebook = data.find(s => s.key === 'facebook_url');
         const instagram = data.find(s => s.key === 'instagram_url');
         const linkedin = data.find(s => s.key === 'linkedin_url');
@@ -57,6 +59,7 @@ const Footer = () => {
           phone: phone?.value || '(61) 99999-9999',
           email: email?.value || 'contato@umaautomacao.com.br',
           whatsapp: whatsapp?.value || '5561999999999',
+          whatsappMessage: whatsappMsg?.value || 'Olá! Gostaria de falar com um especialista em automação predial.',
           facebook: facebook?.value || '',
           instagram: instagram?.value || '',
           linkedin: linkedin?.value || '',
@@ -66,6 +69,7 @@ const Footer = () => {
         setFooterPhone(settings.phone);
         setFooterEmail(settings.email);
         setWhatsappNumber(settings.whatsapp);
+        setWhatsappMessage(settings.whatsappMessage);
         setFacebookUrl(settings.facebook);
         setInstagramUrl(settings.instagram);
         setLinkedinUrl(settings.linkedin);
@@ -162,7 +166,7 @@ const Footer = () => {
                   <Linkedin className="h-6 w-6" />
                 </a>}
             </div>
-            <a href={`https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20em%20automação%20industrial.`} target="_blank" rel="noopener noreferrer" className="w-full">
+            <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer" className="w-full">
               <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
                 <MessageCircle className="mr-2 h-4 w-4" />
                 WhatsApp
