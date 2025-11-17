@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Plus, Trash2, Save, Upload, Power, PowerOff, Building2, Store, Factory, Briefcase, Users, Globe } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 
@@ -312,6 +313,25 @@ const AdminSettings = () => {
             <p className="text-xs text-muted-foreground mt-1">
               CNPJ exibido no rodapé do site
             </p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium block mb-2">Mensagem Padrão WhatsApp</label>
+            <Textarea
+              placeholder="Olá! Gostaria de falar com um especialista em automação predial."
+              value={settings.whatsapp_default_message || ''}
+              onChange={(e) => setSettings({ ...settings, whatsapp_default_message: e.target.value })}
+              rows={3}
+              maxLength={300}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Mensagem exibida ao clicar nos botões WhatsApp ({settings.whatsapp_default_message?.length || 0}/300 caracteres)
+            </p>
+            {settings.whatsapp_default_message && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Preview URL: {encodeURIComponent(settings.whatsapp_default_message).substring(0, 50)}...
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
