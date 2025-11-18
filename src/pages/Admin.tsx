@@ -6,14 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Settings, FileText, Users, BarChart, Eye, Info, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminStats } from '@/hooks/useAdminStats';
+import { useRecentActivities } from '@/hooks/useRecentActivities';
 import AdminServices from './AdminServices';
 import AdminCaseStudies from './AdminCaseStudies';
 import AdminSettings from './AdminSettings';
 import AdminHome from './AdminHome';
 import AdminCertifications from './AdminCertifications';
-
 import AdminTestimonials from './AdminTestimonials';
 import AdminAbout from './AdminAbout';
 import AdminContato from './AdminContato';
@@ -21,6 +23,8 @@ import AdminContato from './AdminContato';
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
   const { toast } = useToast();
+  const { activeServices, publishedCases, activeUsers, loading: statsLoading } = useAdminStats();
+  const { activities, loading: activitiesLoading } = useRecentActivities();
 
   const saveWhatsAppNumber = () => {
     localStorage.setItem('whatsappNumber', whatsappNumber);
@@ -92,33 +96,38 @@ const Admin = () => {
             </TabsList>
 
             <TabsContent value="dashboard">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <Card>
                   <CardContent className="p-6 text-center">
                     <FileText className="h-8 w-8 text-wine-900 mx-auto mb-2" />
-                    <div className="font-playfair text-2xl font-bold">12</div>
+                    {statsLoading ? (
+                      <Skeleton className="h-8 w-16 mx-auto mb-2" />
+                    ) : (
+                      <div className="font-playfair text-2xl font-bold">{activeServices}</div>
+                    )}
                     <div className="font-lato text-sm text-gray-600">Serviços Ativos</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-6 text-center">
                     <BarChart className="h-8 w-8 text-wine-900 mx-auto mb-2" />
-                    <div className="font-playfair text-2xl font-bold">4</div>
+                    {statsLoading ? (
+                      <Skeleton className="h-8 w-16 mx-auto mb-2" />
+                    ) : (
+                      <div className="font-playfair text-2xl font-bold">{publishedCases}</div>
+                    )}
                     <div className="font-lato text-sm text-gray-600">Cases Publicados</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-6 text-center">
                     <Users className="h-8 w-8 text-wine-900 mx-auto mb-2" />
-                    <div className="font-playfair text-2xl font-bold">3</div>
+                    {statsLoading ? (
+                      <Skeleton className="h-8 w-16 mx-auto mb-2" />
+                    ) : (
+                      <div className="font-playfair text-2xl font-bold">{activeUsers}</div>
+                    )}
                     <div className="font-lato text-sm text-gray-600">Usuários Ativos</div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <Eye className="h-8 w-8 text-wine-900 mx-auto mb-2" />
-                    <div className="font-playfair text-2xl font-bold">1.2k</div>
-                    <div className="font-lato text-sm text-gray-600">Visualizações</div>
                   </CardContent>
                 </Card>
               </div>
@@ -128,22 +137,57 @@ const Admin = () => {
                   <CardTitle className="font-playfair text-xl">Atividades Recentes</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-lato font-semibold">Novo case adicionado</div>
-                        <div className="font-lato text-sm text-gray-600">Hospital Regional São Paulo</div>
-                      </div>
-                      <Badge className="bg-green-100 text-green-800">Novo</Badge>
+                  {activitiesLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                          <div className="flex-1">
+                            <Skeleton className="h-4 w-32 mb-2" />
+                            <Skeleton className="h-3 w-48" />
+                          </div>
+                          <Skeleton className="h-6 w-20" />
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-lato font-semibold">Serviço atualizado</div>
-                        <div className="font-lato text-sm text-gray-600">Fibra Óptica FTTH/FTTX</div>
-                      </div>
-                      <Badge className="bg-blue-100 text-blue-800">Atualizado</Badge>
+                  ) : activities.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-8">Nenhuma atividade recente encontrada.</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {activities.map((activity) => {
+                        const getActivityLabel = (type: string) => {
+                          switch (type) {
+                            case 'service': return 'Serviço';
+                            case 'case_study': return 'Case';
+                            case 'testimonial': return 'Depoimento';
+                            case 'certification': return 'Certificação';
+                            default: return 'Item';
+                          }
+                        };
+
+                        const formatDate = (dateString: string) => {
+                          const date = new Date(dateString);
+                          return new Intl.DateTimeFormat('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          }).format(date);
+                        };
+
+                        return (
+                          <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div className="flex-1">
+                              <div className="font-lato font-semibold">{getActivityLabel(activity.type)} {activity.action}</div>
+                              <div className="font-lato text-sm text-gray-600">{activity.title}</div>
+                              <div className="font-lato text-xs text-gray-500 mt-1">{formatDate(activity.timestamp)}</div>
+                            </div>
+                            <Badge className="bg-blue-100 text-blue-800">Atualizado</Badge>
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
