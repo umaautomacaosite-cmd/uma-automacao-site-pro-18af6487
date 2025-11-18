@@ -140,44 +140,56 @@ const AdminCaseStudies = () => {
   };
 
   const handleUpdate = async (id: string) => {
-    // Verificar limite de cases destacados se está tentando destacar
-    if (formData.is_featured) {
-      const { data: featuredCases } = await supabase
-        .from('case_studies')
-        .select('id')
-        .eq('is_featured', true)
-        .eq('is_active', true)
-        .neq('id', id); // Excluir o case atual
+    try {
+      // Verificar limite de cases destacados se está tentando destacar
+      if (formData.is_featured) {
+        const { data: featuredCases, error: featuredError } = await supabase
+          .from('case_studies')
+          .select('id')
+          .eq('is_featured', true)
+          .eq('is_active', true)
+          .neq('id', id); // Excluir o case atual
+        
+        if (featuredError) {
+          console.error('Erro ao verificar cases destacados:', featuredError);
+          toast.error('Erro ao verificar limite de cases destacados');
+          return;
+        }
+        
+        if (featuredCases && featuredCases.length >= 6) {
+          toast.error('Limite de 6 cases destacados atingido! Desative outro case antes de destacar este.');
+          return;
+        }
+      }
+
+      // Upload new images and get cover URL
+      const coverUrl = await uploadImages(id);
       
-      if (featuredCases && featuredCases.length >= 6) {
-        toast.error('Limite de 6 cases destacados atingido! Desative outro case antes de destacar este.');
+      // Update form data with new cover URL if exists
+      const updateData = { ...formData };
+      if (coverUrl) {
+        updateData.cover_image_url = coverUrl;
+      }
+
+      const { error } = await supabase
+        .from('case_studies')
+        .update(updateData as any)
+        .eq('id', id);
+
+      if (error) {
+        console.error('Erro ao atualizar case:', error);
+        toast.error(`Erro ao atualizar case: ${error.message}`);
         return;
       }
+
+      setEditingId(null);
+      resetForm();
+      loadCaseStudies();
+      toast.success('Case atualizado com sucesso!');
+    } catch (err) {
+      console.error('Erro inesperado ao salvar case:', err);
+      toast.error('Erro inesperado ao salvar a case. Verifique o console para mais detalhes.');
     }
-
-    // Upload new images and get cover URL
-    const coverUrl = await uploadImages(id);
-    
-    // Update form data with new cover URL if exists
-    const updateData = { ...formData };
-    if (coverUrl) {
-      updateData.cover_image_url = coverUrl;
-    }
-
-    const { error } = await supabase
-      .from('case_studies')
-      .update(updateData as any)
-      .eq('id', id);
-
-    if (error) {
-      toast.error('Erro ao atualizar case');
-      return;
-    }
-
-    setEditingId(null);
-    resetForm();
-    loadCaseStudies();
-    toast.success('Case atualizado com sucesso!');
   };
 
   const handleDelete = async (id: string) => {
@@ -278,57 +290,78 @@ const AdminCaseStudies = () => {
   const uploadImages = async (caseStudyId: string): Promise<string | null> => {
     let coverUrl: string | null = null;
     
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
-      
-      if (image.file) {
-        // Upload to storage
-        const fileExt = image.file.name.split('.').pop();
-        const fileName = `${caseStudyId}/${Date.now()}.${fileExt}`;
+    try {
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
         
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('case-study-images')
-          .upload(fileName, image.file);
+        if (image.file) {
+          // Upload to storage
+          const fileExt = image.file.name.split('.').pop();
+          const fileName = `${caseStudyId}/${Date.now()}.${fileExt}`;
+          
+          console.log('Fazendo upload da imagem:', fileName);
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('case-study-images')
+            .upload(fileName, image.file);
 
-        if (uploadError) {
-          toast.error(`Erro ao fazer upload da imagem: ${uploadError.message}`);
-          continue;
-        }
+          if (uploadError) {
+            console.error('Erro no upload:', uploadError);
+            toast.error(`Erro ao fazer upload da imagem: ${uploadError.message}`);
+            continue;
+          }
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('case-study-images')
-          .getPublicUrl(fileName);
+          console.log('Upload bem-sucedido, obtendo URL pública');
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('case-study-images')
+            .getPublicUrl(fileName);
 
-        // Save to database
-        await supabase
-          .from('case_study_images')
-          .insert({
-            case_study_id: caseStudyId,
-            image_url: publicUrl,
-            description: image.description,
-            display_order: image.display_order
-          });
-        
-        // If this is the cover image, save the public URL
-        if (i === coverImageIndex) {
-          coverUrl = publicUrl;
-        }
-      } else if (image.id) {
-        // Update existing image description
-        await supabase
-          .from('case_study_images')
-          .update({ 
-            description: image.description,
-            display_order: image.display_order 
-          })
-          .eq('id', image.id);
-        
-        // If this is the cover image and it already exists, use its URL
-        if (i === coverImageIndex && image.image_url) {
-          coverUrl = image.image_url;
+          console.log('Salvando no banco de dados');
+          // Save to database
+          const { error: insertError } = await supabase
+            .from('case_study_images')
+            .insert({
+              case_study_id: caseStudyId,
+              image_url: publicUrl,
+              description: image.description,
+              display_order: image.display_order
+            });
+          
+          if (insertError) {
+            console.error('Erro ao inserir imagem no banco:', insertError);
+            toast.error(`Erro ao salvar informações da imagem: ${insertError.message}`);
+            continue;
+          }
+          
+          // If this is the cover image, save the public URL
+          if (i === coverImageIndex) {
+            coverUrl = publicUrl;
+          }
+        } else if (image.id) {
+          // Update existing image description
+          console.log('Atualizando imagem existente:', image.id);
+          const { error: updateError } = await supabase
+            .from('case_study_images')
+            .update({ 
+              description: image.description,
+              display_order: image.display_order 
+            })
+            .eq('id', image.id);
+          
+          if (updateError) {
+            console.error('Erro ao atualizar imagem:', updateError);
+            toast.error(`Erro ao atualizar imagem: ${updateError.message}`);
+          }
+          
+          // If this is the cover image and it already exists, use its URL
+          if (i === coverImageIndex && image.image_url) {
+            coverUrl = image.image_url;
+          }
         }
       }
+    } catch (err) {
+      console.error('Erro inesperado no upload de imagens:', err);
+      toast.error('Erro inesperado ao processar imagens');
     }
     
     return coverUrl;
