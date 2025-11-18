@@ -22,9 +22,10 @@ import AdminContato from './AdminContato';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
+  const [showAllActivities, setShowAllActivities] = useState(false);
   const { toast } = useToast();
   const { activeServices, publishedCases, activeUsers, loading: statsLoading } = useAdminStats();
-  const { activities, loading: activitiesLoading } = useRecentActivities();
+  const { activities, loading: activitiesLoading, deleteActivity } = useRecentActivities();
 
   const saveWhatsAppNumber = () => {
     localStorage.setItem('whatsappNumber', whatsappNumber);
@@ -152,41 +153,75 @@ const Admin = () => {
                   ) : activities.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">Nenhuma atividade recente encontrada.</p>
                   ) : (
-                    <div className="space-y-4">
-                      {activities.map((activity) => {
-                        const getActivityLabel = (type: string) => {
-                          switch (type) {
-                            case 'service': return 'Serviço';
-                            case 'case_study': return 'Case';
-                            case 'testimonial': return 'Depoimento';
-                            case 'certification': return 'Certificação';
-                            default: return 'Item';
-                          }
-                        };
+                    <>
+                      <div className="space-y-4">
+                        {activities.slice(0, showAllActivities ? activities.length : 5).map((activity) => {
+                          const getActivityLabel = (type: string) => {
+                            switch (type) {
+                              case 'services': return 'Serviço';
+                              case 'case_studies': return 'Case';
+                              case 'testimonials': return 'Depoimento';
+                              case 'certifications': return 'Certificação';
+                              default: return 'Item';
+                            }
+                          };
 
-                        const formatDate = (dateString: string) => {
-                          const date = new Date(dateString);
-                          return new Intl.DateTimeFormat('pt-BR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          }).format(date);
-                        };
+                          const getActionLabel = (action: string) => {
+                            switch (action) {
+                              case 'INSERT': return 'criado';
+                              case 'UPDATE': return 'atualizado';
+                              default: return 'modificado';
+                            }
+                          };
 
-                        return (
-                          <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div className="flex-1">
-                              <div className="font-lato font-semibold">{getActivityLabel(activity.type)} {activity.action}</div>
-                              <div className="font-lato text-sm text-gray-600">{activity.title}</div>
-                              <div className="font-lato text-xs text-gray-500 mt-1">{formatDate(activity.timestamp)}</div>
+                          const formatDate = (dateString: string) => {
+                            const date = new Date(dateString);
+                            return new Intl.DateTimeFormat('pt-BR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            }).format(date);
+                          };
+
+                          return (
+                            <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                              <div className="flex-1">
+                                <div className="font-lato font-semibold">
+                                  {getActivityLabel(activity.entity_type)} {getActionLabel(activity.action_type)}
+                                </div>
+                                <div className="font-lato text-sm text-gray-600">{activity.entity_name}</div>
+                                <div className="font-lato text-xs text-gray-500 mt-1">{formatDate(activity.created_at)}</div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-blue-100 text-blue-800">
+                                  {activity.action_type === 'INSERT' ? 'Criado' : 'Atualizado'}
+                                </Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => deleteActivity(activity.id)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  Excluir
+                                </Button>
+                              </div>
                             </div>
-                            <Badge className="bg-blue-100 text-blue-800">Atualizado</Badge>
-                          </div>
-                        );
-                      })}
-                    </div>
+                          );
+                        })}
+                      </div>
+                      {activities.length > 5 && (
+                        <div className="mt-4 text-center">
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowAllActivities(!showAllActivities)}
+                          >
+                            {showAllActivities ? 'Ver menos' : `Ver mais (${activities.length - 5} atividades)`}
+                          </Button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>
