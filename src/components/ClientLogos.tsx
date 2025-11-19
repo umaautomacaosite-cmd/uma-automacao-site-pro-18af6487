@@ -18,7 +18,11 @@ const ClientLogos = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     align: 'start',
-    slidesToScroll: 6
+    slidesToScroll: 'auto',
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 6 },
+      '(max-width: 767px)': { slidesToScroll: 2 }
+    }
   });
 
   useEffect(() => {
@@ -108,14 +112,14 @@ const ClientLogos = () => {
                   href={websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-[0_0_calc(16.666%-14px)] min-w-0"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer flex-[0_0_calc(16.666%-14px)] md:flex-[0_0_calc(16.666%-14px)] flex-[0_0_calc(50%-8px)] min-w-0"
                 >
                   {content}
                 </a>
               ) : (
                 <div 
                   key={`${client.id}-${index}`}
-                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-[0_0_calc(16.666%-14px)] min-w-0"
+                  className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 flex-[0_0_calc(16.666%-14px)] md:flex-[0_0_calc(16.666%-14px)] flex-[0_0_calc(50%-8px)] min-w-0"
                 >
                   {content}
                 </div>

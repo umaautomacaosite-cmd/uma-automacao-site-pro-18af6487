@@ -39,7 +39,6 @@ const AdminCaseStudies = () => {
   const [featuredCount, setFeaturedCount] = useState(0);
   const [formData, setFormData] = useState<Partial<CaseStudy>>({
     title: '',
-    client: '',
     sector: '',
     year: new Date().getFullYear().toString(),
     start_year: new Date().getFullYear().toString(),
@@ -467,14 +466,6 @@ const AdminCaseStudies = () => {
                 />
               </div>
 
-              <div>
-                <label className="text-sm font-medium">Cliente</label>
-                <Input
-                  value={formData.client}
-                  onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                  placeholder="Nome do cliente"
-                />
-              </div>
 
               <div>
                 <label className="text-sm font-medium">Ano Inicial</label>
