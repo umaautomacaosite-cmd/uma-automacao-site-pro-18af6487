@@ -12,6 +12,7 @@ import Admin from "./Admin";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [hasAccess, setHasAccess] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
@@ -43,21 +44,26 @@ const Dashboard = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       if (session?.user) {
-        // Check if user is admin and if 2FA was completed recently
+        // Check if user has any role
         const { data: roleData } = await supabase
           .from("user_roles")
           .select("role, last_verified_at, next_verification_at")
-          .eq("user_id", session.user.id)
-          .eq("role", "admin")
-          .maybeSingle();
+          .eq("user_id", session.user.id);
 
-        if (roleData) {
-          const nextVerification = roleData.next_verification_at ? new Date(roleData.next_verification_at) : null;
-          const now = new Date();
+        if (roleData && roleData.length > 0) {
+          // User has at least one role, grant access
+          setHasAccess(true);
+          
+          // Check if user is admin with valid 2FA
+          const adminRole = roleData.find(r => r.role === "admin");
+          if (adminRole) {
+            const nextVerification = adminRole.next_verification_at ? new Date(adminRole.next_verification_at) : null;
+            const now = new Date();
 
-          // Only grant access if next verification date is in the future
-          if (nextVerification && nextVerification > now) {
-            setIsAdmin(true);
+            // Only grant admin access if next verification date is in the future
+            if (nextVerification && nextVerification > now) {
+              setIsAdmin(true);
+            }
           }
         }
       }
@@ -68,28 +74,37 @@ const Dashboard = () => {
     }
   };
 
-  const checkAdminRole = async (userId: string) => {
+  const checkUserRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
+        .eq("user_id", userId);
 
       if (error) throw error;
-      setIsAdmin(!!data);
       
-      if (!data) {
+      if (!data || data.length === 0) {
         toast({
           title: "Acesso Negado",
-          description: "Você não tem permissão de administrador.",
+          description: "Você não tem permissão para acessar o painel administrativo.",
           variant: "destructive",
         });
         navigate("/");
+        setHasAccess(false);
+        setIsAdmin(false);
+        return;
       }
+      
+      // User has at least one role
+      setHasAccess(true);
+      
+      // Check if user is admin
+      const hasAdminRole = data.some(r => r.role === "admin");
+      setIsAdmin(hasAdminRole);
+      
     } catch (error) {
-      console.error("Error checking admin role:", error);
+      console.error("Error checking user role:", error);
+      setHasAccess(false);
       setIsAdmin(false);
     }
   };
@@ -116,60 +131,74 @@ const Dashboard = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Check if user is admin
+        // Check if user has any role
         const { data: roleData } = await supabase
           .from("user_roles")
-          .select("role, last_verified_at, next_verification_at")
-          .eq("user_id", data.user.id)
-          .eq("role", "admin")
-          .maybeSingle();
+          .select("role")
+          .eq("user_id", data.user.id);
 
-        if (!roleData) {
-          await supabase.auth.signOut();
+        if (!roleData || roleData.length === 0) {
           toast({
             title: "Acesso Negado",
-            description: "Você não tem permissão de administrador.",
+            description: "Você não tem permissão para acessar o painel administrativo.",
             variant: "destructive",
           });
+          await supabase.auth.signOut();
           return;
         }
 
-        // Check if user verified in the last 7 days
-        const nextVerification = roleData.next_verification_at ? new Date(roleData.next_verification_at) : null;
-        const now = new Date();
+        const hasAdminRole = roleData.some(r => r.role === "admin");
+        
+        if (hasAdminRole) {
+          const { data: adminRoleData } = await supabase
+            .from("user_roles")
+            .select("next_verification_at")
+            .eq("user_id", data.user.id)
+            .eq("role", "admin")
+            .single();
 
-        if (nextVerification && nextVerification > now) {
-          // User verified recently and still within valid period, grant access directly
-          setIsAdmin(true);
+          const nextVerification = adminRoleData?.next_verification_at ? new Date(adminRoleData.next_verification_at) : null;
+          const now = new Date();
+
+          if (nextVerification && nextVerification > now) {
+            setHasAccess(true);
+            setIsAdmin(true);
+            toast({
+              title: "Acesso Autorizado",
+              description: "Bem-vindo ao painel administrativo!",
+            });
+            return;
+          }
+
+          const generatedCode = generateCode();
+          const expiresAt = new Date();
+          expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+
+          const { error: codeError } = await supabase
+            .from("access_codes")
+            .insert({
+              user_id: data.user.id,
+              code: generatedCode,
+              expires_at: expiresAt.toISOString(),
+            });
+
+          if (codeError) throw codeError;
+
           toast({
-            title: "Acesso Autorizado",
-            description: "Bem-vindo ao painel administrativo!",
+            title: "Código de Verificação Gerado",
+            description: "Um código de verificação foi gerado. O código é válido por 10 minutos.",
+            duration: 10000,
           });
-          return;
+
+          setStep("verify");
+        } else {
+          setHasAccess(true);
+          await checkUserRole(data.user.id);
+          toast({
+            title: "Login realizado!",
+            description: "Bem-vindo ao painel administrativo.",
+          });
         }
-
-        // Generate and save 2FA code
-        const generatedCode = generateCode();
-        const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 10); // Code expires in 10 minutes
-
-        const { error: codeError } = await supabase
-          .from("access_codes")
-          .insert({
-            user_id: data.user.id,
-            code: generatedCode,
-            expires_at: expiresAt.toISOString(),
-          });
-
-        if (codeError) throw codeError;
-
-        toast({
-          title: "Código de Verificação Gerado",
-          description: "Um código de verificação foi gerado e está disponível para consulta. O código é válido por 10 minutos.",
-          duration: 10000,
-        });
-
-        setStep("verify");
       }
     } catch (error: any) {
       toast({
