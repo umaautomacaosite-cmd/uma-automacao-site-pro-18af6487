@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Trash2, X, Network, Zap, Shield, Database, Settings, Wrench } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface Service {
   id?: string;
@@ -35,6 +36,8 @@ const AdminServices = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [editingService, setEditingService] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+  const { canEdit, canDelete } = useUserRole();
   const [serviceForm, setServiceForm] = useState<Service>({
     title: '',
     category: 'redes',
@@ -47,8 +50,6 @@ const AdminServices = () => {
     is_active: true,
     is_featured: false,
   });
-
-  const { toast } = useToast();
 
   useEffect(() => {
     fetchServices();
@@ -513,13 +514,24 @@ const AdminServices = () => {
                     size="sm"
                     variant="outline"
                     onClick={() => toggleServiceStatus(service.id!, service.is_active)}
+                    disabled={!canEdit}
                   >
                     {service.is_active ? 'Desativar' : 'Ativar'}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => startEditService(service)}>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => startEditService(service)}
+                    disabled={!canEdit}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="destructive" onClick={() => deleteService(service.id!)}>
+                  <Button 
+                    size="sm" 
+                    variant="destructive" 
+                    onClick={() => deleteService(service.id!)}
+                    disabled={!canDelete}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
