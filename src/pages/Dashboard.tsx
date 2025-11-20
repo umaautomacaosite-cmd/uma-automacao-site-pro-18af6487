@@ -244,10 +244,10 @@ const Dashboard = () => {
         .update({ used: true })
         .eq("id", data.id);
 
-      // Update last_verified_at and next_verification_at (7 days from now)
+      // Update last_verified_at and next_verification_at (6 hours from now)
       const now = new Date();
       const nextVerification = new Date();
-      nextVerification.setDate(nextVerification.getDate() + 7);
+      nextVerification.setHours(nextVerification.getHours() + 6);
 
       await supabase
         .from("user_roles")
@@ -263,7 +263,9 @@ const Dashboard = () => {
         description: "Bem-vindo ao painel administrativo!",
       });
 
+      setHasAccess(true);
       setIsAdmin(true);
+      await checkUserRole(user.id);
     } catch (error: any) {
       toast({
         title: "Erro ao verificar código",
@@ -292,7 +294,7 @@ const Dashboard = () => {
     );
   }
 
-  if (user && isAdmin) {
+  if (user && hasAccess) {
     return (
       <div className="min-h-screen">
         <Admin />
