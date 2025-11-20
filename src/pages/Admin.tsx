@@ -19,6 +19,8 @@ import AdminCertifications from './AdminCertifications';
 import AdminTestimonials from './AdminTestimonials';
 import AdminAbout from './AdminAbout';
 import AdminContato from './AdminContato';
+import AdminUsers from './AdminUsers';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const Admin = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(localStorage.getItem('whatsappNumber') || '5511999999999');
@@ -26,6 +28,7 @@ const Admin = () => {
   const { toast } = useToast();
   const { activeServices, publishedCases, activeUsers, loading: statsLoading } = useAdminStats();
   const { activities, loading: activitiesLoading, deleteActivity } = useRecentActivities();
+  const { canEdit, canDelete, isAdmin, loading: roleLoading } = useUserRole();
 
   const saveWhatsAppNumber = () => {
     localStorage.setItem('whatsappNumber', whatsappNumber);
@@ -256,12 +259,7 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="usuarios">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-playfair text-xl">Gestão de Usuários</CardTitle>
-                  <CardDescription>Em desenvolvimento</CardDescription>
-                </CardHeader>
-              </Card>
+              <AdminUsers />
             </TabsContent>
 
             <TabsContent value="configuracoes">

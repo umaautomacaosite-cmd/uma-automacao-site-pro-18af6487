@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Tables } from '@/integrations/supabase/types';
+import { useUserRole } from '@/hooks/useUserRole';
 
 type CaseStudyDb = Tables<'case_studies'>;
 
@@ -37,6 +38,7 @@ const AdminCaseStudies = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [featuredCount, setFeaturedCount] = useState(0);
+  const { canEdit, canDelete } = useUserRole();
   const [formData, setFormData] = useState<Partial<CaseStudy>>({
     title: '',
     sector: '',
@@ -757,6 +759,7 @@ const AdminCaseStudies = () => {
                     variant="outline"
                     size="icon"
                     title={caseStudy.is_active ? 'Desativar' : 'Ativar'}
+                    disabled={!canEdit}
                   >
                     {caseStudy.is_active ? (
                       <Power className="h-4 w-4 text-green-600" />
@@ -768,6 +771,7 @@ const AdminCaseStudies = () => {
                     onClick={() => startEdit(caseStudy)}
                     variant="outline"
                     size="icon"
+                    disabled={!canEdit}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -775,6 +779,7 @@ const AdminCaseStudies = () => {
                     onClick={() => handleDelete(caseStudy.id)}
                     variant="outline"
                     size="icon"
+                    disabled={!canDelete}
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />
                   </Button>
