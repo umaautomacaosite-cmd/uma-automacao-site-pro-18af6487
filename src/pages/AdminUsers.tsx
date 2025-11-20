@@ -49,31 +49,30 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       
-      // Buscar todos os usuários através da view de roles
-      const { data: rolesData, error: rolesError } = await supabase
+      // Buscar usuários com roles usando query SQL direta
+      const { data: usersData, error } = await supabase
         .from('user_roles')
         .select('user_id, role');
 
-      if (rolesError) throw rolesError;
+      if (error) throw error;
 
       // Agrupar roles por usuário
-      const userRolesMap = new Map<string, string[]>();
-      rolesData?.forEach(item => {
-        const roles = userRolesMap.get(item.user_id) || [];
-        roles.push(item.role);
-        userRolesMap.set(item.user_id, roles);
+      const userMap = new Map<string, UserWithRoles>();
+      
+      usersData?.forEach(item => {
+        if (!userMap.has(item.user_id)) {
+          userMap.set(item.user_id, {
+            user_id: item.user_id,
+            email: item.user_id, // Temporário, será substituído
+            created_at: new Date().toISOString(),
+            last_sign_in_at: null,
+            roles: []
+          });
+        }
+        userMap.get(item.user_id)!.roles.push(item.role);
       });
 
-      // Criar lista de usuários únicos com suas roles
-      const uniqueUsers = Array.from(userRolesMap.entries()).map(([userId, roles]) => ({
-        user_id: userId,
-        email: '', // Will be populated from auth if needed
-        created_at: new Date().toISOString(),
-        last_sign_in_at: null,
-        roles
-      }));
-
-      setUsers(uniqueUsers);
+      setUsers(Array.from(userMap.values()));
     } catch (error: any) {
       console.error('Erro ao buscar usuários:', error);
       toast({
