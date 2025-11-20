@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-
 const CACHE_KEY = 'footer_settings_cache';
 const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos
 
@@ -12,7 +11,10 @@ const Footer = () => {
     try {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
-        const { data, timestamp } = JSON.parse(cached);
+        const {
+          data,
+          timestamp
+        } = JSON.parse(cached);
         if (Date.now() - timestamp < CACHE_DURATION) {
           return data;
         }
@@ -22,9 +24,7 @@ const Footer = () => {
     }
     return null;
   };
-
   const cachedSettings = getCachedSettings();
-  
   const [footerPhone, setFooterPhone] = useState(cachedSettings?.phone || '(61) 99999-9999');
   const [footerEmail, setFooterEmail] = useState(cachedSettings?.email || 'contato@umaautomacao.com.br');
   const [whatsappNumber, setWhatsappNumber] = useState(cachedSettings?.whatsapp || '5561999999999');
@@ -33,18 +33,14 @@ const Footer = () => {
   const [instagramUrl, setInstagramUrl] = useState(cachedSettings?.instagram || '');
   const [linkedinUrl, setLinkedinUrl] = useState(cachedSettings?.linkedin || '');
   const [cnpj, setCnpj] = useState(cachedSettings?.cnpj || '');
-  
   useEffect(() => {
     loadSettings();
   }, []);
-  
   const loadSettings = async () => {
     try {
-      const { data } = await supabase
-        .from('settings')
-        .select('key, value')
-        .in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'whatsapp_default_message', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
-      
+      const {
+        data
+      } = await supabase.from('settings').select('key, value').in('key', ['footer_phone', 'footer_email', 'whatsapp_number', 'whatsapp_default_message', 'facebook_url', 'instagram_url', 'linkedin_url', 'cnpj']);
       if (data) {
         const phone = data.find(s => s.key === 'footer_phone');
         const email = data.find(s => s.key === 'footer_email');
@@ -54,7 +50,6 @@ const Footer = () => {
         const instagram = data.find(s => s.key === 'instagram_url');
         const linkedin = data.find(s => s.key === 'linkedin_url');
         const cnpjSetting = data.find(s => s.key === 'cnpj');
-        
         const settings = {
           phone: phone?.value || '(61) 99999-9999',
           email: email?.value || 'contato@umaautomacao.com.br',
@@ -65,7 +60,6 @@ const Footer = () => {
           linkedin: linkedin?.value || '',
           cnpj: cnpjSetting?.value || ''
         };
-        
         setFooterPhone(settings.phone);
         setFooterEmail(settings.email);
         setWhatsappNumber(settings.whatsapp);
@@ -111,12 +105,10 @@ const Footer = () => {
                 <MapPin className="h-4 w-4 text-wine-400" />
                 <span>Brasília, DF - Brasil</span>
               </div>
-              {cnpj && (
-                <div className="flex items-center space-x-2 text-sm mt-2">
+              {cnpj && <div className="flex items-center space-x-2 text-sm mt-2">
                   <span className="font-semibold">CNPJ:</span>
                   <span>{cnpj}</span>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
 
@@ -176,7 +168,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>© 2025 UMA AUTOMAÇÃO. Todos os direitos reservados.</p>
+          <p>© 2026 UMA AUTOMAÇÃO. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>;
