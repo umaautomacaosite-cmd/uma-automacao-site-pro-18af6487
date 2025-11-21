@@ -49,30 +49,13 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       
-      // Buscar usuários com roles usando query SQL direta
+      // Usar a função SQL que retorna usuários com emails e roles
       const { data: usersData, error } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
+        .rpc('list_users_with_roles' as any) as { data: UserWithRoles[] | null, error: any };
 
       if (error) throw error;
 
-      // Agrupar roles por usuário
-      const userMap = new Map<string, UserWithRoles>();
-      
-      usersData?.forEach(item => {
-        if (!userMap.has(item.user_id)) {
-          userMap.set(item.user_id, {
-            user_id: item.user_id,
-            email: item.user_id, // Temporário, será substituído
-            created_at: new Date().toISOString(),
-            last_sign_in_at: null,
-            roles: []
-          });
-        }
-        userMap.get(item.user_id)!.roles.push(item.role);
-      });
-
-      setUsers(Array.from(userMap.values()));
+      setUsers(usersData || []);
     } catch (error: any) {
       console.error('Erro ao buscar usuários:', error);
       toast({
