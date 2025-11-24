@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.export-user-data]
 verify_jwt = true
+
+[functions.send-contact-email]
+verify_jwt = false
+
+[functions.send-verification-code]
+verify_jwt = false

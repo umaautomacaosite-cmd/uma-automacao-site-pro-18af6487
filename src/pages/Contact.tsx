@@ -90,6 +90,27 @@ const Contact = () => {
         console.error('Database error:', error);
         throw error;
       }
+
+      // Send email via Resend
+      if (contactInfo?.email) {
+        try {
+          await supabase.functions.invoke('send-contact-email', {
+            body: {
+              name: data.name,
+              email: data.email,
+              phone: data.phone,
+              company: data.company,
+              service_type: data.service_type,
+              message: data.message,
+              recipient_email: contactInfo.email
+            }
+          });
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+          // Don't throw - email is not critical
+        }
+      }
+
       toast({
         title: 'Mensagem enviada!',
         description: 'Responderemos em breve. Obrigado pelo contato!'
