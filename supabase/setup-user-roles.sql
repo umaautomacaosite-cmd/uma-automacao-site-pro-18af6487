@@ -96,7 +96,7 @@ BEGIN
   RETURN QUERY
   SELECT 
     u.id AS user_id,
-    u.email,
+    u.email::text,
     u.created_at,
     u.last_sign_in_at,
     COALESCE(
