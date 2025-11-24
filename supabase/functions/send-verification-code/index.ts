@@ -29,7 +29,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending verification code to:", email);
 
     const emailResponse = await resend.emails.send({
-      from: "UMA AUTOMAÇÃO <onboarding@resend.dev>",
+      from: "UMA AUTOMAÇÃO <noreply@uma-automacao.com.br>",
       to: [email],
       subject: "Código de Verificação - Painel Administrativo",
       html: `
