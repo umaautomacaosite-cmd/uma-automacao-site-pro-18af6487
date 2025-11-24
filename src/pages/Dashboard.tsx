@@ -169,6 +169,13 @@ const Dashboard = () => {
             return;
           }
 
+          // Invalidate all existing unused codes for this user
+          await supabase
+            .from("access_codes")
+            .update({ used: true })
+            .eq("user_id", data.user.id)
+            .eq("used", false);
+
           // Generate and send verification code
           const generatedCode = generateCode();
           const expiresAt = new Date();
