@@ -34,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to company
     const emailResponse = await resend.emails.send({
-      from: "UMA AUTOMAÇÃO <onboarding@resend.dev>",
+      from: "UMA AUTOMAÇÃO <noreply@uma-automacao.com.br>",
       to: [recipient_email],
       subject: `Nova Solicitação de Orçamento - ${service_type}`,
       html: `
@@ -56,7 +56,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to customer
     const confirmationResponse = await resend.emails.send({
-      from: "UMA AUTOMAÇÃO <onboarding@resend.dev>",
+      from: "UMA AUTOMAÇÃO <noreply@uma-automacao.com.br>",
       to: [email],
       subject: "Recebemos sua solicitação de orçamento",
       html: `
