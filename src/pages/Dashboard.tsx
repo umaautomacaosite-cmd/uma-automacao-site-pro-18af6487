@@ -134,7 +134,7 @@ const Dashboard = () => {
         // Check if user has any role
         const { data: roleData } = await supabase
           .from("user_roles")
-          .select("role")
+          .select("role, next_verification_at")
           .eq("user_id", data.user.id);
 
         if (!roleData || roleData.length === 0) {
@@ -148,21 +148,20 @@ const Dashboard = () => {
         }
 
         const hasAdminRole = roleData.some(r => r.role === "admin");
+        const hasModeratorRole = roleData.some(r => r.role === "moderator");
         
-        if (hasAdminRole) {
-          const { data: adminRoleData } = await supabase
-            .from("user_roles")
-            .select("next_verification_at")
-            .eq("user_id", data.user.id)
-            .eq("role", "admin")
-            .single();
-
-          const nextVerification = adminRoleData?.next_verification_at ? new Date(adminRoleData.next_verification_at) : null;
+        // Check if admin or moderator needs 2FA verification
+        if (hasAdminRole || hasModeratorRole) {
+          const role = hasAdminRole ? "admin" : "moderator";
+          const roleData2FA = roleData.find(r => r.role === role);
+          
+          const nextVerification = roleData2FA?.next_verification_at ? new Date(roleData2FA.next_verification_at) : null;
           const now = new Date();
 
+          // If verification is still valid, grant access
           if (nextVerification && nextVerification > now) {
             setHasAccess(true);
-            setIsAdmin(true);
+            setIsAdmin(hasAdminRole);
             toast({
               title: "Acesso Autorizado",
               description: "Bem-vindo ao painel administrativo!",
@@ -170,6 +169,7 @@ const Dashboard = () => {
             return;
           }
 
+          // Generate and send verification code
           const generatedCode = generateCode();
           const expiresAt = new Date();
           expiresAt.setMinutes(expiresAt.getMinutes() + 10);
@@ -184,14 +184,33 @@ const Dashboard = () => {
 
           if (codeError) throw codeError;
 
-          toast({
-            title: "Código de Verificação Gerado",
-            description: "Um código de verificação foi gerado. O código é válido por 10 minutos.",
-            duration: 10000,
-          });
+          // Send verification code via email
+          try {
+            await supabase.functions.invoke('send-verification-code', {
+              body: {
+                email: data.user.email,
+                code: generatedCode,
+                role: role
+              }
+            });
+
+            toast({
+              title: "Código Enviado",
+              description: "Um código de verificação foi enviado para seu e-mail. Válido por 10 minutos.",
+              duration: 10000,
+            });
+          } catch (emailError) {
+            console.error('Error sending verification email:', emailError);
+            toast({
+              title: "Código de Verificação Gerado",
+              description: "Um código de verificação foi gerado. Consulte o administrador. Válido por 10 minutos.",
+              duration: 10000,
+            });
+          }
 
           setStep("verify");
         } else {
+          // Regular user without 2FA
           setHasAccess(true);
           await checkUserRole(data.user.id);
           toast({
@@ -249,14 +268,28 @@ const Dashboard = () => {
       const nextVerification = new Date();
       nextVerification.setHours(nextVerification.getHours() + 6);
 
-      await supabase
+      // Get user roles to determine which role to update
+      const { data: rolesData } = await supabase
         .from("user_roles")
-        .update({ 
-          last_verified_at: now.toISOString(),
-          next_verification_at: nextVerification.toISOString()
-        })
+        .select("role")
         .eq("user_id", user.id)
-        .eq("role", "admin");
+        .in("role", ["admin", "moderator"]);
+
+      // Update verification for admin or moderator role
+      if (rolesData && rolesData.length > 0) {
+        const role = rolesData.find(r => r.role === "admin") ? "admin" : "moderator";
+        
+        await supabase
+          .from("user_roles")
+          .update({ 
+            last_verified_at: now.toISOString(),
+            next_verification_at: nextVerification.toISOString()
+          })
+          .eq("user_id", user.id)
+          .eq("role", role);
+
+        setIsAdmin(role === "admin");
+      }
 
       toast({
         title: "Acesso Autorizado",
