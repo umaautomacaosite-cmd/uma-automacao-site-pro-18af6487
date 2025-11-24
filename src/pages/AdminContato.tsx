@@ -50,6 +50,7 @@ const AdminContato = () => {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [showAllMessages, setShowAllMessages] = useState(false);
   const [businessHours, setBusinessHours] = useState<{ day: string; hours: string }[]>([
     { day: 'Segunda a Sexta', hours: '7h às 17h' },
     { day: 'Sábado', hours: '8h às 12h' }
@@ -310,7 +311,7 @@ const AdminContato = () => {
             Mensagens Recebidas ({messages.length})
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -331,7 +332,7 @@ const AdminContato = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  messages.map((message) => (
+                  (showAllMessages ? messages : messages.slice(0, 5)).map((message) => (
                     <TableRow key={message.id}>
                       <TableCell className="font-medium">{message.name}</TableCell>
                       <TableCell>{message.email}</TableCell>
@@ -372,6 +373,16 @@ const AdminContato = () => {
               </TableBody>
             </Table>
           </div>
+          
+          {messages.length > 5 && !showAllMessages && (
+            <Button
+              variant="outline"
+              onClick={() => setShowAllMessages(true)}
+              className="w-full"
+            >
+              Ver mais mensagens ({messages.length - 5} restantes)
+            </Button>
+          )}
         </CardContent>
       </Card>
 
