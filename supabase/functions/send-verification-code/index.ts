@@ -15,8 +15,11 @@ interface VerificationCodeRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log(`[send-verification-code] Request received - Method: ${req.method}`);
+  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("[send-verification-code] Handling CORS preflight request");
     return new Response(null, { 
       status: 200,
       headers: corsHeaders 

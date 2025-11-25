@@ -19,8 +19,11 @@ interface ContactEmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log(`[send-contact-email] Request received - Method: ${req.method}`);
+  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("[send-contact-email] Handling CORS preflight request");
     return new Response(null, { 
       status: 200,
       headers: corsHeaders 
