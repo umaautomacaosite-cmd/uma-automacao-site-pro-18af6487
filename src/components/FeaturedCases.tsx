@@ -108,7 +108,7 @@ const FeaturedCases = () => {
               return (
                 <Card 
                   key={caseItem.id} 
-                  className={`hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden flex flex-col opacity-100 translate-y-0`}
+                  className={`h-[650px] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-t-4 border-wine-900 overflow-hidden flex flex-col opacity-100 translate-y-0`}
                   style={{ 
                     transitionDelay: `${index * 100}ms`,
                     animation: isIntersecting ? `fadeInUp 0.6s ease-out ${index * 100}ms forwards` : 'none'
