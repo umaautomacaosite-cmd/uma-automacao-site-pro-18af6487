@@ -34,7 +34,20 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const requestData: ContactEmailRequest = await req.json();
+    // Check if request has a body
+    const text = await req.text();
+    if (!text) {
+      console.error("Empty request body");
+      return new Response(
+        JSON.stringify({ error: "Request body is empty" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const requestData: ContactEmailRequest = JSON.parse(text);
     const { name, email, phone, service_type, message, recipient_email } = requestData;
     const company = requestData.company || '';
 
