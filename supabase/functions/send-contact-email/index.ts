@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to company
     const emailResponse = await resend.emails.send({
-      from: "UMA AUTOMAÇÃO <noreply@uma-automacao.com.br>",
+      from: "UMA AUTOMAÇÃO <contato@uma-automacao.com.br>",
       to: [recipient_email],
       subject: `Nova Solicitação de Orçamento - ${service_type}`,
       html: `
@@ -60,33 +60,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email sent successfully to company:", emailResponse);
 
-    // Send confirmation email to customer
-    const confirmationResponse = await resend.emails.send({
-      from: "UMA AUTOMAÇÃO <noreply@uma-automacao.com.br>",
-      to: [email],
-      subject: "Recebemos sua solicitação de orçamento",
-      html: `
-        <h2>Olá, ${name}!</h2>
-        <p>Recebemos sua solicitação de orçamento para <strong>${service_type}</strong>.</p>
-        <p>Nossa equipe de especialistas está analisando seu projeto e entrará em contato em breve.</p>
-        <hr>
-        <h3>Detalhes da sua solicitação:</h3>
-        <p><strong>Tipo de Serviço:</strong> ${service_type}</p>
-        ${company ? `<p><strong>Empresa:</strong> ${company}</p>` : ''}
-        <p><strong>Mensagem:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <p>Atenciosamente,<br><strong>Equipe UMA AUTOMAÇÃO</strong></p>
-        <p style="color: #666; font-size: 12px;">Se você não solicitou este orçamento, por favor ignore este email.</p>
-      `,
-    });
-
-    console.log("Confirmation email sent to customer:", confirmationResponse);
-
     return new Response(JSON.stringify({ 
       success: true, 
-      company_email: emailResponse,
-      customer_email: confirmationResponse 
+      email: emailResponse
     }), {
       status: 200,
       headers: {
