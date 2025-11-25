@@ -260,7 +260,6 @@ const AdminUsers = () => {
                     <TableHead>Email</TableHead>
                     <TableHead>Roles</TableHead>
                     <TableHead>Cadastrado em</TableHead>
-                    <TableHead>Último acesso</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -285,7 +284,6 @@ const AdminUsers = () => {
                         </div>
                       </TableCell>
                       <TableCell>{formatDate(user.created_at)}</TableCell>
-                      <TableCell>{formatDate(user.last_sign_in_at)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Select
