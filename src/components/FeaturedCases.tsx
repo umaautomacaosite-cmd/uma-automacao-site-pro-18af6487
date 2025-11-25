@@ -143,7 +143,7 @@ const FeaturedCases = () => {
                       </div>
                     </div>
                     <div className="space-y-2 flex-grow">
-                      {caseItem.results.slice(0, 2).map((result, idx) => (
+                      {caseItem.results.slice(0, 6).map((result, idx) => (
                         <div key={idx} className="flex items-center space-x-2">
                           <div className="w-2 h-2 rounded-full bg-green-600 flex-shrink-0" />
                           <span className="text-sm font-lato font-semibold text-gray-700">{result}</span>
