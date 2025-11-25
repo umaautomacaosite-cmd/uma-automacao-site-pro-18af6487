@@ -34,7 +34,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, phone, company, service_type, message, recipient_email }: ContactEmailRequest = await req.json();
+    const requestData: ContactEmailRequest = await req.json();
+    const { name, email, phone, service_type, message, recipient_email } = requestData;
+    const company = requestData.company || '';
 
     console.log("Sending contact email to:", recipient_email);
 
