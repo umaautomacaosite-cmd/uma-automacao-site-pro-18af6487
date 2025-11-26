@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "npm:resend@4.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 console.log("🚀 [send-contact-email] Function loaded and ready");
@@ -52,6 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     const company = requestData.company || '';
 
     console.log("Sending contact email to:", recipient_email);
+    console.log("Form data - Name:", name, "Service:", service_type);
 
     // Send email to company
     const emailResponse = await resend.emails.send({
