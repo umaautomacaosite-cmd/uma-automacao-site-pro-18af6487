@@ -289,8 +289,8 @@ const Contact = () => {
                         <option value="">Selecione o tipo de serviço</option>
                         <option value="Redes e Infraestrutura">Redes e Infraestrutura</option>
                         <option value="Energia e Elétrica">Energia e Elétrica</option>
-                        <option value="Automação Industrial">Automação Industrial</option>
-                        <option value="Segurança Industrial">Segurança Industrial</option>
+                        <option value="Automação Predial">Automação Predial</option>
+                        <option value="Segurança Predial">Segurança Predial</option>
                         <option value="Data Center">Data Center</option>
                         <option value="Outro">Outro</option>
                       </select>
