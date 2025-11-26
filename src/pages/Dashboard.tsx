@@ -270,10 +270,10 @@ const Dashboard = () => {
         .update({ used: true })
         .eq("id", data.id);
 
-      // Update last_verified_at and next_verification_at (6 hours from now)
+      // Update last_verified_at and next_verification_at (24 hours from now)
       const now = new Date();
       const nextVerification = new Date();
-      nextVerification.setHours(nextVerification.getHours() + 6);
+      nextVerification.setHours(nextVerification.getHours() + 24);
 
       // Get user roles to determine which role to update
       const { data: rolesData } = await supabase
