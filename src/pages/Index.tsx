@@ -1,24 +1,28 @@
-import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
-import Footer from '@/components/Footer';
-import WhatsAppButton from '@/components/WhatsAppButton';
-import Testimonials from '@/components/Testimonials';
-import ClientLogos from '@/components/ClientLogos';
-import HowItWorks from '@/components/HowItWorks';
-import FeaturedCases from '@/components/FeaturedCases';
-import Certifications from '@/components/Certifications';
-import AboutSection from '@/components/AboutSection';
-import SEO from '@/components/SEO';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
-import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
-import { useCountUp } from '@/hooks/useCountUp';
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import Testimonials from "@/components/Testimonials";
+import ClientLogos from "@/components/ClientLogos";
+import HowItWorks from "@/components/HowItWorks";
+import FeaturedCases from "@/components/FeaturedCases";
+import Certifications from "@/components/Certifications";
+import AboutSection from "@/components/AboutSection";
+import SEO from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { Network, Zap, Settings, Shield, Award, Users, MapPin, ArrowRight, CheckCircle } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any; value: number; hasSlash: boolean } }) => {
+const StatsCard = ({
+  stat,
+}: {
+  stat: { number: string; label: string; icon: any; value: number; hasSlash: boolean };
+}) => {
   const { count, ref } = useCountUp(stat.value, 2000);
   const IconComponent = stat.icon;
 
@@ -26,7 +30,9 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
     <div ref={ref} className="text-center group">
       <IconComponent className="h-12 w-12 text-gold-500 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
       <div className="font-playfair text-4xl font-bold mb-2">
-        {stat.hasSlash ? stat.number : `${count}${stat.number.includes('+') ? '+' : stat.number.includes('%') ? '%' : ''}`}
+        {stat.hasSlash
+          ? stat.number
+          : `${count}${stat.number.includes("+") ? "+" : stat.number.includes("%") ? "%" : ""}`}
       </div>
       <div className="font-lato text-lg text-gray-200">{stat.label}</div>
     </div>
@@ -35,52 +41,54 @@ const StatsCard = ({ stat }: { stat: { number: string; label: string; icon: any;
 
 const Index = () => {
   const { ref: servicesRef, isIntersecting: servicesVisible } = useIntersectionObserver({ threshold: 0.1 });
-  const [whatsappNumber, setWhatsappNumber] = useState<string>('');
-  const [whatsappMessage, setWhatsappMessage] = useState<string>('Olá! Gostaria de falar com um especialista em automação predial.');
+  const [whatsappNumber, setWhatsappNumber] = useState<string>("");
+  const [whatsappMessage, setWhatsappMessage] = useState<string>(
+    "Olá! Gostaria de falar com um especialista em automação predial.",
+  );
   const [stats, setStats] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       // Fetch WhatsApp number and message
       const { data: whatsappData } = await supabase
-        .from('settings')
-        .select('key, value')
-        .in('key', ['whatsapp_number', 'whatsapp_default_message']);
-      
+        .from("settings")
+        .select("key, value")
+        .in("key", ["whatsapp_number", "whatsapp_default_message"]);
+
       if (whatsappData) {
-        const numberData = whatsappData.find(item => item.key === 'whatsapp_number');
-        const messageData = whatsappData.find(item => item.key === 'whatsapp_default_message');
+        const numberData = whatsappData.find((item) => item.key === "whatsapp_number");
+        const messageData = whatsappData.find((item) => item.key === "whatsapp_default_message");
         if (numberData?.value) setWhatsappNumber(numberData.value);
         if (messageData?.value) setWhatsappMessage(messageData.value);
       }
 
       // Fetch stats
       const { data: statsData } = await supabase
-        .from('home_stats')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-      
+        .from("home_stats")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+
       if (statsData) {
         const mappedStats = statsData.map((stat) => {
           const iconMap: Record<string, any> = {
-            'Award': Award,
-            'Users': Users,
-            'MapPin': MapPin,
-            'Shield': Shield,
-            'TrendingUp': Award,
-            'CheckCircle': Award
+            Award: Award,
+            Users: Users,
+            MapPin: MapPin,
+            Shield: Shield,
+            TrendingUp: Award,
+            CheckCircle: Award,
           };
-          
-          const hasSlash = stat.value.includes('/');
-          const numericValue = parseInt(stat.value.replace(/\D/g, '')) || 0;
-          
+
+          const hasSlash = stat.value.includes("/");
+          const numericValue = parseInt(stat.value.replace(/\D/g, "")) || 0;
+
           return {
             number: stat.value,
             label: stat.label,
             icon: iconMap[stat.icon] || Award,
             value: numericValue,
-            hasSlash
+            hasSlash,
           };
         });
         setStats(mappedStats);
@@ -89,56 +97,62 @@ const Index = () => {
     fetchData();
   }, []);
 
-  const services = [{
-    icon: Network,
-    title: "Redes e Infraestrutura",
-    description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 5/6/6A",
-    features: ["Certificação OTDR", "Certificação Fluke", "Organização de Racks"]
-  }, {
-    icon: Zap,
-    title: "Energia e Elétrica",
-    description: "Sistemas Fotovoltaicos, fechamento de quadros elétricos",
-    features: ["Distribuição de Energia e Aterramento", "Piso elevado", "Data Centers"]
-  }, {
-    icon: Settings,
-    title: "Automação Predial",
-    description: "Sistemas de controle e monitoramento predial",
-    features: ["Integração de Sistemas", "Relatórios de Eficiência Energética", "Monitoramento em Tempo Real"]
-  }, {
-    icon: Shield,
-    title: "Segurança Predial",
-    description: "Sistemas de segurança conforme normas regulamentadoras",
-    features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"]
-  }];
+  const services = [
+    {
+      icon: Network,
+      title: "Redes e Infraestrutura",
+      description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 5/6/6A",
+      features: ["Certificação OTDR", "Certificação Fluke", "Organização de Racks"],
+    },
+    {
+      icon: Zap,
+      title: "Energia e Elétrica",
+      description: "Sistemas Fotovoltaicos, fechamento de quadros elétricos",
+      features: ["Distribuição de Energia e Aterramento", "Piso elevado", "Data Centers"],
+    },
+    {
+      icon: Settings,
+      title: "Automação Predial",
+      description: "Sistemas de controle e monitoramento predial",
+      features: ["Integração de Sistemas", "Relatórios de Eficiência Energética", "Monitoramento em Tempo Real"],
+    },
+    {
+      icon: Shield,
+      title: "Segurança Predial",
+      description: "Sistemas de segurança conforme normas regulamentadoras",
+      features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"],
+    },
+  ];
 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "UMA AUTOMAÇÃO",
-    "url": "https://umaautomacao.com.br",
-    "logo": "https://umaautomacao.com.br/logo.png",
-    "description": "Soluções em Automação Industrial e Infraestrutura de Alta Performance",
-    "address": {
+    name: "UMA AUTOMAÇÃO",
+    url: "https://umaautomacao.com.br",
+    logo: "https://umaautomacao.com.br/logo.png",
+    description: "Soluções em Automação Industrial e Infraestrutura de Alta Performance",
+    address: {
       "@type": "PostalAddress",
-      "addressLocality": "Brasília",
-      "addressRegion": "DF",
-      "addressCountry": "BR"
+      addressLocality: "Brasília",
+      addressRegion: "DF",
+      addressCountry: "BR",
     },
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "telephone": whatsappNumber,
-      "contactType": "customer service",
-      "availableLanguage": "Portuguese"
+      telephone: whatsappNumber,
+      contactType: "customer service",
+      availableLanguage: "Portuguese",
     },
-    "sameAs": [
+    sameAs: [
       "https://www.facebook.com/umaautomacao",
       "https://www.instagram.com/umaautomacao",
-      "https://www.linkedin.com/company/umaautomacao"
-    ]
+      "https://www.linkedin.com/company/umaautomacao",
+    ],
   };
 
-  return <div className="min-h-screen">
-      <SEO 
+  return (
+    <div className="min-h-screen">
+      <SEO
         title="UMA AUTOMAÇÃO - Soluções em Automação Industrial"
         description="Soluções em Automação Industrial e Infraestrutura de Alta Performance. Atendimento nacional com engenheiros certificados CREA."
         keywords="automação industrial, automação predial, infraestrutura, CREA, Brasília, data center, engenharia, fibra óptica, sistemas fotovoltaicos"
@@ -148,10 +162,10 @@ const Index = () => {
       <Header />
       <HeroSection />
       <WhatsAppButton />
-      
+
       {/* About Section */}
       <AboutSection />
-      
+
       {/* Featured Cases */}
       <FeaturedCases />
 
@@ -162,11 +176,10 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
-              Nossos Serviços
-            </h2>
+            <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-4">Nossos Serviços</h2>
             <p className="font-lato text-xl text-gray-600 max-w-3xl mx-auto">
-              Soluções completas em automação industrial com engenheiros certificados CREA e compliance total com normas regulamentadoras.
+              Soluções completas em automação predial com engenheiros certificados CREA e compliance total com normas
+              regulamentadoras.
             </p>
           </div>
 
@@ -174,12 +187,10 @@ const Index = () => {
             {services.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Card 
-                  key={index} 
+                <Card
+                  key={index}
                   className={`hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 group ${
-                    servicesVisible 
-                      ? 'opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-10'
+                    servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                   }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
@@ -190,10 +201,12 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {service.features.map((feature, idx) => <div key={idx} className="flex items-center space-x-2">
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center space-x-2">
                           <CheckCircle className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-lato">{feature}</span>
-                        </div>)}
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -235,31 +248,32 @@ const Index = () => {
           <div className="absolute top-0 left-0 w-96 h-96 bg-wine-900 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold-500 rounded-full blur-3xl"></div>
         </div>
-        
+
         <ClientLogos />
-        
+
         <div className="container mx-auto px-4 text-center relative z-10 mt-12">
-          <h2 className="font-playfair text-4xl font-bold mb-4">
-            Pronto para Transformar sua Infraestrutura?
-          </h2>
+          <h2 className="font-playfair text-4xl font-bold mb-4">Pronto para Transformar sua Infraestrutura?</h2>
           <p className="font-lato text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Entre em contato conosco e receba uma proposta personalizada para seu projeto de automação industrial.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contato">
-              <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
+              <Button
+                size="lg"
+                className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg"
+              >
                 Solicitar Orçamento Gratuito
               </Button>
             </Link>
             {whatsappNumber && (
-              <a 
+              <a
                 href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+                <Button
+                  size="lg"
+                  variant="outline"
                   className="border-white bg-white/10 hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
                 >
                   Falar com Especialista
@@ -271,6 +285,7 @@ const Index = () => {
       </section>
 
       <Footer />
-    </div>;
+    </div>
+  );
 };
 export default Index;
