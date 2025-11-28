@@ -51,20 +51,39 @@ const Dashboard = () => {
           .eq("user_id", session.user.id);
 
         if (roleData && roleData.length > 0) {
-          // User has at least one role, grant access
-          setHasAccess(true);
+          const hasAdminRole = roleData.some(r => r.role === "admin");
+          const hasModeratorRole = roleData.some(r => r.role === "moderator");
           
-          // Check if user is admin with valid 2FA
-          const adminRole = roleData.find(r => r.role === "admin");
-          if (adminRole) {
-            const nextVerification = adminRole.next_verification_at ? new Date(adminRole.next_verification_at) : null;
+          // If user is admin or moderator, check 2FA validity
+          if (hasAdminRole || hasModeratorRole) {
+            const role = hasAdminRole ? "admin" : "moderator";
+            const roleData2FA = roleData.find(r => r.role === role);
+            const nextVerification = roleData2FA?.next_verification_at ? new Date(roleData2FA.next_verification_at) : null;
             const now = new Date();
 
-            // Only grant admin access if next verification date is in the future
+            // Only grant access if 2FA verification is still valid
             if (nextVerification && nextVerification > now) {
-              setIsAdmin(true);
+              setHasAccess(true);
+              setIsAdmin(hasAdminRole);
+            } else {
+              // 2FA expired - force logout and show message
+              await supabase.auth.signOut();
+              toast({
+                title: "Verificação Expirada",
+                description: "Sua verificação 2FA expirou. Por favor, faça login novamente.",
+                variant: "destructive",
+              });
+              setHasAccess(false);
+              setIsAdmin(false);
             }
+          } else {
+            // Regular user without 2FA requirement
+            setHasAccess(true);
           }
+        } else {
+          // No roles found
+          setHasAccess(false);
+          setIsAdmin(false);
         }
       }
     } catch (error) {
