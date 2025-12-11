@@ -82,15 +82,19 @@ const About = () => {
   }
   return <div className="min-h-screen">
       <SEO 
-        title="Sobre Nós - UMA AUTOMAÇÃO"
-        description="Conheça a história, missão, visão e valores da UMA AUTOMAÇÃO. Engenheiros certificados CREA com atuação nacional em automação industrial."
-        keywords="sobre nós, história, missão, visão, valores, CREA, automação industrial"
+        title="Sobre Nós - UMA AUTOMAÇÃO | Empresa de Automação Predial"
+        description="Conheça a história, missão, visão e valores da UMA AUTOMAÇÃO. Mais de 15 anos de experiência em automação predial com engenheiros certificados CREA."
+        keywords="sobre nós, história empresa, missão, visão, valores, CREA, automação predial, Brasília"
         canonical="/sobre"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Sobre Nós", url: "/sobre" }
+        ]}
         schema={{
           "@context": "https://schema.org",
           "@type": "AboutPage",
           "name": "Sobre a UMA AUTOMAÇÃO",
-          "description": "História, missão, visão e valores da empresa de automação industrial"
+          "description": "História, missão, visão e valores da empresa especializada em automação predial"
         }}
       />
       <Header />

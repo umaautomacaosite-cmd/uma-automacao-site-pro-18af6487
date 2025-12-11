@@ -36,8 +36,13 @@ const PrivacyPolicy = () => {
     <>
       <SEO 
         title="Política de Privacidade - UMA AUTOMAÇÃO"
-        description="Política de privacidade e proteção de dados da UMA AUTOMAÇÃO em conformidade com a LGPD."
+        description="Política de privacidade e proteção de dados da UMA AUTOMAÇÃO em conformidade com a LGPD. Empresa de automação predial."
+        keywords="política de privacidade, LGPD, proteção de dados, UMA AUTOMAÇÃO"
         canonical="/politica-de-privacidade"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Política de Privacidade", url: "/politica-de-privacidade" }
+        ]}
       />
       <Header />
       <main className="min-h-screen bg-background py-16">
