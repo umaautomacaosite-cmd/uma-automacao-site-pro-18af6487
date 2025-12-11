@@ -157,7 +157,7 @@ const Contact = () => {
           "mainEntity": {
             "@type": "Organization",
             "name": "UMA AUTOMAÇÃO",
-            "url": "https://umaautomacao.com.br",
+            "url": "https://uma-automacao.com.br",
             "contactPoint": {
               "@type": "ContactPoint",
               "contactType": "customer service",

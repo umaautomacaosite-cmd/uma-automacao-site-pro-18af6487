@@ -24,7 +24,7 @@ const SEO = ({
   schema,
   breadcrumbs,
 }: SEOProps) => {
-  const siteUrl = 'https://umaautomacao.com.br';
+  const siteUrl = 'https://uma-automacao.com.br';
   const fullUrl = canonical ? `${siteUrl}${canonical}` : siteUrl;
 
   // LocalBusiness Schema - sempre presente

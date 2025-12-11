@@ -117,7 +117,7 @@ const Services = () => {
           "provider": {
             "@type": "Organization",
             "name": "UMA AUTOMAÇÃO",
-            "url": "https://umaautomacao.com.br"
+            "url": "https://uma-automacao.com.br"
           },
           "areaServed": {
             "@type": "Country",
