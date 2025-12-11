@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://umaautomacao.com.br/sitemap.xml
+Sitemap: https://uma-automacao.com.br/sitemap.xml

@@ -120,8 +120,8 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "UMA AUTOMAÇÃO",
-    url: "https://umaautomacao.com.br",
-    logo: "https://umaautomacao.com.br/logo.png",
+    url: "https://uma-automacao.com.br",
+    logo: "https://uma-automacao.com.br/logo.png",
     description: "Soluções em Automação Predial e Infraestrutura de Alta Performance com engenheiros certificados CREA",
     address: {
       "@type": "PostalAddress",
