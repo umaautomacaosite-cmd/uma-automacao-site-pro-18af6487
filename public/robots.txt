@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://preview--uma-automacao-site-pro.lovable.app/sitemap.xml
+Sitemap: https://umaautomacao.com.br/sitemap.xml

@@ -71,15 +71,19 @@ const CaseStudies = () => {
   };
   return <div className="min-h-screen">
       <SEO 
-        title="Cases de Sucesso - UMA AUTOMAÇÃO"
-        description="Conheça nossos projetos realizados em data centers, hospitais, indústrias e instituições de ensino. Cases de automação industrial e predial."
-        keywords="cases de sucesso, projetos de automação, data center, hospital, indústria, automação predial"
+        title="Cases de Sucesso - UMA AUTOMAÇÃO | Projetos de Automação Predial"
+        description="Portfólio com mais de 1500 projetos de automação predial em data centers, hospitais, indústrias e instituições de ensino. Resultados comprovados."
+        keywords="cases automação predial, projetos automação, data center, hospital, indústria, portfólio, resultados comprovados"
         canonical="/cases"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Cases de Sucesso", url: "/cases" }
+        ]}
         schema={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          "name": "Cases de Sucesso",
-          "description": "Portfólio de projetos de automação industrial e predial realizados pela UMA AUTOMAÇÃO"
+          "name": "Cases de Sucesso - UMA AUTOMAÇÃO",
+          "description": "Portfólio de projetos de automação predial realizados pela UMA AUTOMAÇÃO em diversos setores"
         }}
       />
       <Header />

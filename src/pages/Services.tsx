@@ -102,20 +102,40 @@ const Services = () => {
   }, {} as Record<string, Service[]>);
   return <div className="min-h-screen">
       <SEO 
-        title="Nossos Serviços - UMA AUTOMAÇÃO"
-        description="Soluções técnicas especializadas em automação predial com compliance total às normas regulamentadoras. Redes, infraestrutura, energia elétrica e segurança predial."
-        keywords="automação predial, redes estruturadas, fibra óptica, sistemas fotovoltaicos, segurança predial, CREA, certificação Fluke"
+        title="Serviços de Automação Predial - UMA AUTOMAÇÃO | Brasília-DF"
+        description="Serviços especializados em automação predial: redes estruturadas, fibra óptica, sistemas fotovoltaicos, segurança predial e data centers. Certificação ISO 9001."
+        keywords="serviços automação predial, redes estruturadas, fibra óptica, sistemas fotovoltaicos, segurança predial, CREA, certificação Fluke, data center, Brasília"
         canonical="/servicos"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Serviços", url: "/servicos" }
+        ]}
         schema={{
           "@context": "https://schema.org",
           "@type": "Service",
-          "serviceType": "Automação Industrial e Predial",
+          "serviceType": "Automação Predial",
           "provider": {
             "@type": "Organization",
-            "name": "UMA AUTOMAÇÃO"
+            "name": "UMA AUTOMAÇÃO",
+            "url": "https://umaautomacao.com.br"
           },
-          "areaServed": "BR",
-          "description": "Soluções em automação predial, redes, infraestrutura, energia elétrica e segurança"
+          "areaServed": {
+            "@type": "Country",
+            "name": "Brasil"
+          },
+          "description": "Soluções completas em automação predial, redes estruturadas, sistemas fotovoltaicos, energia elétrica e segurança predial com certificação ISO 9001",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Catálogo de Serviços",
+            "itemListElement": [
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Redes e Infraestrutura" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Energia e Elétrica" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automação Predial" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Segurança Predial" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Data Center" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Manutenção e Operação" } }
+            ]
+          }
         }}
       />
       <Header />

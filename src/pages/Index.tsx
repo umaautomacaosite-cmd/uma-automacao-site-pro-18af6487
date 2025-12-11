@@ -122,7 +122,7 @@ const Index = () => {
     name: "UMA AUTOMAÇÃO",
     url: "https://umaautomacao.com.br",
     logo: "https://umaautomacao.com.br/logo.png",
-    description: "Soluções em Automação Industrial e Infraestrutura de Alta Performance",
+    description: "Soluções em Automação Predial e Infraestrutura de Alta Performance com engenheiros certificados CREA",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Brasília",
@@ -138,7 +138,13 @@ const Index = () => {
     sameAs: ["https://www.facebook.com/umaautomacao", "https://www.instagram.com/umaautomacao", "https://www.linkedin.com/company/umaautomacao"]
   };
   return <div className="min-h-screen">
-      <SEO title="UMA AUTOMAÇÃO - Soluções em Automação Industrial" description="Soluções em Automação Industrial e Infraestrutura de Alta Performance. Atendimento nacional com engenheiros certificados CREA." keywords="automação industrial, automação predial, infraestrutura, CREA, Brasília, data center, engenharia, fibra óptica, sistemas fotovoltaicos" canonical="/" schema={organizationSchema} />
+      <SEO 
+        title="UMA AUTOMAÇÃO - Soluções em Automação Predial | Brasília-DF" 
+        description="Especialistas em automação predial, redes estruturadas, sistemas fotovoltaicos e segurança predial. Engenheiros certificados CREA com atendimento nacional." 
+        keywords="automação predial, redes estruturadas, fibra óptica, sistemas fotovoltaicos, segurança predial, CREA, Brasília, data center, engenharia, cabeamento estruturado" 
+        canonical="/" 
+        schema={organizationSchema} 
+      />
       <Header />
       <HeroSection />
       <WhatsAppButton />

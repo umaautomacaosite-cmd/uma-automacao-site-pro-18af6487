@@ -36,8 +36,13 @@ const TermsOfService = () => {
     <>
       <SEO 
         title="Termos de Uso - UMA AUTOMAÇÃO"
-        description="Termos de uso e condições gerais de utilização do site UMA AUTOMAÇÃO."
+        description="Termos de uso e condições gerais de utilização do site e serviços da UMA AUTOMAÇÃO. Empresa de automação predial."
+        keywords="termos de uso, condições gerais, UMA AUTOMAÇÃO"
         canonical="/termos-de-uso"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Termos de Uso", url: "/termos-de-uso" }
+        ]}
       />
       <Header />
       <main className="min-h-screen bg-background py-16">

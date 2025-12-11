@@ -141,15 +141,30 @@ const Contact = () => {
   };
   return <div className="min-h-screen">
       <SEO 
-        title="Entre em Contato - UMA AUTOMAÇÃO"
-        description="Solicite uma consultoria gratuita e receba uma proposta personalizada para seu projeto de automação industrial. Atendimento nacional."
-        keywords="contato, orçamento, consultoria, automação industrial, proposta técnica"
+        title="Contato - UMA AUTOMAÇÃO | Orçamento Gratuito de Automação Predial"
+        description="Solicite consultoria gratuita para seu projeto de automação predial. Orçamento sem compromisso com engenheiros CREA. Atendimento nacional."
+        keywords="contato automação predial, orçamento automação, consultoria gratuita, proposta técnica, Brasília, CREA"
         canonical="/contato"
+        breadcrumbs={[
+          { name: "Início", url: "/" },
+          { name: "Contato", url: "/contato" }
+        ]}
         schema={{
           "@context": "https://schema.org",
           "@type": "ContactPage",
-          "name": "Contato",
-          "description": "Entre em contato com a UMA AUTOMAÇÃO para consultoria e orçamentos"
+          "name": "Contato - UMA AUTOMAÇÃO",
+          "description": "Entre em contato com a UMA AUTOMAÇÃO para consultoria gratuita e orçamentos de automação predial",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "UMA AUTOMAÇÃO",
+            "url": "https://umaautomacao.com.br",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer service",
+              "availableLanguage": "Portuguese",
+              "areaServed": "BR"
+            }
+          }
         }}
       />
       <Header />
