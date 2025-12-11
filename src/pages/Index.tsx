@@ -17,78 +17,77 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-
 const StatsCard = ({
-  stat,
+  stat
 }: {
-  stat: { number: string; label: string; icon: any; value: number; hasSlash: boolean };
+  stat: {
+    number: string;
+    label: string;
+    icon: any;
+    value: number;
+    hasSlash: boolean;
+  };
 }) => {
-  const { count, ref } = useCountUp(stat.value, 2000);
+  const {
+    count,
+    ref
+  } = useCountUp(stat.value, 2000);
   const IconComponent = stat.icon;
-
-  return (
-    <div ref={ref} className="text-center group">
+  return <div ref={ref} className="text-center group">
       <IconComponent className="h-12 w-12 text-gold-500 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
       <div className="font-playfair text-4xl font-bold mb-2">
-        {stat.hasSlash
-          ? stat.number
-          : `${count}${stat.number.includes("+") ? "+" : stat.number.includes("%") ? "%" : ""}`}
+        {stat.hasSlash ? stat.number : `${count}${stat.number.includes("+") ? "+" : stat.number.includes("%") ? "%" : ""}`}
       </div>
       <div className="font-lato text-lg text-gray-200">{stat.label}</div>
-    </div>
-  );
+    </div>;
 };
-
 const Index = () => {
-  const { ref: servicesRef, isIntersecting: servicesVisible } = useIntersectionObserver({ threshold: 0.1 });
+  const {
+    ref: servicesRef,
+    isIntersecting: servicesVisible
+  } = useIntersectionObserver({
+    threshold: 0.1
+  });
   const [whatsappNumber, setWhatsappNumber] = useState<string>("");
-  const [whatsappMessage, setWhatsappMessage] = useState<string>(
-    "Olá! Gostaria de falar com um especialista em automação predial.",
-  );
+  const [whatsappMessage, setWhatsappMessage] = useState<string>("Olá! Gostaria de falar com um especialista em automação predial.");
   const [stats, setStats] = useState<any[]>([]);
-
   useEffect(() => {
     const fetchData = async () => {
       // Fetch WhatsApp number and message
-      const { data: whatsappData } = await supabase
-        .from("settings")
-        .select("key, value")
-        .in("key", ["whatsapp_number", "whatsapp_default_message"]);
-
+      const {
+        data: whatsappData
+      } = await supabase.from("settings").select("key, value").in("key", ["whatsapp_number", "whatsapp_default_message"]);
       if (whatsappData) {
-        const numberData = whatsappData.find((item) => item.key === "whatsapp_number");
-        const messageData = whatsappData.find((item) => item.key === "whatsapp_default_message");
+        const numberData = whatsappData.find(item => item.key === "whatsapp_number");
+        const messageData = whatsappData.find(item => item.key === "whatsapp_default_message");
         if (numberData?.value) setWhatsappNumber(numberData.value);
         if (messageData?.value) setWhatsappMessage(messageData.value);
       }
 
       // Fetch stats
-      const { data: statsData } = await supabase
-        .from("home_stats")
-        .select("*")
-        .eq("is_active", true)
-        .order("display_order", { ascending: true });
-
+      const {
+        data: statsData
+      } = await supabase.from("home_stats").select("*").eq("is_active", true).order("display_order", {
+        ascending: true
+      });
       if (statsData) {
-        const mappedStats = statsData.map((stat) => {
+        const mappedStats = statsData.map(stat => {
           const iconMap: Record<string, any> = {
             Award: Award,
             Users: Users,
             MapPin: MapPin,
             Shield: Shield,
             TrendingUp: Award,
-            CheckCircle: Award,
+            CheckCircle: Award
           };
-
           const hasSlash = stat.value.includes("/");
           const numericValue = parseInt(stat.value.replace(/\D/g, "")) || 0;
-
           return {
             number: stat.value,
             label: stat.label,
             icon: iconMap[stat.icon] || Award,
             value: numericValue,
-            hasSlash,
+            hasSlash
           };
         });
         setStats(mappedStats);
@@ -96,34 +95,27 @@ const Index = () => {
     };
     fetchData();
   }, []);
-
-  const services = [
-    {
-      icon: Network,
-      title: "Redes e Infraestrutura",
-      description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 5/6/6A",
-      features: ["Certificação OTDR", "Certificação Fluke", "Organização de Racks"],
-    },
-    {
-      icon: Zap,
-      title: "Energia e Elétrica",
-      description: "Sistemas Fotovoltaicos, fechamento de quadros elétricos",
-      features: ["Distribuição de Energia e Aterramento", "Piso elevado", "Data Centers"],
-    },
-    {
-      icon: Settings,
-      title: "Automação Predial",
-      description: "Sistemas de controle e monitoramento predial",
-      features: ["Integração de Sistemas", "Relatórios de Eficiência Energética", "Monitoramento em Tempo Real"],
-    },
-    {
-      icon: Shield,
-      title: "Segurança Predial",
-      description: "Sistemas de segurança conforme normas regulamentadoras",
-      features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"],
-    },
-  ];
-
+  const services = [{
+    icon: Network,
+    title: "Redes e Infraestrutura",
+    description: "Fibra óptica FTTH/FTTX, cabeamento estruturado Cat 5/6/6A",
+    features: ["Certificação OTDR", "Certificação Fluke", "Organização de Racks"]
+  }, {
+    icon: Zap,
+    title: "Energia e Elétrica",
+    description: "Sistemas Fotovoltaicos, fechamento de quadros elétricos",
+    features: ["Distribuição de Energia e Aterramento", "Piso elevado", "Data Centers"]
+  }, {
+    icon: Settings,
+    title: "Automação Predial",
+    description: "Sistemas de controle e monitoramento predial",
+    features: ["Integração de Sistemas", "Relatórios de Eficiência Energética", "Monitoramento em Tempo Real"]
+  }, {
+    icon: Shield,
+    title: "Segurança Predial",
+    description: "Sistemas de segurança conforme normas regulamentadoras",
+    features: ["Câmeras IP", "Gravação Digital em Alta Definição", "Visão Noturna e Infravermelho"]
+  }];
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -135,30 +127,18 @@ const Index = () => {
       "@type": "PostalAddress",
       addressLocality: "Brasília",
       addressRegion: "DF",
-      addressCountry: "BR",
+      addressCountry: "BR"
     },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: whatsappNumber,
       contactType: "customer service",
-      availableLanguage: "Portuguese",
+      availableLanguage: "Portuguese"
     },
-    sameAs: [
-      "https://www.facebook.com/umaautomacao",
-      "https://www.instagram.com/umaautomacao",
-      "https://www.linkedin.com/company/umaautomacao",
-    ],
+    sameAs: ["https://www.facebook.com/umaautomacao", "https://www.instagram.com/umaautomacao", "https://www.linkedin.com/company/umaautomacao"]
   };
-
-  return (
-    <div className="min-h-screen">
-      <SEO
-        title="UMA AUTOMAÇÃO - Soluções em Automação Industrial"
-        description="Soluções em Automação Industrial e Infraestrutura de Alta Performance. Atendimento nacional com engenheiros certificados CREA."
-        keywords="automação industrial, automação predial, infraestrutura, CREA, Brasília, data center, engenharia, fibra óptica, sistemas fotovoltaicos"
-        canonical="/"
-        schema={organizationSchema}
-      />
+  return <div className="min-h-screen">
+      <SEO title="UMA AUTOMAÇÃO - Soluções em Automação Industrial" description="Soluções em Automação Industrial e Infraestrutura de Alta Performance. Atendimento nacional com engenheiros certificados CREA." keywords="automação industrial, automação predial, infraestrutura, CREA, Brasília, data center, engenharia, fibra óptica, sistemas fotovoltaicos" canonical="/" schema={organizationSchema} />
       <Header />
       <HeroSection />
       <WhatsAppButton />
@@ -185,15 +165,10 @@ const Index = () => {
 
           <div ref={servicesRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card
-                  key={index}
-                  className={`hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 group ${
-                    servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
+            const IconComponent = service.icon;
+            return <Card key={index} className={`hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 group ${servicesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`} style={{
+              transitionDelay: `${index * 100}ms`
+            }}>
                   <CardHeader>
                     <IconComponent className="h-12 w-12 text-wine-900 mb-4 group-hover:text-wine-700 group-hover:scale-110 transition-all duration-300" />
                     <CardTitle className="font-lato text-lg">{service.title}</CardTitle>
@@ -201,17 +176,14 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {service.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center space-x-2">
+                      {service.features.map((feature, idx) => <div key={idx} className="flex items-center space-x-2">
                           <CheckCircle className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-lato">{feature}</span>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
 
           <div className="text-center mt-12">
@@ -232,9 +204,7 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-br from-wine-900 via-wine-800 to-wine-900 text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <StatsCard key={index} stat={stat} />
-            ))}
+            {stats.map((stat, index) => <StatsCard key={index} stat={stat} />)}
           </div>
         </div>
       </section>
@@ -253,39 +223,23 @@ const Index = () => {
 
         <div className="container mx-auto px-4 text-center relative z-10 mt-12">
           <h2 className="font-playfair text-4xl font-bold mb-4">Pronto para Transformar sua Infraestrutura?</h2>
-          <p className="font-lato text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Entre em contato conosco e receba uma proposta personalizada para seu projeto de automação industrial.
-          </p>
+          <p className="font-lato text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Entre em contato conosco e receba uma proposta personalizada para seu projeto de automação predial.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contato">
-              <Button
-                size="lg"
-                className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg"
-              >
+              <Button size="lg" className="bg-wine-900 hover:bg-wine-800 text-white font-lato font-semibold px-8 py-4 text-lg">
                 Solicitar Orçamento Gratuito
               </Button>
             </Link>
-            {whatsappNumber && (
-              <a
-                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white bg-white/10 hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg"
-                >
+            {whatsappNumber && <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="outline" className="border-white bg-white/10 hover:bg-white hover:text-gray-900 text-white font-lato font-semibold px-8 py-4 text-lg">
                   Falar com Especialista
                 </Button>
-              </a>
-            )}
+              </a>}
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
 export default Index;
